@@ -94,6 +94,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
     <div class="tab" onclick="showTab(2)">③処分場</div>
     <div class="tab" onclick="showTab(3)">④排出量</div>
     <div class="tab" onclick="showTab(4)">⑤回収時間</div>
+    <div class="tab" onclick="showTab(5)">⑥粗大・不適正</div>
   </div>
 </div>
 
@@ -103,31 +104,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 <div class="page active" id="page0">
   <div class="form-card">
     <div class="form-title"><span class="form-title-icon">📍</span>改善が必要な集積所の報告</div>
-    <div class="field">
-      <label class="field-label">報告日</label>
-      <div class="date-row">
-        <input type="date" id="f1-date" oninput="syncDate('f1-date','f1-datetext')"/>
-        <input type="text" id="f1-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f1-datetext','f1-date')"/>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label">報告したドライバー名</label>
-      <select id="f1-drv"></select>
-    </div>
-    <div class="field">
-      <label class="field-label">ページ番号（P〇〇）</label>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:14px;color:#888;font-weight:600;">P</span>
-        <input type="text" placeholder="例: 12" style="width:90px;" id="f1-page"/>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label">左右</label>
-      <div class="check-group">
-        <div class="check-item" id="lr-left" onclick="selectLR('left')">左</div>
-        <div class="check-item" id="lr-right" onclick="selectLR('right')">右</div>
-      </div>
-    </div>
     <div class="field">
       <label class="field-label">集積所番号</label>
       <div style="display:flex;align-items:center;gap:8px;">
@@ -158,34 +134,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 <div class="page" id="page1">
   <div class="form-card">
     <div class="form-title"><span class="form-title-icon">🚛</span>車両報告</div>
-    <div class="field">
-      <label class="field-label">報告日</label>
-      <div class="date-row">
-        <input type="date" id="f2-date" oninput="syncDate('f2-date','f2-datetext')"/>
-        <input type="text" id="f2-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f2-datetext','f2-date')"/>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label">報告したドライバー名</label>
-      <select id="f2-drv"></select>
-    </div>
-    <div class="field">
-      <label class="field-label">内容</label>
-      <div class="radio-group" id="f2-type-group">
-        <label class="radio-item"><input type="radio" name="f2type" value="車両の不具合" onchange="checkVehicle();styleRadio('f2-type-group')"/> 車両の不具合</label>
-        <div id="f2-detail-wrap1" style="display:none;margin:4px 0 6px 26px;">
-          <textarea id="f2-detail1" placeholder="不具合の詳細を入力してください"></textarea>
-        </div>
-        <label class="radio-item"><input type="radio" name="f2type" value="車両の修理・点検日程" onchange="checkVehicle();styleRadio('f2-type-group')"/> 車両の修理・点検日程</label>
-        <div id="f2-detail-wrap2" style="display:none;margin:4px 0 6px 26px;">
-          <textarea id="f2-detail2" placeholder="修理・点検日程の詳細を入力してください"></textarea>
-        </div>
-        <label class="radio-item"><input type="radio" name="f2type" value="その他" onchange="checkVehicle();styleRadio('f2-type-group')"/> その他</label>
-        <div id="f2-other-wrap" style="display:none;margin:4px 0 6px 26px;">
-          <textarea id="f2-other" placeholder="詳細を入力してください"></textarea>
-        </div>
-      </div>
-    </div>
     <button class="submit-btn" id="btn2" onclick="submitForm2()">📤 スプレッドシートに送信する</button>
     <div class="sending" id="sending2">送信中...</div>
     <div class="toast" id="toast2"></div>
@@ -196,68 +144,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
 <div class="page" id="page2">
   <div class="form-card">
     <div class="form-title"><span class="form-title-icon">⏱️</span>処分場 待機時間の報告</div>
-    <div class="field">
-      <label class="field-label">報告日</label>
-      <div class="date-row">
-        <input type="date" id="f3-date" oninput="syncDate('f3-date','f3-datetext')"/>
-        <input type="text" id="f3-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f3-datetext','f3-date')"/>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label">報告したドライバー名</label>
-      <select id="f3-drv"></select>
-    </div>
-    <div class="field">
-      <label class="field-label">待機開始時刻</label>
-      <input type="time" id="f3-start" oninput="calcWait()"/>
-    </div>
-    <div class="field">
-      <label class="field-label">待機終了時刻</label>
-      <input type="time" id="f3-end" oninput="calcWait()"/>
-    </div>
-    <div class="time-calc">
-      <span class="time-calc-label">待機時間（自動算出）</span>
-      <span class="time-calc-value" id="wait-result">-- 分</span>
-    </div>
-    <button class="submit-btn" id="btn3" onclick="submitForm3()" style="margin-top:14px;">📤 スプレッドシートに送信する</button>
-    <div class="sending" id="sending3">送信中...</div>
-    <div class="toast" id="toast3"></div>
-  </div>
-</div>
-
-<!-- ④ 排出量 -->
-<div class="page" id="page3">
-  <div class="form-card">
-    <div class="form-title"><span class="form-title-icon">📊</span>排出量の報告</div>
-    <div class="field">
-      <label class="field-label">報告日</label>
-      <div class="date-row">
-        <input type="date" id="f4-date" oninput="syncDate('f4-date','f4-datetext')"/>
-        <input type="text" id="f4-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f4-datetext','f4-date')"/>
-      </div>
-    </div>
-    <div class="day-tabs">
-      <div class="day-tab active" onclick="showDay(0)">月</div>
-      <div class="day-tab" onclick="showDay(1)">火</div>
-      <div class="day-tab" onclick="showDay(2)">水</div>
-      <div class="day-tab" onclick="showDay(3)">木</div>
-      <div class="day-tab" onclick="showDay(4)">金</div>
-      <div class="day-tab" onclick="showDay(5)">土</div>
-    </div>
-    <div class="day-page active" id="day0">
-      <div class="section-sub">可燃ごみ</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d0-k1" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d0-k2" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d0-k3" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d0-k4" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d0-k5" type="number" placeholder="kg"/></div>
-      </div>
-      <div class="section-sub">プラスチック</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d0-pA" type="number" placeholder="kg"/></div>
-      </div>
-    </div>
     <div class="day-page" id="day1">
       <div class="section-sub">可燃ごみ</div>
       <div class="course-grid">
@@ -304,6 +190,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
         <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d3-pB" type="number" placeholder="kg"/></div>
         <div class="course-item"><div class="course-label">Cコース</div><input class="course-input" id="d3-pC" type="number" placeholder="kg"/></div>
         <div class="course-item"><div class="course-label">2コース（午後）</div><input class="course-input" id="d3-k2pm" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d3-p2" type="number" placeholder="kg"/></div>
       </div>
     </div>
     <div class="day-page" id="day4">
@@ -363,6 +250,67 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
   </div>
 </div>
 
+
+<!-- ⑥ 粗大・不適正排出物・その他 -->
+<div class="page" id="page5">
+  <div class="form-card">
+    <div class="form-title"><span class="form-title-icon">🚨</span>粗大・不適正排出物・その他集積所報告</div>
+    <div class="field">
+      <label class="field-label">報告したドライバー名</label>
+      <select id="f6-drv"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">ページ番号（P〇〇）</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:14px;color:#888;font-weight:600;">P</span>
+        <input type="text" placeholder="例: 12" style="width:90px;" id="f6-page"/>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">左右</label>
+      <div class="check-group">
+        <div class="check-item" id="f6-lr-left" onclick="selectLR6('left')">左</div>
+        <div class="check-item" id="f6-lr-right" onclick="selectLR6('right')">右</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">集積所番号</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="text" placeholder="例: 5" style="width:90px;" id="f6-spotno"/>
+        <span style="font-size:14px;color:#888;">番</span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">住所</label>
+      <button type="button" onclick="getLocation6()" style="width:100%;padding:10px;border:1px solid #E0E0DB;border-radius:8px;background:#F8F8F5;font-size:13px;color:#1A1A18;cursor:pointer;margin-bottom:8px;text-align:left;">
+        📍 現在地の住所を自動取得
+      </button>
+      <div id="f6-addr-status" style="font-size:12px;color:#888;margin-bottom:6px;display:none;"></div>
+      <input type="text" id="f6-address" placeholder="住所を入力（自動取得または手入力）"/>
+    </div>
+    <div class="field">
+      <label class="field-label">報告理由</label>
+      <div class="radio-group" id="f6-reason-group">
+        <label class="radio-item"><input type="radio" name="f6reason" value="粗大ごみ" onchange="checkF6();styleRadio('f6-reason-group')"/> 粗大ごみ</label>
+        <div id="f6-detail-wrap1" style="display:none;margin:4px 0 6px 26px;">
+          <textarea id="f6-detail1" placeholder="詳細を入力してください"></textarea>
+        </div>
+        <label class="radio-item"><input type="radio" name="f6reason" value="排出禁止物" onchange="checkF6();styleRadio('f6-reason-group')"/> 排出禁止物</label>
+        <div id="f6-detail-wrap2" style="display:none;margin:4px 0 6px 26px;">
+          <textarea id="f6-detail2" placeholder="詳細を入力してください"></textarea>
+        </div>
+        <label class="radio-item"><input type="radio" name="f6reason" value="その他集積所に関する報告" onchange="checkF6();styleRadio('f6-reason-group')"/> その他集積所に関する報告</label>
+        <div id="f6-detail-wrap3" style="display:none;margin:4px 0 6px 26px;">
+          <textarea id="f6-detail3" placeholder="詳細を入力してください"></textarea>
+        </div>
+      </div>
+    </div>
+    <button class="submit-btn" id="btn6" onclick="submitForm6()">📤 スプレッドシートに送信する</button>
+    <div class="sending" id="sending6">送信中...</div>
+    <div class="toast" id="toast6"></div>
+  </div>
+</div>
+
 </div><!-- content -->
 
 <!-- ドライバー管理 -->
@@ -389,7 +337,7 @@ var dayIndex=0;
 var dayNames=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
 
 function renderDriverSelects(){
-  ['f1-drv','f2-drv','f3-drv','f5-drv'].forEach(function(id){
+  ['f1-drv','f2-drv','f3-drv','f5-drv','f6-drv'].forEach(function(id){
     var sel=document.getElementById(id);if(!sel)return;
     var cur=sel.value;
     sel.innerHTML='<option value="">選択してください</option>'+drivers.map(function(d){
@@ -406,9 +354,189 @@ function addDriver(){
   var inp=document.getElementById('drv-add-input');
   var n=inp.value.trim();if(!n)return;
   drivers.push(n);inp.value='';
-  renderDriverSelects();renderDriverList();
+  
+var lrSelected6='';
+
+function selectLR6(side){
+  lrSelected6=side;
+  document.getElementById('f6-lr-left').classList.toggle('selected',side==='left');
+  document.getElementById('f6-lr-right').classList.toggle('selected',side==='right');
 }
-function removeDriver(i){drivers.splice(i,1);renderDriverSelects();renderDriverList();}
+
+function checkF6(){
+  var v=document.querySelector('input[name="f6reason"]:checked');
+  var val=v?v.value:'';
+  document.getElementById('f6-detail-wrap1').style.display=(val==='粗大ごみ')?'block':'none';
+  document.getElementById('f6-detail-wrap2').style.display=(val==='排出禁止物')?'block':'none';
+  document.getElementById('f6-detail-wrap3').style.display=(val==='その他集積所に関する報告')?'block':'none';
+}
+
+function getLocation6(){
+  var status=document.getElementById('f6-addr-status');
+  status.style.display='block';
+  status.textContent='📡 現在地を取得中...';
+  if(!navigator.geolocation){
+    status.textContent='⚠️ このブラウザでは位置情報を取得できません。手入力してください。';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat=pos.coords.latitude;
+    var lng=pos.coords.longitude;
+    status.textContent='🔍 住所に変換中...';
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ja')
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(data && data.address){
+          var a=data.address;
+          var addr='';
+          if(a.province||a.state) addr+=(a.province||a.state);
+          if(a.city||a.town||a.village) addr+=(a.city||a.town||a.village);
+          if(a.suburb||a.neighbourhood) addr+=(a.suburb||a.neighbourhood);
+          if(a.road) addr+=a.road;
+          if(a.house_number) addr+=a.house_number;
+          if(!addr) addr=data.display_name;
+          document.getElementById('f6-address').value=addr;
+          status.textContent='✅ 住所を取得しました（修正可能）';
+        } else {
+          status.textContent='⚠️ 住所を取得できませんでした。手入力してください。';
+        }
+      })
+      .catch(function(){
+        status.textContent='⚠️ 変換に失敗しました。手入力してください。';
+      });
+  }, function(err){
+    status.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';
+  },{timeout:10000});
+}
+
+function submitForm6(){
+  var reason=document.querySelector('input[name="f6reason"]:checked');
+  var val=reason?reason.value:'';
+  var detail='';
+  if(val==='粗大ごみ') detail=getVal('f6-detail1');
+  else if(val==='排出禁止物') detail=getVal('f6-detail2');
+  else if(val==='その他集積所に関する報告') detail=getVal('f6-detail3');
+  postToGAS({
+    type:'粗大・不適正',
+    driver:getVal('f6-drv'),
+    page:getVal('f6-page'),
+    lr:lrSelected6,
+    spotNo:getVal('f6-spotno'),
+    address:getVal('f6-address'),
+    reason:val,
+    detail:detail
+  },'btn6','sending6','toast6',function(){
+    document.getElementById('f6-page').value='';
+    document.getElementById('f6-spotno').value='';
+    document.getElementById('f6-address').value='';
+    document.getElementById('f6-detail1').value='';
+    document.getElementById('f6-detail2').value='';
+    document.getElementById('f6-detail3').value='';
+    document.getElementById('f6-addr-status').style.display='none';
+    document.querySelectorAll('input[name="f6reason"]').forEach(function(r){r.checked=false;});
+    document.querySelectorAll('#f6-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
+    document.getElementById('f6-detail-wrap1').style.display='none';
+    document.getElementById('f6-detail-wrap2').style.display='none';
+    document.getElementById('f6-detail-wrap3').style.display='none';
+    lrSelected6='';
+    document.getElementById('f6-lr-left').classList.remove('selected');
+    document.getElementById('f6-lr-right').classList.remove('selected');
+  });
+}
+
+renderDriverSelects();renderDriverList();
+}
+function removeDriver(i){drivers.splice(i,1);
+var lrSelected6='';
+
+function selectLR6(side){
+  lrSelected6=side;
+  document.getElementById('f6-lr-left').classList.toggle('selected',side==='left');
+  document.getElementById('f6-lr-right').classList.toggle('selected',side==='right');
+}
+
+function checkF6(){
+  var v=document.querySelector('input[name="f6reason"]:checked');
+  var val=v?v.value:'';
+  document.getElementById('f6-detail-wrap1').style.display=(val==='粗大ごみ')?'block':'none';
+  document.getElementById('f6-detail-wrap2').style.display=(val==='排出禁止物')?'block':'none';
+  document.getElementById('f6-detail-wrap3').style.display=(val==='その他集積所に関する報告')?'block':'none';
+}
+
+function getLocation6(){
+  var status=document.getElementById('f6-addr-status');
+  status.style.display='block';
+  status.textContent='📡 現在地を取得中...';
+  if(!navigator.geolocation){
+    status.textContent='⚠️ このブラウザでは位置情報を取得できません。手入力してください。';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat=pos.coords.latitude;
+    var lng=pos.coords.longitude;
+    status.textContent='🔍 住所に変換中...';
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ja')
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(data && data.address){
+          var a=data.address;
+          var addr='';
+          if(a.province||a.state) addr+=(a.province||a.state);
+          if(a.city||a.town||a.village) addr+=(a.city||a.town||a.village);
+          if(a.suburb||a.neighbourhood) addr+=(a.suburb||a.neighbourhood);
+          if(a.road) addr+=a.road;
+          if(a.house_number) addr+=a.house_number;
+          if(!addr) addr=data.display_name;
+          document.getElementById('f6-address').value=addr;
+          status.textContent='✅ 住所を取得しました（修正可能）';
+        } else {
+          status.textContent='⚠️ 住所を取得できませんでした。手入力してください。';
+        }
+      })
+      .catch(function(){
+        status.textContent='⚠️ 変換に失敗しました。手入力してください。';
+      });
+  }, function(err){
+    status.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';
+  },{timeout:10000});
+}
+
+function submitForm6(){
+  var reason=document.querySelector('input[name="f6reason"]:checked');
+  var val=reason?reason.value:'';
+  var detail='';
+  if(val==='粗大ごみ') detail=getVal('f6-detail1');
+  else if(val==='排出禁止物') detail=getVal('f6-detail2');
+  else if(val==='その他集積所に関する報告') detail=getVal('f6-detail3');
+  postToGAS({
+    type:'粗大・不適正',
+    driver:getVal('f6-drv'),
+    page:getVal('f6-page'),
+    lr:lrSelected6,
+    spotNo:getVal('f6-spotno'),
+    address:getVal('f6-address'),
+    reason:val,
+    detail:detail
+  },'btn6','sending6','toast6',function(){
+    document.getElementById('f6-page').value='';
+    document.getElementById('f6-spotno').value='';
+    document.getElementById('f6-address').value='';
+    document.getElementById('f6-detail1').value='';
+    document.getElementById('f6-detail2').value='';
+    document.getElementById('f6-detail3').value='';
+    document.getElementById('f6-addr-status').style.display='none';
+    document.querySelectorAll('input[name="f6reason"]').forEach(function(r){r.checked=false;});
+    document.querySelectorAll('#f6-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
+    document.getElementById('f6-detail-wrap1').style.display='none';
+    document.getElementById('f6-detail-wrap2').style.display='none';
+    document.getElementById('f6-detail-wrap3').style.display='none';
+    lrSelected6='';
+    document.getElementById('f6-lr-left').classList.remove('selected');
+    document.getElementById('f6-lr-right').classList.remove('selected');
+  });
+}
+
+renderDriverSelects();renderDriverList();}
 function showTab(i){
   document.querySelectorAll('.tab').forEach(function(t,j){t.classList.toggle('active',i===j);});
   document.querySelectorAll('.page').forEach(function(p,j){p.classList.toggle('active',i===j);});
@@ -543,13 +671,18 @@ function submitForm2(){
   var val=type?type.value:'';
   var detail='';
   if(val==='車両の不具合')detail=getVal('f2-detail1');
-  else if(val==='車両の修理・点検日程')detail=getVal('f2-detail2');
+  else if(val==='車両の修理・点検日程'){
+    var df=getVal('f2-date-from'),dt=getVal('f2-date-to'),memo=getVal('f2-detail2');
+    detail=(df||'?')+'〜'+(dt||'?')+(memo?' ('+memo+')':'');
+  }
   else if(val==='その他')detail=getVal('f2-other');
-  postToGAS({type:'車両',date:getVal('f2-datetext')||getVal('f2-date'),driver:getVal('f2-drv'),content:val,otherDetail:detail},'btn2','sending2','toast2',function(){
+  postToGAS({type:'車両',driver:getVal('f2-drv'),content:val,otherDetail:detail},'btn2','sending2','toast2',function(){
     document.querySelectorAll('input[name="f2type"]').forEach(function(r){r.checked=false;});
     document.querySelectorAll('#f2-type-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
     document.getElementById('f2-detail1').value='';
     document.getElementById('f2-detail2').value='';
+    document.getElementById('f2-date-from').value='';
+    document.getElementById('f2-date-to').value='';
     document.getElementById('f2-other').value='';
     document.getElementById('f2-detail-wrap1').style.display='none';
     document.getElementById('f2-detail-wrap2').style.display='none';
@@ -568,7 +701,7 @@ function submitForm4(){
   var map=[['d0-k1','可燃1'],['d0-k2','可燃2'],['d0-k3','可燃3'],['d0-k4','可燃4'],['d0-k5','可燃5'],['d0-pA','プラA'],
     ['d1-k1','可燃1'],['d1-k2','可燃2'],['d1-k3','可燃3'],['d1-k4','可燃4'],['d1-k5','可燃5'],['d1-kC','可燃C'],['d1-pA','プラA'],['d1-pB','プラB'],
     ['d2-k1','可燃1'],['d2-k2','可燃2'],['d2-k3','可燃3'],['d2-k4','可燃4'],['d2-k5','可燃5'],['d2-pA','プラA'],['d2-pB','プラB'],['d2-pC','プラC'],
-    ['d3-k1','可燃1'],['d3-k2am','可燃2午前'],['d3-k3','可燃3'],['d3-k4','可燃4'],['d3-pA','プラA'],['d3-pB','プラB'],['d3-pC','プラC'],['d3-k2pm','可燃2午後'],
+    ['d3-k1','可燃1'],['d3-k2am','可燃2午前'],['d3-k3','可燃3'],['d3-k4','可燃4'],['d3-pA','プラA'],['d3-pB','プラB'],['d3-pC','プラC'],['d3-k2pm','可燃2午後'],['d3-p2','プラ2'],
     ['d4-k1','可燃1'],['d4-k2','可燃2'],['d4-k3','可燃3'],['d4-k4','可燃4'],['d4-k5','可燃5'],['d4-pA','プラA'],['d4-pB','プラB'],
     ['d5-k1','可燃1'],['d5-k2','可燃2'],['d5-k3','可燃3'],['d5-k4','可燃4'],['d5-k5','可燃5']];
   map.forEach(function(pair){
@@ -583,7 +716,98 @@ function submitForm5(){
     document.getElementById('f5-end').value='';document.getElementById('work-result').textContent='-- 時間 -- 分';
   });
 }
+
+var lrSelected6='';
+
+function selectLR6(side){
+  lrSelected6=side;
+  document.getElementById('f6-lr-left').classList.toggle('selected',side==='left');
+  document.getElementById('f6-lr-right').classList.toggle('selected',side==='right');
+}
+
+function checkF6(){
+  var v=document.querySelector('input[name="f6reason"]:checked');
+  var val=v?v.value:'';
+  document.getElementById('f6-detail-wrap1').style.display=(val==='粗大ごみ')?'block':'none';
+  document.getElementById('f6-detail-wrap2').style.display=(val==='排出禁止物')?'block':'none';
+  document.getElementById('f6-detail-wrap3').style.display=(val==='その他集積所に関する報告')?'block':'none';
+}
+
+function getLocation6(){
+  var status=document.getElementById('f6-addr-status');
+  status.style.display='block';
+  status.textContent='📡 現在地を取得中...';
+  if(!navigator.geolocation){
+    status.textContent='⚠️ このブラウザでは位置情報を取得できません。手入力してください。';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lat=pos.coords.latitude;
+    var lng=pos.coords.longitude;
+    status.textContent='🔍 住所に変換中...';
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ja')
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(data && data.address){
+          var a=data.address;
+          var addr='';
+          if(a.province||a.state) addr+=(a.province||a.state);
+          if(a.city||a.town||a.village) addr+=(a.city||a.town||a.village);
+          if(a.suburb||a.neighbourhood) addr+=(a.suburb||a.neighbourhood);
+          if(a.road) addr+=a.road;
+          if(a.house_number) addr+=a.house_number;
+          if(!addr) addr=data.display_name;
+          document.getElementById('f6-address').value=addr;
+          status.textContent='✅ 住所を取得しました（修正可能）';
+        } else {
+          status.textContent='⚠️ 住所を取得できませんでした。手入力してください。';
+        }
+      })
+      .catch(function(){
+        status.textContent='⚠️ 変換に失敗しました。手入力してください。';
+      });
+  }, function(err){
+    status.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';
+  },{timeout:10000});
+}
+
+function submitForm6(){
+  var reason=document.querySelector('input[name="f6reason"]:checked');
+  var val=reason?reason.value:'';
+  var detail='';
+  if(val==='粗大ごみ') detail=getVal('f6-detail1');
+  else if(val==='排出禁止物') detail=getVal('f6-detail2');
+  else if(val==='その他集積所に関する報告') detail=getVal('f6-detail3');
+  postToGAS({
+    type:'粗大・不適正',
+    driver:getVal('f6-drv'),
+    page:getVal('f6-page'),
+    lr:lrSelected6,
+    spotNo:getVal('f6-spotno'),
+    address:getVal('f6-address'),
+    reason:val,
+    detail:detail
+  },'btn6','sending6','toast6',function(){
+    document.getElementById('f6-page').value='';
+    document.getElementById('f6-spotno').value='';
+    document.getElementById('f6-address').value='';
+    document.getElementById('f6-detail1').value='';
+    document.getElementById('f6-detail2').value='';
+    document.getElementById('f6-detail3').value='';
+    document.getElementById('f6-addr-status').style.display='none';
+    document.querySelectorAll('input[name="f6reason"]').forEach(function(r){r.checked=false;});
+    document.querySelectorAll('#f6-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
+    document.getElementById('f6-detail-wrap1').style.display='none';
+    document.getElementById('f6-detail-wrap2').style.display='none';
+    document.getElementById('f6-detail-wrap3').style.display='none';
+    lrSelected6='';
+    document.getElementById('f6-lr-left').classList.remove('selected');
+    document.getElementById('f6-lr-right').classList.remove('selected');
+  });
+}
+
 renderDriverSelects();
 </script>
 </body>
 </html>
+
