@@ -95,6 +95,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
     <div class="tab" onclick="showTab(3)">④排出量</div>
     <div class="tab" onclick="showTab(4)">⑤回収時間</div>
     <div class="tab" onclick="showTab(5)">⑥粗大・不適正</div>
+    <div class="tab" onclick="showTab(6)">📊 集計</div>
   </div>
 </div>
 
@@ -311,6 +312,60 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
   </div>
 </div>
 
+
+<!-- ⑦ ダッシュボード -->
+<div class="page" id="page6">
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+    <div style="font-size:14px;font-weight:600;color:#1A1A18;">集計ダッシュボード</div>
+    <button onclick="loadDashboard()" id="dash-reload-btn" style="font-size:12px;padding:6px 14px;border:1px solid #E0E0DB;border-radius:20px;background:#fff;color:#1A1A18;cursor:pointer;">🔄 更新</button>
+  </div>
+  <div id="dash-loading" style="text-align:center;padding:40px 0;color:#888;font-size:13px;display:none;">データを読み込み中...</div>
+  <div id="dash-error" style="display:none;background:#FDECEA;color:#B71C1C;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
+
+  <!-- 集積所ワースト -->
+  <div class="form-card" id="dash-spot-card" style="display:none;">
+    <div class="form-title"><span class="form-title-icon">📍</span>集積所 報告ワースト</div>
+    <div id="dash-spot-list"></div>
+  </div>
+
+  <!-- 粗大・不適正 -->
+  <div class="form-card" id="dash-foul-card" style="display:none;">
+    <div class="form-title"><span class="form-title-icon">🚨</span>粗大・不適正 最近の報告</div>
+    <div id="dash-foul-list"></div>
+  </div>
+
+  <!-- 車両状況 -->
+  <div class="form-card" id="dash-car-card" style="display:none;">
+    <div class="form-title"><span class="form-title-icon">🚛</span>車両 最近の報告</div>
+    <div id="dash-car-list"></div>
+  </div>
+
+  <!-- 処分場待機時間 -->
+  <div class="form-card" id="dash-wait-card" style="display:none;">
+    <div class="form-title"><span class="form-title-icon">⏱️</span>処分場 待機時間</div>
+    <div id="dash-wait-avg" style="display:flex;gap:10px;margin-bottom:12px;"></div>
+    <div id="dash-wait-chart" style="display:flex;align-items:flex-end;gap:5px;height:100px;padding:4px 0;"></div>
+    <div id="dash-wait-labels" style="display:flex;gap:5px;margin-top:4px;"></div>
+  </div>
+
+  <!-- 排出量推移 -->
+  <div class="form-card" id="dash-emit-card" style="display:none;">
+    <div class="form-title"><span class="form-title-icon">📊</span>排出量 推移（直近10件）</div>
+    <div id="dash-emit-legend" style="display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:#666;"></div>
+    <div style="overflow-x:auto;">
+      <div id="dash-emit-chart" style="display:flex;align-items:flex-end;gap:4px;height:100px;min-width:280px;padding:4px 0;"></div>
+      <div id="dash-emit-labels" style="display:flex;gap:4px;margin-top:4px;min-width:280px;"></div>
+    </div>
+  </div>
+
+  <!-- ドライバー別回収時間 -->
+  <div class="form-card" id="dash-drv-card" style="display:none;">
+    <div class="form-title"><span class="form-title-icon">⏰</span>ドライバー別 平均回収時間</div>
+    <div id="dash-drv-list"></div>
+  </div>
+
+</div>
 </div><!-- content -->
 
 <!-- ドライバー管理 -->
@@ -444,6 +499,232 @@ function submitForm6(){
   });
 }
 
+
+// ========== ダッシュボード ==========
+var dashLoaded = false;
+
+function loadDashboard(){
+  var loading = document.getElementById('dash-loading');
+  var errEl = document.getElementById('dash-error');
+  loading.style.display = 'block';
+  errEl.style.display = 'none';
+  hideAllDashCards();
+
+  fetch(GAS_URL + '?action=getAll')
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      loading.style.display = 'none';
+      if(res.status !== 'ok'){ showDashError('データ取得エラー: ' + res.message); return; }
+      var d = res.data;
+      renderSpotWorst(d['集積所'] || []);
+      renderFoulList(d['粗大不適正'] || []);
+      renderCarList(d['車両'] || []);
+      renderWaitChart(d['処分場'] || []);
+      renderEmitChart(d['排出量'] || []);
+      renderDriverTime(d['回収時間'] || []);
+      dashLoaded = true;
+    })
+    .catch(function(e){
+      loading.style.display = 'none';
+      showDashError('通信エラーが発生しました。ネットワークを確認してください。');
+    });
+}
+
+function hideAllDashCards(){
+  ['dash-spot-card','dash-foul-card','dash-car-card','dash-wait-card','dash-emit-card','dash-drv-card'].forEach(function(id){
+    document.getElementById(id).style.display='none';
+  });
+}
+
+function showDashError(msg){
+  var el = document.getElementById('dash-error');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+
+function showCard(id){ document.getElementById(id).style.display='block'; }
+
+// 集積所ワースト
+function renderSpotWorst(rows){
+  if(!rows.length) return;
+  var count = {};
+  rows.forEach(function(r){
+    var key = 'P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'');
+    count[key] = (count[key]||0) + 1;
+  });
+  var sorted = Object.keys(count).sort(function(a,b){return count[b]-count[a];}).slice(0,5);
+  var html = '';
+  sorted.forEach(function(k,i){
+    var badge = i===0?'#A32D2D':i===1?'#854F0B':'#555';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="width:22px;height:22px;border-radius:50%;background:'+badge+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>'
+      +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
+      +'<div style="font-size:13px;font-weight:600;color:'+badge+';">'+count[k]+'件</div>'
+      +'</div>';
+  });
+  document.getElementById('dash-spot-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-spot-card');
+}
+
+// 粗大・不適正 最近5件
+function renderFoulList(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-5).reverse();
+  var html = '';
+  recent.forEach(function(r){
+    var reason = r['報告理由']||'';
+    var badgeColor = reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
+    var badgeBg = reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
+    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+reason+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
+      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('dash-foul-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-foul-card');
+}
+
+// 車両 最近5件
+function renderCarList(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-5).reverse();
+  var html = '';
+  recent.forEach(function(r){
+    var content = r['内容']||'';
+    var badgeColor = content==='車両の不具合'?'#A32D2D':content==='車両の修理・点検日程'?'#854F0B':'#555';
+    var badgeBg = content==='車両の不具合'?'#FCEBEB':content==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
+    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+content+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
+      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('dash-car-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-car-card');
+}
+
+// 処分場待機時間グラフ（直近10件）
+function renderWaitChart(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-10);
+  var vals = recent.map(function(r){ return parseFloat(r['待機時間(分)'])||0; });
+  var avg = vals.length ? Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length) : 0;
+  var max = Math.max.apply(null, vals);
+
+  document.getElementById('dash-wait-avg').innerHTML =
+    '<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">直近平均</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#1A1A18;">'+avg+'<span style="font-size:13px;font-weight:400;">分</span></div>'
+    +'</div>'
+    +'<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">最長</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#A32D2D;">'+max+'<span style="font-size:13px;font-weight:400;">分</span></div>'
+    +'</div>';
+
+  var chartEl = document.getElementById('dash-wait-chart');
+  var labelEl = document.getElementById('dash-wait-labels');
+  chartEl.innerHTML = '';
+  labelEl.innerHTML = '';
+  var maxH = 90;
+  vals.forEach(function(v, i){
+    var h = max > 0 ? Math.round((v/max)*maxH) : 0;
+    var color = v >= 60 ? '#F09595' : v >= 40 ? '#FAC775' : '#9FE1CB';
+    var col = document.createElement('div');
+    col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;';
+    col.innerHTML = '<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+v+'分"></div>';
+    chartEl.appendChild(col);
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;';
+    lbl.textContent = recent[i]['ドライバー名'] ? recent[i]['ドライバー名'].slice(0,2) : (i+1);
+    labelEl.appendChild(lbl);
+  });
+  showCard('dash-wait-card');
+}
+
+// 排出量推移グラフ（直近10件、可燃合計とプラ合計）
+function renderEmitChart(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-10);
+  var kanenKeys = ['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
+  var plaKeys = ['プラA','プラB','プラC','プラ2'];
+  var kanenVals = recent.map(function(r){
+    return kanenKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
+  });
+  var plaVals = recent.map(function(r){
+    return plaKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
+  });
+  var allMax = Math.max.apply(null, kanenVals.concat(plaVals));
+
+  document.getElementById('dash-emit-legend').innerHTML =
+    '<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px;"></span>可燃ごみ合計</div>'
+    +'<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B5D4F4;margin-right:4px;"></span>プラスチック合計</div>';
+
+  var chartEl = document.getElementById('dash-emit-chart');
+  var labelEl = document.getElementById('dash-emit-labels');
+  chartEl.innerHTML = '';
+  labelEl.innerHTML = '';
+  var maxH = 90;
+  recent.forEach(function(r, i){
+    var kH = allMax > 0 ? Math.round((kanenVals[i]/allMax)*maxH) : 0;
+    var pH = allMax > 0 ? Math.round((plaVals[i]/allMax)*maxH) : 0;
+    var col = document.createElement('div');
+    col.style.cssText = 'flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:24px;';
+    col.innerHTML = '<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kH+'px;" title="可燃'+kanenVals[i]+'kg"></div>'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+pH+'px;" title="プラ'+plaVals[i]+'kg"></div>';
+    chartEl.appendChild(col);
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;min-width:24px;';
+    lbl.textContent = (r['曜日']||'').slice(0,1)||String(i+1);
+    labelEl.appendChild(lbl);
+  });
+  showCard('dash-emit-card');
+}
+
+// ドライバー別平均回収時間
+function renderDriverTime(rows){
+  if(!rows.length) return;
+  var drvMap = {};
+  rows.forEach(function(r){
+    var drv = r['ドライバー名']||'不明';
+    var t = r['所要時間']||'';
+    var match = t.match(/(\d+)時間(\d+)分/);
+    if(!match) return;
+    var mins = parseInt(match[1])*60 + parseInt(match[2]);
+    if(!drvMap[drv]) drvMap[drv] = {total:0, count:0};
+    drvMap[drv].total += mins;
+    drvMap[drv].count += 1;
+  });
+  var drvList = Object.keys(drvMap).map(function(k){
+    return {name:k, avg: Math.round(drvMap[k].total/drvMap[k].count), count:drvMap[k].count};
+  }).sort(function(a,b){return b.avg-a.avg;});
+  var maxAvg = drvList.length ? drvList[0].avg : 1;
+  var html = '';
+  drvList.forEach(function(d){
+    var h = Math.floor(d.avg/60);
+    var m = d.avg%60;
+    var pct = Math.round((d.avg/maxAvg)*100);
+    var color = d.avg > 420 ? '#FAC775' : '#9FE1CB';
+    html += '<div style="margin-bottom:10px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
+      +'<span style="color:#1A1A18;font-weight:500;">'+d.name+'</span>'
+      +'<span style="color:#555;">平均 '+h+'時間'+m+'分　('+d.count+'件)</span>'
+      +'</div>'
+      +'<div style="height:6px;background:#F0F0EC;border-radius:3px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;"></div>'
+      +'</div>'
+      +'</div>';
+  });
+  document.getElementById('dash-drv-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-drv-card');
+}
+
 renderDriverSelects();renderDriverList();
 }
 function removeDriver(i){drivers.splice(i,1);
@@ -536,10 +817,237 @@ function submitForm6(){
   });
 }
 
+
+// ========== ダッシュボード ==========
+var dashLoaded = false;
+
+function loadDashboard(){
+  var loading = document.getElementById('dash-loading');
+  var errEl = document.getElementById('dash-error');
+  loading.style.display = 'block';
+  errEl.style.display = 'none';
+  hideAllDashCards();
+
+  fetch(GAS_URL + '?action=getAll')
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      loading.style.display = 'none';
+      if(res.status !== 'ok'){ showDashError('データ取得エラー: ' + res.message); return; }
+      var d = res.data;
+      renderSpotWorst(d['集積所'] || []);
+      renderFoulList(d['粗大不適正'] || []);
+      renderCarList(d['車両'] || []);
+      renderWaitChart(d['処分場'] || []);
+      renderEmitChart(d['排出量'] || []);
+      renderDriverTime(d['回収時間'] || []);
+      dashLoaded = true;
+    })
+    .catch(function(e){
+      loading.style.display = 'none';
+      showDashError('通信エラーが発生しました。ネットワークを確認してください。');
+    });
+}
+
+function hideAllDashCards(){
+  ['dash-spot-card','dash-foul-card','dash-car-card','dash-wait-card','dash-emit-card','dash-drv-card'].forEach(function(id){
+    document.getElementById(id).style.display='none';
+  });
+}
+
+function showDashError(msg){
+  var el = document.getElementById('dash-error');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+
+function showCard(id){ document.getElementById(id).style.display='block'; }
+
+// 集積所ワースト
+function renderSpotWorst(rows){
+  if(!rows.length) return;
+  var count = {};
+  rows.forEach(function(r){
+    var key = 'P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'');
+    count[key] = (count[key]||0) + 1;
+  });
+  var sorted = Object.keys(count).sort(function(a,b){return count[b]-count[a];}).slice(0,5);
+  var html = '';
+  sorted.forEach(function(k,i){
+    var badge = i===0?'#A32D2D':i===1?'#854F0B':'#555';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="width:22px;height:22px;border-radius:50%;background:'+badge+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>'
+      +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
+      +'<div style="font-size:13px;font-weight:600;color:'+badge+';">'+count[k]+'件</div>'
+      +'</div>';
+  });
+  document.getElementById('dash-spot-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-spot-card');
+}
+
+// 粗大・不適正 最近5件
+function renderFoulList(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-5).reverse();
+  var html = '';
+  recent.forEach(function(r){
+    var reason = r['報告理由']||'';
+    var badgeColor = reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
+    var badgeBg = reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
+    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+reason+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
+      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('dash-foul-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-foul-card');
+}
+
+// 車両 最近5件
+function renderCarList(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-5).reverse();
+  var html = '';
+  recent.forEach(function(r){
+    var content = r['内容']||'';
+    var badgeColor = content==='車両の不具合'?'#A32D2D':content==='車両の修理・点検日程'?'#854F0B':'#555';
+    var badgeBg = content==='車両の不具合'?'#FCEBEB':content==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
+    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+content+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
+      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('dash-car-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-car-card');
+}
+
+// 処分場待機時間グラフ（直近10件）
+function renderWaitChart(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-10);
+  var vals = recent.map(function(r){ return parseFloat(r['待機時間(分)'])||0; });
+  var avg = vals.length ? Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length) : 0;
+  var max = Math.max.apply(null, vals);
+
+  document.getElementById('dash-wait-avg').innerHTML =
+    '<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">直近平均</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#1A1A18;">'+avg+'<span style="font-size:13px;font-weight:400;">分</span></div>'
+    +'</div>'
+    +'<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">最長</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#A32D2D;">'+max+'<span style="font-size:13px;font-weight:400;">分</span></div>'
+    +'</div>';
+
+  var chartEl = document.getElementById('dash-wait-chart');
+  var labelEl = document.getElementById('dash-wait-labels');
+  chartEl.innerHTML = '';
+  labelEl.innerHTML = '';
+  var maxH = 90;
+  vals.forEach(function(v, i){
+    var h = max > 0 ? Math.round((v/max)*maxH) : 0;
+    var color = v >= 60 ? '#F09595' : v >= 40 ? '#FAC775' : '#9FE1CB';
+    var col = document.createElement('div');
+    col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;';
+    col.innerHTML = '<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+v+'分"></div>';
+    chartEl.appendChild(col);
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;';
+    lbl.textContent = recent[i]['ドライバー名'] ? recent[i]['ドライバー名'].slice(0,2) : (i+1);
+    labelEl.appendChild(lbl);
+  });
+  showCard('dash-wait-card');
+}
+
+// 排出量推移グラフ（直近10件、可燃合計とプラ合計）
+function renderEmitChart(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-10);
+  var kanenKeys = ['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
+  var plaKeys = ['プラA','プラB','プラC','プラ2'];
+  var kanenVals = recent.map(function(r){
+    return kanenKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
+  });
+  var plaVals = recent.map(function(r){
+    return plaKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
+  });
+  var allMax = Math.max.apply(null, kanenVals.concat(plaVals));
+
+  document.getElementById('dash-emit-legend').innerHTML =
+    '<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px;"></span>可燃ごみ合計</div>'
+    +'<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B5D4F4;margin-right:4px;"></span>プラスチック合計</div>';
+
+  var chartEl = document.getElementById('dash-emit-chart');
+  var labelEl = document.getElementById('dash-emit-labels');
+  chartEl.innerHTML = '';
+  labelEl.innerHTML = '';
+  var maxH = 90;
+  recent.forEach(function(r, i){
+    var kH = allMax > 0 ? Math.round((kanenVals[i]/allMax)*maxH) : 0;
+    var pH = allMax > 0 ? Math.round((plaVals[i]/allMax)*maxH) : 0;
+    var col = document.createElement('div');
+    col.style.cssText = 'flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:24px;';
+    col.innerHTML = '<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kH+'px;" title="可燃'+kanenVals[i]+'kg"></div>'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+pH+'px;" title="プラ'+plaVals[i]+'kg"></div>';
+    chartEl.appendChild(col);
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;min-width:24px;';
+    lbl.textContent = (r['曜日']||'').slice(0,1)||String(i+1);
+    labelEl.appendChild(lbl);
+  });
+  showCard('dash-emit-card');
+}
+
+// ドライバー別平均回収時間
+function renderDriverTime(rows){
+  if(!rows.length) return;
+  var drvMap = {};
+  rows.forEach(function(r){
+    var drv = r['ドライバー名']||'不明';
+    var t = r['所要時間']||'';
+    var match = t.match(/(\d+)時間(\d+)分/);
+    if(!match) return;
+    var mins = parseInt(match[1])*60 + parseInt(match[2]);
+    if(!drvMap[drv]) drvMap[drv] = {total:0, count:0};
+    drvMap[drv].total += mins;
+    drvMap[drv].count += 1;
+  });
+  var drvList = Object.keys(drvMap).map(function(k){
+    return {name:k, avg: Math.round(drvMap[k].total/drvMap[k].count), count:drvMap[k].count};
+  }).sort(function(a,b){return b.avg-a.avg;});
+  var maxAvg = drvList.length ? drvList[0].avg : 1;
+  var html = '';
+  drvList.forEach(function(d){
+    var h = Math.floor(d.avg/60);
+    var m = d.avg%60;
+    var pct = Math.round((d.avg/maxAvg)*100);
+    var color = d.avg > 420 ? '#FAC775' : '#9FE1CB';
+    html += '<div style="margin-bottom:10px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
+      +'<span style="color:#1A1A18;font-weight:500;">'+d.name+'</span>'
+      +'<span style="color:#555;">平均 '+h+'時間'+m+'分　('+d.count+'件)</span>'
+      +'</div>'
+      +'<div style="height:6px;background:#F0F0EC;border-radius:3px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;"></div>'
+      +'</div>'
+      +'</div>';
+  });
+  document.getElementById('dash-drv-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-drv-card');
+}
+
 renderDriverSelects();renderDriverList();}
 function showTab(i){
   document.querySelectorAll('.tab').forEach(function(t,j){t.classList.toggle('active',i===j);});
   document.querySelectorAll('.page').forEach(function(p,j){p.classList.toggle('active',i===j);});
+  if(i===6) loadDashboard();
 }
 function showDay(i){
   dayIndex=i;
@@ -806,8 +1314,233 @@ function submitForm6(){
   });
 }
 
+
+// ========== ダッシュボード ==========
+var dashLoaded = false;
+
+function loadDashboard(){
+  var loading = document.getElementById('dash-loading');
+  var errEl = document.getElementById('dash-error');
+  loading.style.display = 'block';
+  errEl.style.display = 'none';
+  hideAllDashCards();
+
+  fetch(GAS_URL + '?action=getAll')
+    .then(function(r){ return r.json(); })
+    .then(function(res){
+      loading.style.display = 'none';
+      if(res.status !== 'ok'){ showDashError('データ取得エラー: ' + res.message); return; }
+      var d = res.data;
+      renderSpotWorst(d['集積所'] || []);
+      renderFoulList(d['粗大不適正'] || []);
+      renderCarList(d['車両'] || []);
+      renderWaitChart(d['処分場'] || []);
+      renderEmitChart(d['排出量'] || []);
+      renderDriverTime(d['回収時間'] || []);
+      dashLoaded = true;
+    })
+    .catch(function(e){
+      loading.style.display = 'none';
+      showDashError('通信エラーが発生しました。ネットワークを確認してください。');
+    });
+}
+
+function hideAllDashCards(){
+  ['dash-spot-card','dash-foul-card','dash-car-card','dash-wait-card','dash-emit-card','dash-drv-card'].forEach(function(id){
+    document.getElementById(id).style.display='none';
+  });
+}
+
+function showDashError(msg){
+  var el = document.getElementById('dash-error');
+  el.textContent = '⚠️ ' + msg;
+  el.style.display = 'block';
+}
+
+function showCard(id){ document.getElementById(id).style.display='block'; }
+
+// 集積所ワースト
+function renderSpotWorst(rows){
+  if(!rows.length) return;
+  var count = {};
+  rows.forEach(function(r){
+    var key = 'P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'');
+    count[key] = (count[key]||0) + 1;
+  });
+  var sorted = Object.keys(count).sort(function(a,b){return count[b]-count[a];}).slice(0,5);
+  var html = '';
+  sorted.forEach(function(k,i){
+    var badge = i===0?'#A32D2D':i===1?'#854F0B':'#555';
+    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="width:22px;height:22px;border-radius:50%;background:'+badge+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>'
+      +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
+      +'<div style="font-size:13px;font-weight:600;color:'+badge+';">'+count[k]+'件</div>'
+      +'</div>';
+  });
+  document.getElementById('dash-spot-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-spot-card');
+}
+
+// 粗大・不適正 最近5件
+function renderFoulList(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-5).reverse();
+  var html = '';
+  recent.forEach(function(r){
+    var reason = r['報告理由']||'';
+    var badgeColor = reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
+    var badgeBg = reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
+    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+reason+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
+      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('dash-foul-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-foul-card');
+}
+
+// 車両 最近5件
+function renderCarList(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-5).reverse();
+  var html = '';
+  recent.forEach(function(r){
+    var content = r['内容']||'';
+    var badgeColor = content==='車両の不具合'?'#A32D2D':content==='車両の修理・点検日程'?'#854F0B':'#555';
+    var badgeBg = content==='車両の不具合'?'#FCEBEB':content==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
+    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+content+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
+      +'</div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
+      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')
+      +'</div>';
+  });
+  document.getElementById('dash-car-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-car-card');
+}
+
+// 処分場待機時間グラフ（直近10件）
+function renderWaitChart(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-10);
+  var vals = recent.map(function(r){ return parseFloat(r['待機時間(分)'])||0; });
+  var avg = vals.length ? Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length) : 0;
+  var max = Math.max.apply(null, vals);
+
+  document.getElementById('dash-wait-avg').innerHTML =
+    '<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">直近平均</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#1A1A18;">'+avg+'<span style="font-size:13px;font-weight:400;">分</span></div>'
+    +'</div>'
+    +'<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
+    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">最長</div>'
+    +'<div style="font-size:22px;font-weight:700;color:#A32D2D;">'+max+'<span style="font-size:13px;font-weight:400;">分</span></div>'
+    +'</div>';
+
+  var chartEl = document.getElementById('dash-wait-chart');
+  var labelEl = document.getElementById('dash-wait-labels');
+  chartEl.innerHTML = '';
+  labelEl.innerHTML = '';
+  var maxH = 90;
+  vals.forEach(function(v, i){
+    var h = max > 0 ? Math.round((v/max)*maxH) : 0;
+    var color = v >= 60 ? '#F09595' : v >= 40 ? '#FAC775' : '#9FE1CB';
+    var col = document.createElement('div');
+    col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;';
+    col.innerHTML = '<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+v+'分"></div>';
+    chartEl.appendChild(col);
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;';
+    lbl.textContent = recent[i]['ドライバー名'] ? recent[i]['ドライバー名'].slice(0,2) : (i+1);
+    labelEl.appendChild(lbl);
+  });
+  showCard('dash-wait-card');
+}
+
+// 排出量推移グラフ（直近10件、可燃合計とプラ合計）
+function renderEmitChart(rows){
+  if(!rows.length) return;
+  var recent = rows.slice(-10);
+  var kanenKeys = ['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
+  var plaKeys = ['プラA','プラB','プラC','プラ2'];
+  var kanenVals = recent.map(function(r){
+    return kanenKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
+  });
+  var plaVals = recent.map(function(r){
+    return plaKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
+  });
+  var allMax = Math.max.apply(null, kanenVals.concat(plaVals));
+
+  document.getElementById('dash-emit-legend').innerHTML =
+    '<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px;"></span>可燃ごみ合計</div>'
+    +'<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B5D4F4;margin-right:4px;"></span>プラスチック合計</div>';
+
+  var chartEl = document.getElementById('dash-emit-chart');
+  var labelEl = document.getElementById('dash-emit-labels');
+  chartEl.innerHTML = '';
+  labelEl.innerHTML = '';
+  var maxH = 90;
+  recent.forEach(function(r, i){
+    var kH = allMax > 0 ? Math.round((kanenVals[i]/allMax)*maxH) : 0;
+    var pH = allMax > 0 ? Math.round((plaVals[i]/allMax)*maxH) : 0;
+    var col = document.createElement('div');
+    col.style.cssText = 'flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:24px;';
+    col.innerHTML = '<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kH+'px;" title="可燃'+kanenVals[i]+'kg"></div>'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+pH+'px;" title="プラ'+plaVals[i]+'kg"></div>';
+    chartEl.appendChild(col);
+    var lbl = document.createElement('div');
+    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;min-width:24px;';
+    lbl.textContent = (r['曜日']||'').slice(0,1)||String(i+1);
+    labelEl.appendChild(lbl);
+  });
+  showCard('dash-emit-card');
+}
+
+// ドライバー別平均回収時間
+function renderDriverTime(rows){
+  if(!rows.length) return;
+  var drvMap = {};
+  rows.forEach(function(r){
+    var drv = r['ドライバー名']||'不明';
+    var t = r['所要時間']||'';
+    var match = t.match(/(\d+)時間(\d+)分/);
+    if(!match) return;
+    var mins = parseInt(match[1])*60 + parseInt(match[2]);
+    if(!drvMap[drv]) drvMap[drv] = {total:0, count:0};
+    drvMap[drv].total += mins;
+    drvMap[drv].count += 1;
+  });
+  var drvList = Object.keys(drvMap).map(function(k){
+    return {name:k, avg: Math.round(drvMap[k].total/drvMap[k].count), count:drvMap[k].count};
+  }).sort(function(a,b){return b.avg-a.avg;});
+  var maxAvg = drvList.length ? drvList[0].avg : 1;
+  var html = '';
+  drvList.forEach(function(d){
+    var h = Math.floor(d.avg/60);
+    var m = d.avg%60;
+    var pct = Math.round((d.avg/maxAvg)*100);
+    var color = d.avg > 420 ? '#FAC775' : '#9FE1CB';
+    html += '<div style="margin-bottom:10px;">'
+      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
+      +'<span style="color:#1A1A18;font-weight:500;">'+d.name+'</span>'
+      +'<span style="color:#555;">平均 '+h+'時間'+m+'分　('+d.count+'件)</span>'
+      +'</div>'
+      +'<div style="height:6px;background:#F0F0EC;border-radius:3px;overflow:hidden;">'
+      +'<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;"></div>'
+      +'</div>'
+      +'</div>';
+  });
+  document.getElementById('dash-drv-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
+  showCard('dash-drv-card');
+}
+
 renderDriverSelects();
 </script>
 </body>
 </html>
-
