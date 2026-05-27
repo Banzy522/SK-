@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>回収業務 報告フォーム</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif;background:#F5F5F0;min-height:100vh;}
+.app{max-width:430px;margin:0 auto;background:#fff;min-height:100vh;}
+.header{background:#fff;border-bottom:1px solid #E8E8E4;padding:14px 16px 0;position:sticky;top:0;z-index:100;}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.header-title{font-size:15px;font-weight:600;color:#1A1A18;}
+.icon-btn{background:none;border:none;cursor:pointer;color:#888;font-size:22px;padding:2px;line-height:1;}
+.status-bar{font-size:11px;color:#3B7D1A;padding-bottom:10px;display:flex;align-items:center;gap:5px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#3B7D1A;display:inline-block;flex-shrink:0;}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;gap:0;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex-shrink:0;padding:9px 11px;font-size:12px;color:#888;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;}
+.tab.active{color:#1A1A18;border-bottom-color:#1A1A18;font-weight:600;}
+.content{padding:16px;}
+.page{display:none;}
+.page.active{display:block;}
+.form-card{background:#fff;border:1px solid #E8E8E4;border-radius:12px;padding:16px;margin-bottom:14px;}
+.form-title{font-size:13px;font-weight:600;color:#1A1A18;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
+.form-title-icon{font-size:16px;}
+.field{margin-bottom:14px;}
+.field-label{font-size:12px;color:#666;margin-bottom:5px;display:block;font-weight:500;}
+.field input[type=text],.field input[type=date],.field input[type=time],.field select,.field textarea{width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;appearance:none;}
+.field textarea{resize:vertical;min-height:70px;}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#1A1A18;}
+.date-row{display:flex;gap:8px;}
+.date-row input{flex:1;}
+.radio-group{display:flex;flex-direction:column;gap:8px;}
+.radio-item{display:flex;align-items:center;gap:10px;font-size:14px;color:#1A1A18;cursor:pointer;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;}
+.radio-item input[type=radio]{width:17px;height:17px;accent-color:#1A1A18;flex-shrink:0;}
+.radio-item.selected-item{border-color:#1A1A18;background:#F8F8F5;}
+.check-group{display:flex;gap:8px;}
+.check-item{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 4px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;cursor:pointer;text-align:center;font-weight:500;}
+.check-item.selected{border-color:#1A1A18;color:#1A1A18;background:#F8F8F5;}
+.time-calc{background:#F8F8F5;border-radius:10px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
+.time-calc-label{font-size:12px;color:#666;}
+.time-calc-value{font-size:18px;font-weight:600;color:#1A1A18;}
+.submit-btn{width:100%;background:#1A1A18;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;-webkit-tap-highlight-color:transparent;}
+.submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
+.submit-btn:active{opacity:0.8;}
+.section-sub{font-size:12px;font-weight:600;color:#666;margin:14px 0 8px;padding-bottom:5px;border-bottom:1px solid #E8E8E4;text-transform:uppercase;letter-spacing:0.5px;}
+.course-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:6px;}
+.course-item{display:flex;flex-direction:column;gap:4px;}
+.course-label{font-size:11px;color:#666;font-weight:500;}
+.course-input{width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;}
+.course-input:focus{outline:none;border-color:#1A1A18;}
+.day-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.day-tab{padding:6px 14px;font-size:13px;border:1px solid #E0E0DB;border-radius:20px;cursor:pointer;color:#888;background:#fff;font-weight:500;}
+.day-tab.active{background:#1A1A18;color:#fff;border-color:#1A1A18;}
+.day-page{display:none;}
+.day-page.active{display:block;}
+.toast{font-size:13px;padding:11px 14px;border-radius:10px;display:none;text-align:center;margin-top:10px;font-weight:500;}
+.toast.ok{background:#EAF5DC;color:#2D6B0F;}
+.toast.err{background:#FDECEA;color:#B71C1C;}
+.sending{background:#E8F0FE;color:#1A56A8;font-size:13px;padding:11px 14px;border-radius:10px;display:none;text-align:center;margin-top:10px;font-weight:500;}
+.overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;padding:16px;z-index:200;overflow-y:auto;max-width:430px;margin:0 auto;}
+.overlay.open{display:block;}
+.back-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
+.back-btn{background:none;border:none;cursor:pointer;color:#888;font-size:24px;padding:0;line-height:1;}
+.back-title{font-size:16px;font-weight:600;color:#1A1A18;}
+.drv-mgmt{display:flex;gap:8px;margin-bottom:10px;}
+.drv-mgmt input{flex:1;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;}
+.drv-mgmt input:focus{outline:none;border-color:#1A1A18;}
+.drv-add-btn{font-size:14px;padding:9px 16px;border:1px solid #1A1A18;border-radius:8px;background:#1A1A18;color:#fff;cursor:pointer;white-space:nowrap;}
+.drv-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.drv-list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#1A1A18;}
+.drv-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:20px;padding:0;line-height:1;}
+.fixed-time-display{padding:10px 11px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;background:#F8F8F5;}
+</style>
+</head>
+<body>
+<div class="app" id="appRoot">
+
+<div class="header">
+  <div class="header-row">
+    <div class="header-title">♻️ 回収業務 報告フォーム</div>
+    <button class="icon-btn" onclick="showOverlay('drvOverlay')" aria-label="ドライバー管理">👥</button>
+  </div>
+  <div class="status-bar"><span class="status-dot"></span>スプレッドシート連携済み</div>
+  <div class="tabs">
+    <div class="tab active" onclick="showTab(0)">①集積所</div>
+    <div class="tab" onclick="showTab(1)">②車両</div>
+    <div class="tab" onclick="showTab(2)">③処分場</div>
+    <div class="tab" onclick="showTab(3)">④排出量</div>
+    <div class="tab" onclick="showTab(4)">⑤回収時間</div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- ① 集積所 -->
+<div class="page active" id="page0">
+  <div class="form-card">
+    <div class="form-title"><span class="form-title-icon">📍</span>改善が必要な集積所の報告</div>
+    <div class="field">
+      <label class="field-label">報告日</label>
+      <div class="date-row">
+        <input type="date" id="f1-date" oninput="syncDate('f1-date','f1-datetext')"/>
+        <input type="text" id="f1-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f1-datetext','f1-date')"/>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">報告したドライバー名</label>
+      <select id="f1-drv"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">ページ番号（P〇〇）</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:14px;color:#888;font-weight:600;">P</span>
+        <input type="text" placeholder="例: 12" style="width:90px;" id="f1-page"/>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">左右</label>
+      <div class="check-group">
+        <div class="check-item" id="lr-left" onclick="selectLR('left')">左</div>
+        <div class="check-item" id="lr-right" onclick="selectLR('right')">右</div>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">集積所番号</label>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <input type="text" placeholder="例: 5" style="width:90px;" id="f1-spotno"/>
+        <span style="font-size:14px;color:#888;">番</span>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">報告理由</label>
+      <div class="radio-group" id="f1-reason-group">
+        <label class="radio-item"><input type="radio" name="f1reason" value="集積所壊れ" onchange="checkOther1();styleRadio('f1-reason-group')"/> 集積所壊れ</label>
+        <label class="radio-item"><input type="radio" name="f1reason" value="鳥獣被害あり" onchange="checkOther1();styleRadio('f1-reason-group')"/> 鳥獣被害あり</label>
+        <label class="radio-item"><input type="radio" name="f1reason" value="不適正排出物が多い" onchange="checkOther1();styleRadio('f1-reason-group')"/> 不適正排出物が多い</label>
+        <label class="radio-item"><input type="radio" name="f1reason" value="排出禁止物の排出が多い" onchange="checkOther1();styleRadio('f1-reason-group')"/> 排出禁止物の排出が多い</label>
+        <label class="radio-item"><input type="radio" name="f1reason" value="その他" onchange="checkOther1();styleRadio('f1-reason-group')"/> その他</label>
+      </div>
+      <div id="f1-other-wrap" style="display:none;margin-top:10px;">
+        <textarea id="f1-other" placeholder="詳細を入力してください"></textarea>
+      </div>
+    </div>
+    <button class="submit-btn" id="btn1" onclick="submitForm1()">📤 スプレッドシートに送信する</button>
+    <div class="sending" id="sending1">送信中...</div>
+    <div class="toast" id="toast1"></div>
+  </div>
+</div>
+
+<!-- ② 車両 -->
+<div class="page" id="page1">
+  <div class="form-card">
+    <div class="form-title"><span class="form-title-icon">🚛</span>車両報告</div>
+    <div class="field">
+      <label class="field-label">報告日</label>
+      <div class="date-row">
+        <input type="date" id="f2-date" oninput="syncDate('f2-date','f2-datetext')"/>
+        <input type="text" id="f2-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f2-datetext','f2-date')"/>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">報告したドライバー名</label>
+      <select id="f2-drv"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">内容</label>
+      <div class="radio-group" id="f2-type-group">
+        <label class="radio-item"><input type="radio" name="f2type" value="車両の不具合" onchange="checkOther2();styleRadio('f2-type-group')"/> 車両の不具合</label>
+        <label class="radio-item"><input type="radio" name="f2type" value="車両の修理・点検日程" onchange="checkOther2();styleRadio('f2-type-group')"/> 車両の修理・点検日程</label>
+        <label class="radio-item"><input type="radio" name="f2type" value="その他" onchange="checkOther2();styleRadio('f2-type-group')"/> その他</label>
+      </div>
+      <div id="f2-other-wrap" style="display:none;margin-top:10px;">
+        <textarea id="f2-other" placeholder="詳細を入力してください"></textarea>
+      </div>
+    </div>
+    <button class="submit-btn" id="btn2" onclick="submitForm2()">📤 スプレッドシートに送信する</button>
+    <div class="sending" id="sending2">送信中...</div>
+    <div class="toast" id="toast2"></div>
+  </div>
+</div>
+
+<!-- ③ 処分場 -->
+<div class="page" id="page2">
+  <div class="form-card">
+    <div class="form-title"><span class="form-title-icon">⏱️</span>処分場 待機時間の報告</div>
+    <div class="field">
+      <label class="field-label">報告日</label>
+      <div class="date-row">
+        <input type="date" id="f3-date" oninput="syncDate('f3-date','f3-datetext')"/>
+        <input type="text" id="f3-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f3-datetext','f3-date')"/>
+      </div>
+    </div>
+    <div class="field">
+      <label class="field-label">報告したドライバー名</label>
+      <select id="f3-drv"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">待機開始時刻</label>
+      <input type="time" id="f3-start" oninput="calcWait()"/>
+    </div>
+    <div class="field">
+      <label class="field-label">待機終了時刻</label>
+      <input type="time" id="f3-end" oninput="calcWait()"/>
+    </div>
+    <div class="time-calc">
+      <span class="time-calc-label">待機時間（自動算出）</span>
+      <span class="time-calc-value" id="wait-result">-- 分</span>
+    </div>
+    <button class="submit-btn" id="btn3" onclick="submitForm3()" style="margin-top:14px;">📤 スプレッドシートに送信する</button>
+    <div class="sending" id="sending3">送信中...</div>
+    <div class="toast" id="toast3"></div>
+  </div>
+</div>
+
+<!-- ④ 排出量 -->
+<div class="page" id="page3">
+  <div class="form-card">
+    <div class="form-title"><span class="form-title-icon">📊</span>排出量の報告</div>
+    <div class="field">
+      <label class="field-label">報告日</label>
+      <div class="date-row">
+        <input type="date" id="f4-date" oninput="syncDate('f4-date','f4-datetext')"/>
+        <input type="text" id="f4-datetext" placeholder="2026/05/24" style="max-width:128px;" oninput="syncDateText('f4-datetext','f4-date')"/>
+      </div>
+    </div>
+    <div class="day-tabs">
+      <div class="day-tab active" onclick="showDay(0)">月</div>
+      <div class="day-tab" onclick="showDay(1)">火</div>
+      <div class="day-tab" onclick="showDay(2)">水</div>
+      <div class="day-tab" onclick="showDay(3)">木</div>
+      <div class="day-tab" onclick="showDay(4)">金</div>
+      <div class="day-tab" onclick="showDay(5)">土</div>
+    </div>
+    <div class="day-page active" id="day0">
+      <div class="section-sub">可燃ごみ</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d0-k1" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d0-k2" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d0-k3" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d0-k4" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d0-k5" type="number" placeholder="kg"/></div>
+      </div>
+      <div class="section-sub">プラスチック</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d0-pA" type="number" placeholder="kg"/></div>
+      </div>
+    </div>
+    <div class="day-page" id="day1">
+      <div class="section-sub">可燃ごみ</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d1-k1" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d1-k2" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d1-k3" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d1-k4" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d1-k5" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">Cコース</div><input class="course-input" id="d1-kC" type="number" placeholder="kg"/></div>
+      </div>
+      <div class="section-sub">プラスチック</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d1-pA" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d1-pB" type="number" placeholder="kg"/></div>
+      </div>
+    </div>
+    <div class="day-page" id="day2">
+      <div class="section-sub">可燃ごみ</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d2-k1" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d2-k2" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d2-k3" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d2-k4" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d2-k5" type="number" placeholder="kg"/></div>
+      </div>
+      <div class="section-sub">プラスチック</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d2-pA" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d2-pB" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">Cコース</div><input class="course-input" id="d2-pC" type="number" placeholder="kg"/></div>
+      </div>
+    </div>
+    <div class="day-page" id="day3">
+      <div class="section-sub">可燃ごみ</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d3-k1" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース（午前）</div><input class="course-input" id="d3-k2am" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d3-k3" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d3-k4" type="number" placeholder="kg"/></div>
+      </div>
+      <div class="section-sub">プラスチック</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d3-pA" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d3-pB" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">Cコース</div><input class="course-input" id="d3-pC" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース（午後）</div><input class="course-input" id="d3-k2pm" type="number" placeholder="kg"/></div>
+      </div>
+    </div>
+    <div class="day-page" id="day4">
+      <div class="section-sub">可燃ごみ</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d4-k1" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d4-k2" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d4-k3" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d4-k4" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d4-k5" type="number" placeholder="kg"/></div>
+      </div>
+      <div class="section-sub">プラスチック</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d4-pA" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d4-pB" type="number" placeholder="kg"/></div>
+      </div>
+    </div>
+    <div class="day-page" id="day5">
+      <div class="section-sub">可燃ごみ</div>
+      <div class="course-grid">
+        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d5-k1" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d5-k2" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d5-k3" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d5-k4" type="number" placeholder="kg"/></div>
+        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d5-k5" type="number" placeholder="kg"/></div>
+      </div>
+    </div>
+    <button class="submit-btn" id="btn4" onclick="submitForm4()" style="margin-top:10px;">📤 スプレッドシートに送信する</button>
+    <div class="sending" id="sending4">送信中...</div>
+    <div class="toast" id="toast4"></div>
+  </div>
+</div>
+
+<!-- ⑤ 回収時間 -->
+<div class="page" id="page4">
+  <div class="form-card">
+    <div class="form-title"><span class="form-title-icon">⏰</span>回収所要時間の報告</div>
+    <div class="field">
+      <label class="field-label">報告したドライバー名</label>
+      <select id="f5-drv"></select>
+    </div>
+    <div class="field">
+      <label class="field-label">業務開始時刻（固定）</label>
+      <div class="fixed-time-display">8:30（固定）</div>
+    </div>
+    <div class="field">
+      <label class="field-label">荷下ろし終了時刻</label>
+      <input type="time" id="f5-end" oninput="calcWork()"/>
+    </div>
+    <div class="time-calc">
+      <span class="time-calc-label">所要時間（自動算出）</span>
+      <span class="time-calc-value" id="work-result">-- 時間 -- 分</span>
+    </div>
+    <button class="submit-btn" id="btn5" onclick="submitForm5()" style="margin-top:14px;">📤 スプレッドシートに送信する</button>
+    <div class="sending" id="sending5">送信中...</div>
+    <div class="toast" id="toast5"></div>
+  </div>
+</div>
+
+</div><!-- content -->
+
+<!-- ドライバー管理 -->
+<div class="overlay" id="drvOverlay">
+  <div class="back-row">
+    <button class="back-btn" onclick="hideOverlay('drvOverlay')" aria-label="戻る">←</button>
+    <div class="back-title">ドライバー管理</div>
+  </div>
+  <div class="drv-mgmt">
+    <input type="text" id="drv-add-input" placeholder="新しいドライバー名"/>
+    <button class="drv-add-btn" onclick="addDriver()">追加</button>
+  </div>
+  <div class="drv-list" id="drv-list"></div>
+  <button class="submit-btn" onclick="hideOverlay('drvOverlay')">完了</button>
+</div>
+
+</div><!-- app -->
+
+<script>
+var GAS_URL='https://script.google.com/macros/s/AKfycbx4IzS6eYg_T8ZeNQ-7q8B0R2pXa1zqQXkwqfpjp-fr2-DJSwdTLdmSJULD6bHAK9_SSg/exec';
+var drivers=['菊池太','渡辺輝','和田啓助','宮野太志','山田伸一','渡辺文男','山田司','野﨑俊','鈴木将太','佐藤蛮治'];
+var lrSelected='';
+var dayIndex=0;
+var dayNames=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
+
+function renderDriverSelects(){
+  ['f1-drv','f2-drv','f3-drv','f5-drv'].forEach(function(id){
+    var sel=document.getElementById(id);if(!sel)return;
+    var cur=sel.value;
+    sel.innerHTML='<option value="">選択してください</option>'+drivers.map(function(d){
+      return '<option value="'+d+'"'+(d===cur?' selected':'')+'>'+d+'</option>';
+    }).join('');
+  });
+}
+function renderDriverList(){
+  document.getElementById('drv-list').innerHTML=drivers.map(function(d,i){
+    return '<div class="drv-list-item"><span>'+d+'</span><button class="drv-del" onclick="removeDriver('+i+')">🗑</button></div>';
+  }).join('');
+}
+function addDriver(){
+  var inp=document.getElementById('drv-add-input');
+  var n=inp.value.trim();if(!n)return;
+  drivers.push(n);inp.value='';
+  renderDriverSelects();renderDriverList();
+}
+function removeDriver(i){drivers.splice(i,1);renderDriverSelects();renderDriverList();}
+function showTab(i){
+  document.querySelectorAll('.tab').forEach(function(t,j){t.classList.toggle('active',i===j);});
+  document.querySelectorAll('.page').forEach(function(p,j){p.classList.toggle('active',i===j);});
+}
+function showDay(i){
+  dayIndex=i;
+  document.querySelectorAll('.day-tab').forEach(function(t,j){t.classList.toggle('active',i===j);});
+  document.querySelectorAll('.day-page').forEach(function(p,j){p.classList.toggle('active',i===j);});
+}
+function showOverlay(id){document.getElementById(id).classList.add('open');renderDriverList();}
+function hideOverlay(id){document.getElementById(id).classList.remove('open');}
+function selectLR(side){
+  lrSelected=side;
+  document.getElementById('lr-left').classList.toggle('selected',side==='left');
+  document.getElementById('lr-right').classList.toggle('selected',side==='right');
+}
+function styleRadio(groupId){
+  document.querySelectorAll('#'+groupId+' .radio-item').forEach(function(item){
+    var radio=item.querySelector('input[type=radio]');
+    item.classList.toggle('selected-item',radio&&radio.checked);
+  });
+}
+function checkOther1(){
+  var v=document.querySelector('input[name="f1reason"]:checked');
+  document.getElementById('f1-other-wrap').style.display=(v&&v.value==='その他')?'block':'none';
+}
+function checkOther2(){
+  var v=document.querySelector('input[name="f2type"]:checked');
+  document.getElementById('f2-other-wrap').style.display=(v&&v.value==='その他')?'block':'none';
+}
+function toMin(t){var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);}
+function calcWait(){
+  var s=document.getElementById('f3-start').value;
+  var e=document.getElementById('f3-end').value;
+  var el=document.getElementById('wait-result');
+  if(!s||!e){el.textContent='-- 分';return;}
+  var diff=toMin(e)-toMin(s);
+  el.textContent=diff<0?'時刻を確認':Math.round(diff)+'分';
+}
+function calcWork(){
+  var e=document.getElementById('f5-end').value;
+  var el=document.getElementById('work-result');
+  if(!e){el.textContent='-- 時間 -- 分';return;}
+  var diff=toMin(e)-(8*60+30);
+  if(diff<0){el.textContent='終了時刻を確認';return;}
+  el.textContent=Math.floor(diff/60)+'時間 '+Math.round(diff%60)+'分';
+}
+function syncDate(dId,tId){
+  var v=document.getElementById(dId).value;if(!v)return;
+  var p=v.split('-');document.getElementById(tId).value=p[0]+'/'+p[1]+'/'+p[2];
+}
+function syncDateText(tId,dId){
+  var v=document.getElementById(tId).value;
+  var p=v.split('/');
+  if(p.length===3&&p[0].length===4&&p[1].length===2&&p[2].length===2)
+    document.getElementById(dId).value=p[0]+'-'+p[1]+'-'+p[2];
+}
+function getVal(id){var el=document.getElementById(id);return el?el.value:'';}
+
+function postToGAS(payload, btnId, sendingId, toastId, resetFn){
+  var btn=document.getElementById(btnId);
+  var sending=document.getElementById(sendingId);
+  var toast=document.getElementById(toastId);
+  btn.disabled=true;
+  sending.style.display='block';
+  toast.style.display='none';
+
+  var form=document.createElement('form');
+  form.method='POST';
+  form.action=GAS_URL;
+  form.target='gas_iframe_'+btnId;
+  form.style.display='none';
+  var inp=document.createElement('input');
+  inp.type='hidden';inp.name='payload';inp.value=JSON.stringify(payload);
+  form.appendChild(inp);
+  document.body.appendChild(form);
+
+  var iframeName='gas_iframe_'+btnId;
+  var iframe=document.getElementById(iframeName);
+  if(!iframe){
+    iframe=document.createElement('iframe');
+    iframe.name=iframeName;
+    iframe.id=iframeName;
+    iframe.style.display='none';
+    document.body.appendChild(iframe);
+  }
+
+  var done=false;
+  iframe.onload=function(){
+    if(done)return;done=true;
+    sending.style.display='none';
+    toast.className='toast ok';
+    toast.textContent='✅ スプレッドシートに保存しました';
+    toast.style.display='block';
+    btn.disabled=false;
+    if(form.parentNode)document.body.removeChild(form);
+    if(resetFn)resetFn();
+    setTimeout(function(){toast.style.display='none';},5000);
+  };
+
+  setTimeout(function(){
+    if(done)return;done=true;
+    sending.style.display='none';
+    toast.className='toast ok';
+    toast.textContent='✅ 送信しました（スプレッドシートを確認してください）';
+    toast.style.display='block';
+    btn.disabled=false;
+    if(form.parentNode)document.body.removeChild(form);
+    if(resetFn)resetFn();
+    setTimeout(function(){toast.style.display='none';},5000);
+  },4000);
+
+  form.submit();
+}
+
+function submitForm1(){
+  var reason=document.querySelector('input[name="f1reason"]:checked');
+  postToGAS({type:'集積所',date:getVal('f1-datetext')||getVal('f1-date'),driver:getVal('f1-drv'),page:getVal('f1-page'),lr:lrSelected,spotNo:getVal('f1-spotno'),reason:reason?reason.value:'',otherDetail:getVal('f1-other')},'btn1','sending1','toast1',function(){
+    document.getElementById('f1-page').value='';document.getElementById('f1-spotno').value='';document.getElementById('f1-other').value='';
+    document.querySelectorAll('input[name="f1reason"]').forEach(function(r){r.checked=false;});
+    document.querySelectorAll('#f1-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
+    document.getElementById('f1-other-wrap').style.display='none';
+    lrSelected='';document.getElementById('lr-left').classList.remove('selected');document.getElementById('lr-right').classList.remove('selected');
+  });
+}
+function submitForm2(){
+  var type=document.querySelector('input[name="f2type"]:checked');
+  postToGAS({type:'車両',date:getVal('f2-datetext')||getVal('f2-date'),driver:getVal('f2-drv'),content:type?type.value:'',otherDetail:getVal('f2-other')},'btn2','sending2','toast2',function(){
+    document.querySelectorAll('input[name="f2type"]').forEach(function(r){r.checked=false;});
+    document.querySelectorAll('#f2-type-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
+    document.getElementById('f2-other').value='';document.getElementById('f2-other-wrap').style.display='none';
+  });
+}
+function submitForm3(){
+  var s=getVal('f3-start'),e=getVal('f3-end'),wait='';
+  if(s&&e){var d=toMin(e)-toMin(s);wait=d>=0?String(Math.round(d)):'';}
+  postToGAS({type:'処分場',date:getVal('f3-datetext')||getVal('f3-date'),driver:getVal('f3-drv'),startTime:s,endTime:e,waitMinutes:wait},'btn3','sending3','toast3',function(){
+    document.getElementById('f3-start').value='';document.getElementById('f3-end').value='';document.getElementById('wait-result').textContent='-- 分';
+  });
+}
+function submitForm4(){
+  var d=dayIndex,courses={};
+  var map=[['d0-k1','可燃1'],['d0-k2','可燃2'],['d0-k3','可燃3'],['d0-k4','可燃4'],['d0-k5','可燃5'],['d0-pA','プラA'],
+    ['d1-k1','可燃1'],['d1-k2','可燃2'],['d1-k3','可燃3'],['d1-k4','可燃4'],['d1-k5','可燃5'],['d1-kC','可燃C'],['d1-pA','プラA'],['d1-pB','プラB'],
+    ['d2-k1','可燃1'],['d2-k2','可燃2'],['d2-k3','可燃3'],['d2-k4','可燃4'],['d2-k5','可燃5'],['d2-pA','プラA'],['d2-pB','プラB'],['d2-pC','プラC'],
+    ['d3-k1','可燃1'],['d3-k2am','可燃2午前'],['d3-k3','可燃3'],['d3-k4','可燃4'],['d3-pA','プラA'],['d3-pB','プラB'],['d3-pC','プラC'],['d3-k2pm','可燃2午後'],
+    ['d4-k1','可燃1'],['d4-k2','可燃2'],['d4-k3','可燃3'],['d4-k4','可燃4'],['d4-k5','可燃5'],['d4-pA','プラA'],['d4-pB','プラB'],
+    ['d5-k1','可燃1'],['d5-k2','可燃2'],['d5-k3','可燃3'],['d5-k4','可燃4'],['d5-k5','可燃5']];
+  map.forEach(function(pair){
+    if(pair[0].startsWith('d'+d+'-')){var el=document.getElementById(pair[0]);if(el&&el.value)courses[pair[1]]=el.value;}
+  });
+  postToGAS({type:'排出量',date:getVal('f4-datetext')||getVal('f4-date'),day:dayNames[d],courses:courses},'btn4','sending4','toast4',null);
+}
+function submitForm5(){
+  var e=getVal('f5-end'),workTime='';
+  if(e){var d=toMin(e)-(8*60+30);if(d>=0)workTime=Math.floor(d/60)+'時間'+Math.round(d%60)+'分';}
+  postToGAS({type:'回収時間',driver:getVal('f5-drv'),endTime:e,workTime:workTime},'btn5','sending5','toast5',function(){
+    document.getElementById('f5-end').value='';document.getElementById('work-result').textContent='-- 時間 -- 分';
+  });
+}
+renderDriverSelects();
+</script>
+</body>
+</html>
