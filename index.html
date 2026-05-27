@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>回収業務 報告フォーム</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="回収業務">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif;background:#F5F5F0;min-height:100vh;}
@@ -167,12 +172,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
     <div class="field">
       <label class="field-label">内容</label>
       <div class="radio-group" id="f2-type-group">
-        <label class="radio-item"><input type="radio" name="f2type" value="車両の不具合" onchange="checkOther2();styleRadio('f2-type-group')"/> 車両の不具合</label>
-        <label class="radio-item"><input type="radio" name="f2type" value="車両の修理・点検日程" onchange="checkOther2();styleRadio('f2-type-group')"/> 車両の修理・点検日程</label>
-        <label class="radio-item"><input type="radio" name="f2type" value="その他" onchange="checkOther2();styleRadio('f2-type-group')"/> その他</label>
-      </div>
-      <div id="f2-other-wrap" style="display:none;margin-top:10px;">
-        <textarea id="f2-other" placeholder="詳細を入力してください"></textarea>
+        <label class="radio-item"><input type="radio" name="f2type" value="車両の不具合" onchange="checkVehicle();styleRadio('f2-type-group')"/> 車両の不具合</label>
+        <div id="f2-detail-wrap1" style="display:none;margin:4px 0 6px 26px;">
+          <textarea id="f2-detail1" placeholder="不具合の詳細を入力してください"></textarea>
+        </div>
+        <label class="radio-item"><input type="radio" name="f2type" value="車両の修理・点検日程" onchange="checkVehicle();styleRadio('f2-type-group')"/> 車両の修理・点検日程</label>
+        <div id="f2-detail-wrap2" style="display:none;margin:4px 0 6px 26px;">
+          <textarea id="f2-detail2" placeholder="修理・点検日程の詳細を入力してください"></textarea>
+        </div>
+        <label class="radio-item"><input type="radio" name="f2type" value="その他" onchange="checkVehicle();styleRadio('f2-type-group')"/> その他</label>
+        <div id="f2-other-wrap" style="display:none;margin:4px 0 6px 26px;">
+          <textarea id="f2-other" placeholder="詳細を入力してください"></textarea>
+        </div>
       </div>
     </div>
     <button class="submit-btn" id="btn2" onclick="submitForm2()">📤 スプレッドシートに送信する</button>
@@ -424,10 +435,14 @@ function checkOther1(){
   var v=document.querySelector('input[name="f1reason"]:checked');
   document.getElementById('f1-other-wrap').style.display=(v&&v.value==='その他')?'block':'none';
 }
-function checkOther2(){
+function checkVehicle(){
   var v=document.querySelector('input[name="f2type"]:checked');
-  document.getElementById('f2-other-wrap').style.display=(v&&v.value==='その他')?'block':'none';
+  var val=v?v.value:'';
+  document.getElementById('f2-detail-wrap1').style.display=(val==='車両の不具合')?'block':'none';
+  document.getElementById('f2-detail-wrap2').style.display=(val==='車両の修理・点検日程')?'block':'none';
+  document.getElementById('f2-other-wrap').style.display=(val==='その他')?'block':'none';
 }
+function checkOther2(){ checkVehicle(); }
 function toMin(t){var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);}
 function calcWait(){
   var s=document.getElementById('f3-start').value;
@@ -525,10 +540,20 @@ function submitForm1(){
 }
 function submitForm2(){
   var type=document.querySelector('input[name="f2type"]:checked');
-  postToGAS({type:'車両',date:getVal('f2-datetext')||getVal('f2-date'),driver:getVal('f2-drv'),content:type?type.value:'',otherDetail:getVal('f2-other')},'btn2','sending2','toast2',function(){
+  var val=type?type.value:'';
+  var detail='';
+  if(val==='車両の不具合')detail=getVal('f2-detail1');
+  else if(val==='車両の修理・点検日程')detail=getVal('f2-detail2');
+  else if(val==='その他')detail=getVal('f2-other');
+  postToGAS({type:'車両',date:getVal('f2-datetext')||getVal('f2-date'),driver:getVal('f2-drv'),content:val,otherDetail:detail},'btn2','sending2','toast2',function(){
     document.querySelectorAll('input[name="f2type"]').forEach(function(r){r.checked=false;});
     document.querySelectorAll('#f2-type-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
-    document.getElementById('f2-other').value='';document.getElementById('f2-other-wrap').style.display='none';
+    document.getElementById('f2-detail1').value='';
+    document.getElementById('f2-detail2').value='';
+    document.getElementById('f2-other').value='';
+    document.getElementById('f2-detail-wrap1').style.display='none';
+    document.getElementById('f2-detail-wrap2').style.display='none';
+    document.getElementById('f2-other-wrap').style.display='none';
   });
 }
 function submitForm3(){
