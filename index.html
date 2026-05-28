@@ -21,8 +21,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .sdot{width:7px;height:7px;border-radius:50%;background:#3B7D1A;display:inline-block;flex-shrink:0;}
 .tabs{display:flex;overflow-x:auto;scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{flex-shrink:0;padding:8px 10px;font-size:11px;color:#888;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;}
-.tab.active{color:#1A1A18;border-bottom-color:#1A1A18;font-weight:700;}
+.maintab{flex-shrink:0;padding:8px 10px;font-size:11px;color:#888;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;}
+.maintab.active{color:#1A1A18;border-bottom-color:#1A1A18;font-weight:700;}
 .content{padding:14px;}
 .page{display:none;}.page.active{display:block;}
 .card{background:#fff;border:1px solid #E8E8E4;border-radius:12px;padding:14px;margin-bottom:12px;}
@@ -107,13 +107,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   </div>
   <div class="status-bar"><span class="sdot"></span>スプレッドシート連携済み</div>
   <div class="tabs">
-    <div class="tab active" onclick="showTab(0)">①集積所</div>
-    <div class="tab" onclick="showTab(1)">②車両</div>
-    <div class="tab" onclick="showTab(2)">③処分場</div>
-    <div class="tab" onclick="showTab(3)">④排出量</div>
-    <div class="tab" onclick="showTab(4)">⑤回収時間</div>
-    <div class="tab" onclick="showTab(5)">⑥粗大・不適正</div>
-    <div class="tab" onclick="showTab(6)">📊集計</div>
+    <div class="maintab active" onclick="showTab(0)">①集積所</div>
+    <div class="maintab" onclick="showTab(1)">②車両</div>
+    <div class="maintab" onclick="showTab(2)">③処分場</div>
+    <div class="maintab" onclick="showTab(3)">④排出量</div>
+    <div class="maintab" onclick="showTab(4)">⑤回収時間</div>
+    <div class="maintab" onclick="showTab(5)">⑥粗大・不適正</div>
+    <div class="maintab" onclick="showTab(6)">📊集計</div>
   </div>
 </div>
 <div class="content">
@@ -432,7 +432,7 @@ function delDrv(i){drivers.splice(i,1);rdrv();rdrvlist();}
 
 // ===== ナビ =====
 function showTab(i){
-  document.querySelectorAll('.tab').forEach(function(t,j){t.classList.toggle('active',i===j);});
+  document.querySelectorAll('.maintab').forEach(function(t,j){t.classList.toggle('active',i===j);});
   document.querySelectorAll('.page').forEach(function(p,j){p.classList.toggle('active',i===j);});
   if(i===6)loadDash();
 }
