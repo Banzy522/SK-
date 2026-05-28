@@ -538,7 +538,7 @@ function sf1(){
 function sf2(){
   var r=document.querySelector('input[name="f2r"]:checked'),val=r?r.value:'',detail='';
   if(val==='車両の不具合')detail=gv('f2d1');
-  else if(val==='車両の修理・点検日程'){var df=gv('f2df'),dt=gv('f2dt2'),m=gv('f2d2');detail=(df||'?')+'〜'+(dt||'?')+(m?' ('+m+')');}
+  else if(val==='車両の修理・点検日程'){var df=gv('f2df'),dt=gv('f2dt2'),m=gv('f2d2');detail=(df||'?')+'〜'+(dt||'?')+(m?' ('+m+')':'');}
   else if(val==='その他')detail=gv('f2d3');
   post({type:'車両',date:gv('f2dt')||gv('f2d'),driver:gv('f2drv'),content:val,otherDetail:detail},'b2','sn2','t2',function(){
     document.querySelectorAll('input[name="f2r"]').forEach(function(x){x.checked=false;});
