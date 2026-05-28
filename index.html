@@ -501,27 +501,41 @@ function getGPS(){
   },function(){st.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';},{timeout:10000});
 }
 
-// ===== 送信（フォームPOST方式） =====
-function post(payload,bid,snid,tid,reset){
-  var btn=document.getElementById(bid),sn=document.getElementById(snid),toast=document.getElementById(tid);
-  btn.disabled=true;sn.style.display='block';toast.style.display='none';
-  var form=document.createElement('form');
-  form.method='POST';form.action=GAS;form.target='gif_'+bid;form.style.display='none';
-  var inp=document.createElement('input');inp.type='hidden';inp.name='payload';inp.value=JSON.stringify(payload);
-  form.appendChild(inp);document.body.appendChild(form);
-  var iname='gif_'+bid,ifr=document.getElementById(iname);
-  if(!ifr){ifr=document.createElement('iframe');ifr.name=iname;ifr.id=iname;ifr.style.display='none';document.body.appendChild(ifr);}
-  var done=false;
-  ifr.onload=function(){if(done)return;done=true;finish();};
-  setTimeout(function(){if(done)return;done=true;finish();},4000);
-  function finish(){
-    sn.style.display='none';toast.className='toast tok';toast.textContent='✅ スプレッドシートに保存しました';
-    toast.style.display='block';btn.disabled=false;
-    if(form.parentNode)document.body.removeChild(form);
-    if(reset)reset();
-    setTimeout(function(){toast.style.display='none';},5000);
-  }
-  form.submit();
+// ===== 送信（Fetch API方式に修正） =====
+function post(payload, bid, snid, tid, reset){
+  var btn = document.getElementById(bid), sn = document.getElementById(snid), toast = document.getElementById(tid);
+  btn.disabled = true;
+  sn.style.display = 'block';
+  toast.style.display = 'none';
+
+  // GASの「if (e.postData && e.postData.contents)」ルートに直接JSONを放り込む設定
+  fetch(GAS, {
+    method: 'POST',
+    mode: 'no-cors', // GASへのPOSTで発生するCORSエラーを回避
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  })
+  .then(function() {
+    // mode: 'no-cors' の場合、レスポンスの中身は読めませんが送信自体は完了します
+    sn.style.display = 'none';
+    toast.className = 'toast tok';
+    toast.textContent = '✅ スプレッドシートに保存しました';
+    toast.style.display = 'block';
+    btn.disabled = false;
+    
+    if (reset) reset();
+    setTimeout(function(){ toast.style.display = 'none'; }, 5000);
+  })
+  .catch(function(err) {
+    sn.style.display = 'none';
+    toast.className = 'toast terr';
+    toast.textContent = '⚠️ 送信に失敗しました。';
+    toast.style.display = 'block';
+    btn.disabled = false;
+    setTimeout(function(){ toast.style.display = 'none'; }, 5000);
+  });
 }
 
 // ===== 各フォーム送信 =====
