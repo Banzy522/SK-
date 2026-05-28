@@ -11,83 +11,101 @@
 <meta name="theme-color" content="#ffffff">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku Gothic ProN',sans-serif;background:#F5F5F0;min-height:100vh;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;background:#F5F5F0;min-height:100vh;}
 .app{max-width:430px;margin:0 auto;background:#fff;min-height:100vh;}
-.header{background:#fff;border-bottom:1px solid #E8E8E4;padding:14px 16px 0;position:sticky;top:0;z-index:100;}
-.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
-.header-title{font-size:15px;font-weight:600;color:#1A1A18;}
-.icon-btn{background:none;border:none;cursor:pointer;color:#888;font-size:22px;padding:2px;line-height:1;}
-.status-bar{font-size:11px;color:#3B7D1A;padding-bottom:10px;display:flex;align-items:center;gap:5px;}
-.status-dot{width:7px;height:7px;border-radius:50%;background:#3B7D1A;display:inline-block;flex-shrink:0;}
-.tabs{display:flex;overflow-x:auto;scrollbar-width:none;gap:0;}
+.header{background:#fff;border-bottom:1px solid #E8E8E4;padding:12px 16px 0;position:sticky;top:0;z-index:100;}
+.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.header-title{font-size:15px;font-weight:700;color:#1A1A18;}
+.hbtn{background:none;border:none;cursor:pointer;font-size:20px;padding:2px;color:#888;}
+.status-bar{font-size:11px;color:#3B7D1A;padding-bottom:8px;display:flex;align-items:center;gap:5px;}
+.sdot{width:7px;height:7px;border-radius:50%;background:#3B7D1A;display:inline-block;flex-shrink:0;}
+.tabs{display:flex;overflow-x:auto;scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{flex-shrink:0;padding:9px 11px;font-size:12px;color:#888;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;}
-.tab.active{color:#1A1A18;border-bottom-color:#1A1A18;font-weight:600;}
-.content{padding:16px;}
-.page{display:none;}
-.page.active{display:block;}
-.form-card{background:#fff;border:1px solid #E8E8E4;border-radius:12px;padding:16px;margin-bottom:14px;}
-.form-title{font-size:13px;font-weight:600;color:#1A1A18;margin-bottom:16px;display:flex;align-items:center;gap:7px;}
-.form-title-icon{font-size:16px;}
-.field{margin-bottom:14px;}
-.field-label{font-size:12px;color:#666;margin-bottom:5px;display:block;font-weight:500;}
-.field input[type=text],.field input[type=date],.field input[type=time],.field select,.field textarea{width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;appearance:none;}
-.field textarea{resize:vertical;min-height:70px;}
-.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:#1A1A18;}
-.date-row{display:flex;gap:8px;}
-.date-row input{flex:1;}
-.radio-group{display:flex;flex-direction:column;gap:8px;}
-.radio-item{display:flex;align-items:center;gap:10px;font-size:14px;color:#1A1A18;cursor:pointer;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;}
-.radio-item input[type=radio]{width:17px;height:17px;accent-color:#1A1A18;flex-shrink:0;}
-.radio-item.selected-item{border-color:#1A1A18;background:#F8F8F5;}
-.check-group{display:flex;gap:8px;}
-.check-item{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 4px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;cursor:pointer;text-align:center;font-weight:500;}
-.check-item.selected{border-color:#1A1A18;color:#1A1A18;background:#F8F8F5;}
-.time-calc{background:#F8F8F5;border-radius:10px;padding:11px 14px;display:flex;align-items:center;justify-content:space-between;margin-top:8px;}
-.time-calc-label{font-size:12px;color:#666;}
-.time-calc-value{font-size:18px;font-weight:600;color:#1A1A18;}
-.submit-btn{width:100%;background:#1A1A18;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px;-webkit-tap-highlight-color:transparent;}
-.submit-btn:disabled{opacity:0.4;cursor:not-allowed;}
-.submit-btn:active{opacity:0.8;}
-.section-sub{font-size:12px;font-weight:600;color:#666;margin:14px 0 8px;padding-bottom:5px;border-bottom:1px solid #E8E8E4;text-transform:uppercase;letter-spacing:0.5px;}
-.course-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:6px;}
-.course-item{display:flex;flex-direction:column;gap:4px;}
-.course-label{font-size:11px;color:#666;font-weight:500;}
-.course-input{width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;}
-.course-input:focus{outline:none;border-color:#1A1A18;}
-.day-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
-.day-tab{padding:6px 14px;font-size:13px;border:1px solid #E0E0DB;border-radius:20px;cursor:pointer;color:#888;background:#fff;font-weight:500;}
-.day-tab.active{background:#1A1A18;color:#fff;border-color:#1A1A18;}
-.day-page{display:none;}
-.day-page.active{display:block;}
-.toast{font-size:13px;padding:11px 14px;border-radius:10px;display:none;text-align:center;margin-top:10px;font-weight:500;}
-.toast.ok{background:#EAF5DC;color:#2D6B0F;}
-.toast.err{background:#FDECEA;color:#B71C1C;}
-.sending{background:#E8F0FE;color:#1A56A8;font-size:13px;padding:11px 14px;border-radius:10px;display:none;text-align:center;margin-top:10px;font-weight:500;}
+.tab{flex-shrink:0;padding:8px 10px;font-size:11px;color:#888;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;}
+.tab.active{color:#1A1A18;border-bottom-color:#1A1A18;font-weight:700;}
+.content{padding:14px;}
+.page{display:none;}.page.active{display:block;}
+.card{background:#fff;border:1px solid #E8E8E4;border-radius:12px;padding:14px;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:700;color:#1A1A18;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
+.fi{margin-bottom:12px;}
+.fl{font-size:12px;color:#666;margin-bottom:5px;display:block;font-weight:500;}
+.fi input[type=text],.fi input[type=date],.fi input[type=time],.fi input[type=number],.fi select,.fi textarea{width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;}
+.fi textarea{resize:vertical;min-height:65px;}
+.fi input:focus,.fi select:focus,.fi textarea:focus{outline:none;border-color:#1A1A18;}
+.drow{display:flex;gap:8px;}.drow input{flex:1;}
+.rg{display:flex;flex-direction:column;gap:7px;}
+.ri{display:flex;align-items:center;gap:9px;font-size:14px;color:#1A1A18;cursor:pointer;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;}
+.ri input[type=radio]{width:16px;height:16px;accent-color:#1A1A18;flex-shrink:0;}
+.ri.sel{border-color:#1A1A18;background:#F8F8F5;}
+.cg{display:flex;gap:8px;}
+.ci{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 4px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;cursor:pointer;font-weight:500;}
+.ci.sel{border-color:#1A1A18;color:#1A1A18;background:#F8F8F5;}
+.tcalc{background:#F8F8F5;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-top:7px;}
+.tcalc-l{font-size:12px;color:#666;}
+.tcalc-v{font-size:18px;font-weight:700;color:#1A1A18;}
+.sbtn{width:100%;background:#1A1A18;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
+.sbtn:disabled{opacity:0.4;cursor:not-allowed;}
+.ssub{font-size:12px;font-weight:600;color:#666;margin:12px 0 7px;padding-bottom:4px;border-bottom:1px solid #E8E8E4;}
+.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:6px;}
+.ci2{display:flex;flex-direction:column;gap:3px;}
+.cl{font-size:11px;color:#666;font-weight:500;}
+.cinp{width:100%;font-size:14px;padding:7px 9px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;}
+.cinp:focus{outline:none;border-color:#1A1A18;}
+.dtabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
+.dtab{padding:5px 12px;font-size:12px;border:1px solid #E0E0DB;border-radius:20px;cursor:pointer;color:#888;background:#fff;font-weight:500;}
+.dtab.active{background:#1A1A18;color:#fff;border-color:#1A1A18;}
+.dpage{display:none;}.dpage.active{display:block;}
+.toast{font-size:13px;padding:10px 13px;border-radius:10px;display:none;text-align:center;margin-top:8px;font-weight:500;}
+.tok{background:#EAF5DC;color:#2D6B0F;}
+.terr{background:#FDECEA;color:#B71C1C;}
+.tsend{background:#E8F0FE;color:#1A56A8;font-size:13px;padding:10px 13px;border-radius:10px;display:none;text-align:center;margin-top:8px;}
 .overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;padding:16px;z-index:200;overflow-y:auto;max-width:430px;margin:0 auto;}
 .overlay.open{display:block;}
-.back-row{display:flex;align-items:center;gap:10px;margin-bottom:20px;}
-.back-btn{background:none;border:none;cursor:pointer;color:#888;font-size:24px;padding:0;line-height:1;}
-.back-title{font-size:16px;font-weight:600;color:#1A1A18;}
-.drv-mgmt{display:flex;gap:8px;margin-bottom:10px;}
-.drv-mgmt input{flex:1;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;}
-.drv-mgmt input:focus{outline:none;border-color:#1A1A18;}
-.drv-add-btn{font-size:14px;padding:9px 16px;border:1px solid #1A1A18;border-radius:8px;background:#1A1A18;color:#fff;cursor:pointer;white-space:nowrap;}
-.drv-list{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
-.drv-list-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#1A1A18;}
-.drv-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:20px;padding:0;line-height:1;}
-.fixed-time-display{padding:10px 11px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;background:#F8F8F5;}
+.brow{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.bbtn{background:none;border:none;cursor:pointer;font-size:24px;color:#888;padding:0;line-height:1;}
+.btitle{font-size:15px;font-weight:700;color:#1A1A18;}
+.dmgmt{display:flex;gap:7px;margin-bottom:10px;}
+.dmgmt input{flex:1;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;}
+.dmgmt input:focus{outline:none;border-color:#1A1A18;}
+.dadd{font-size:14px;padding:9px 14px;border:none;border-radius:8px;background:#1A1A18;color:#fff;cursor:pointer;}
+.dlist{display:flex;flex-direction:column;gap:5px;margin-bottom:14px;}
+.ditem{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#1A1A18;}
+.ddel{background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;padding:0;}
+.ftd{padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;background:#F8F8F5;}
+/* ダッシュボード */
+.dstat{display:flex;gap:8px;margin-bottom:12px;}
+.dstat-box{flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;}
+.dstat-l{font-size:11px;color:#888;margin-bottom:4px;}
+.dstat-v{font-size:22px;font-weight:700;color:#1A1A18;}
+.dstat-u{font-size:12px;font-weight:400;}
+.chart-wrap{display:flex;align-items:flex-end;gap:4px;height:90px;padding:4px 0;}
+.chart-lbl{display:flex;gap:4px;margin-top:4px;}
+.worst-item{display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid #F0F0EC;}
+.worst-item:last-child{border-bottom:none;}
+.wnum{width:22px;height:22px;border-radius:50%;color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ritem{padding:8px 0;border-bottom:1px solid #F0F0EC;}
+.ritem:last-child{border-bottom:none;}
+.rbadge{font-size:11px;padding:2px 8px;border-radius:10px;font-weight:600;display:inline-block;}
+.drvbar{margin-bottom:9px;}
+.drvbar-top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;}
+.bar-track{height:6px;background:#F0F0EC;border-radius:3px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:3px;}
+.dash-reload{font-size:12px;padding:6px 14px;border:1px solid #E0E0DB;border-radius:20px;background:#fff;color:#1A1A18;cursor:pointer;}
+.legend{display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:#666;}
+.ldot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;}
+.no-data{font-size:13px;color:#888;text-align:center;padding:12px 0;}
 </style>
 </head>
 <body>
 <div class="app" id="appRoot">
-
 <div class="header">
   <div class="header-row">
     <div class="header-title">♻️ 回収業務 報告フォーム</div>
-    <button class="icon-btn" onclick="showOverlay('drvOverlay')" aria-label="ドライバー管理">👥</button>
+    <div style="display:flex;gap:2px;">
+      <button class="hbtn" onclick="showOverlay('drvOv')" title="ドライバー管理">👥</button>
+    </div>
   </div>
-  <div class="status-bar"><span class="status-dot"></span>スプレッドシート連携済み</div>
+  <div class="status-bar"><span class="sdot"></span>スプレッドシート連携済み</div>
   <div class="tabs">
     <div class="tab active" onclick="showTab(0)">①集積所</div>
     <div class="tab" onclick="showTab(1)">②車両</div>
@@ -95,1452 +113,629 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans','Hiragino Kaku
     <div class="tab" onclick="showTab(3)">④排出量</div>
     <div class="tab" onclick="showTab(4)">⑤回収時間</div>
     <div class="tab" onclick="showTab(5)">⑥粗大・不適正</div>
-    <div class="tab" onclick="showTab(6)">📊 集計</div>
+    <div class="tab" onclick="showTab(6)">📊集計</div>
   </div>
 </div>
-
 <div class="content">
 
-<!-- ① 集積所 -->
+<!-- ①集積所 -->
 <div class="page active" id="page0">
-  <div class="form-card">
-    <div class="form-title"><span class="form-title-icon">📍</span>改善が必要な集積所の報告</div>
-    <div class="field">
-      <label class="field-label">集積所番号</label>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="text" placeholder="例: 5" style="width:90px;" id="f1-spotno"/>
-        <span style="font-size:14px;color:#888;">番</span>
-      </div>
+<div class="card">
+  <div class="card-title">📍 改善が必要な集積所の報告</div>
+  <div class="fi"><label class="fl">報告日</label>
+    <div class="drow">
+      <input type="date" id="f1d" oninput="sd('f1d','f1dt')"/>
+      <input type="text" id="f1dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f1dt','f1d')"/>
     </div>
-    <div class="field">
-      <label class="field-label">報告理由</label>
-      <div class="radio-group" id="f1-reason-group">
-        <label class="radio-item"><input type="radio" name="f1reason" value="集積所壊れ" onchange="checkOther1();styleRadio('f1-reason-group')"/> 集積所壊れ</label>
-        <label class="radio-item"><input type="radio" name="f1reason" value="鳥獣被害あり" onchange="checkOther1();styleRadio('f1-reason-group')"/> 鳥獣被害あり</label>
-        <label class="radio-item"><input type="radio" name="f1reason" value="不適正排出物が多い" onchange="checkOther1();styleRadio('f1-reason-group')"/> 不適正排出物が多い</label>
-        <label class="radio-item"><input type="radio" name="f1reason" value="排出禁止物の排出が多い" onchange="checkOther1();styleRadio('f1-reason-group')"/> 排出禁止物の排出が多い</label>
-        <label class="radio-item"><input type="radio" name="f1reason" value="その他" onchange="checkOther1();styleRadio('f1-reason-group')"/> その他</label>
-      </div>
-      <div id="f1-other-wrap" style="display:none;margin-top:10px;">
-        <textarea id="f1-other" placeholder="詳細を入力してください"></textarea>
-      </div>
-    </div>
-    <button class="submit-btn" id="btn1" onclick="submitForm1()">📤 スプレッドシートに送信する</button>
-    <div class="sending" id="sending1">送信中...</div>
-    <div class="toast" id="toast1"></div>
   </div>
-</div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f1drv"></select></div>
+  <div class="fi"><label class="fl">ページ番号（P〇〇）</label>
+    <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;color:#888;font-weight:700;">P</span><input type="text" placeholder="例: 12" style="width:85px;" id="f1pg"/></div>
+  </div>
+  <div class="fi"><label class="fl">左右</label>
+    <div class="cg"><div class="ci" id="f1ll" onclick="slr1('left')">左</div><div class="ci" id="f1lr" onclick="slr1('right')">右</div></div>
+  </div>
+  <div class="fi"><label class="fl">集積所番号</label>
+    <div style="display:flex;align-items:center;gap:7px;"><input type="text" placeholder="例: 5" style="width:85px;" id="f1sn"/><span style="font-size:14px;color:#888;">番</span></div>
+  </div>
+  <div class="fi"><label class="fl">報告理由</label>
+    <div class="rg" id="f1rg">
+      <label class="ri"><input type="radio" name="f1r" value="集積所壊れ" onchange="cr1();sr('f1rg')"/> 集積所壊れ</label>
+      <label class="ri"><input type="radio" name="f1r" value="鳥獣被害あり" onchange="cr1();sr('f1rg')"/> 鳥獣被害あり</label>
+      <label class="ri"><input type="radio" name="f1r" value="不適正排出物が多い" onchange="cr1();sr('f1rg')"/> 不適正排出物が多い</label>
+      <label class="ri"><input type="radio" name="f1r" value="排出禁止物の排出が多い" onchange="cr1();sr('f1rg')"/> 排出禁止物の排出が多い</label>
+      <label class="ri"><input type="radio" name="f1r" value="その他" onchange="cr1();sr('f1rg')"/> その他</label>
+    </div>
+    <div id="f1ow" style="display:none;margin-top:8px;"><textarea id="f1ot" placeholder="詳細を入力してください"></textarea></div>
+  </div>
+  <button class="sbtn" id="b1" onclick="sf1()">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn1">送信中...</div><div class="toast" id="t1"></div>
+</div></div>
 
-<!-- ② 車両 -->
+<!-- ②車両 -->
 <div class="page" id="page1">
-  <div class="form-card">
-    <div class="form-title"><span class="form-title-icon">🚛</span>車両報告</div>
-    <button class="submit-btn" id="btn2" onclick="submitForm2()">📤 スプレッドシートに送信する</button>
-    <div class="sending" id="sending2">送信中...</div>
-    <div class="toast" id="toast2"></div>
+<div class="card">
+  <div class="card-title">🚛 車両報告</div>
+  <div class="fi"><label class="fl">報告日</label>
+    <div class="drow"><input type="date" id="f2d" oninput="sd('f2d','f2dt')"/><input type="text" id="f2dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f2dt','f2d')"/></div>
   </div>
-</div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
+  <div class="fi"><label class="fl">内容</label>
+    <div class="rg" id="f2rg">
+      <label class="ri"><input type="radio" name="f2r" value="車両の不具合" onchange="cv2();sr('f2rg')"/> 車両の不具合</label>
+      <div id="f2w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d1" placeholder="不具合の詳細を入力してください"></textarea></div>
+      <label class="ri"><input type="radio" name="f2r" value="車両の修理・点検日程" onchange="cv2();sr('f2rg')"/> 車両の修理・点検日程</label>
+      <div id="f2w2" style="display:none;margin:3px 0 5px 26px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
+          <input type="date" id="f2df" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
+          <span style="font-size:13px;color:#888;flex-shrink:0;">〜</span>
+          <input type="date" id="f2dt2" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
+        </div>
+        <textarea id="f2d2" placeholder="その他詳細（任意）"></textarea>
+      </div>
+      <label class="ri"><input type="radio" name="f2r" value="その他" onchange="cv2();sr('f2rg')"/> その他</label>
+      <div id="f2w3" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d3" placeholder="詳細を入力してください"></textarea></div>
+    </div>
+  </div>
+  <button class="sbtn" id="b2" onclick="sf2()">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn2">送信中...</div><div class="toast" id="t2"></div>
+</div></div>
 
-<!-- ③ 処分場 -->
+<!-- ③処分場 -->
 <div class="page" id="page2">
-  <div class="form-card">
-    <div class="form-title"><span class="form-title-icon">⏱️</span>処分場 待機時間の報告</div>
-    <div class="day-page" id="day1">
-      <div class="section-sub">可燃ごみ</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d1-k1" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d1-k2" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d1-k3" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d1-k4" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d1-k5" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">Cコース</div><input class="course-input" id="d1-kC" type="number" placeholder="kg"/></div>
-      </div>
-      <div class="section-sub">プラスチック</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d1-pA" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d1-pB" type="number" placeholder="kg"/></div>
-      </div>
-    </div>
-    <div class="day-page" id="day2">
-      <div class="section-sub">可燃ごみ</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d2-k1" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d2-k2" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d2-k3" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d2-k4" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d2-k5" type="number" placeholder="kg"/></div>
-      </div>
-      <div class="section-sub">プラスチック</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d2-pA" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d2-pB" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">Cコース</div><input class="course-input" id="d2-pC" type="number" placeholder="kg"/></div>
-      </div>
-    </div>
-    <div class="day-page" id="day3">
-      <div class="section-sub">可燃ごみ</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d3-k1" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース（午前）</div><input class="course-input" id="d3-k2am" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d3-k3" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d3-k4" type="number" placeholder="kg"/></div>
-      </div>
-      <div class="section-sub">プラスチック</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d3-pA" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d3-pB" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">Cコース</div><input class="course-input" id="d3-pC" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース（午後）</div><input class="course-input" id="d3-k2pm" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d3-p2" type="number" placeholder="kg"/></div>
-      </div>
-    </div>
-    <div class="day-page" id="day4">
-      <div class="section-sub">可燃ごみ</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d4-k1" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d4-k2" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d4-k3" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d4-k4" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d4-k5" type="number" placeholder="kg"/></div>
-      </div>
-      <div class="section-sub">プラスチック</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">Aコース</div><input class="course-input" id="d4-pA" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">Bコース</div><input class="course-input" id="d4-pB" type="number" placeholder="kg"/></div>
-      </div>
-    </div>
-    <div class="day-page" id="day5">
-      <div class="section-sub">可燃ごみ</div>
-      <div class="course-grid">
-        <div class="course-item"><div class="course-label">1コース</div><input class="course-input" id="d5-k1" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">2コース</div><input class="course-input" id="d5-k2" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">3コース</div><input class="course-input" id="d5-k3" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">4コース</div><input class="course-input" id="d5-k4" type="number" placeholder="kg"/></div>
-        <div class="course-item"><div class="course-label">5コース</div><input class="course-input" id="d5-k5" type="number" placeholder="kg"/></div>
-      </div>
-    </div>
-    <button class="submit-btn" id="btn4" onclick="submitForm4()" style="margin-top:10px;">📤 スプレッドシートに送信する</button>
-    <div class="sending" id="sending4">送信中...</div>
-    <div class="toast" id="toast4"></div>
+<div class="card">
+  <div class="card-title">⏱️ 処分場 待機時間の報告</div>
+  <div class="fi"><label class="fl">報告日</label>
+    <div class="drow"><input type="date" id="f3d" oninput="sd('f3d','f3dt')"/><input type="text" id="f3dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f3dt','f3d')"/></div>
   </div>
-</div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f3drv"></select></div>
+  <div class="fi"><label class="fl">待機開始時刻</label><input type="time" id="f3s" oninput="cw()"/></div>
+  <div class="fi"><label class="fl">待機終了時刻</label><input type="time" id="f3e" oninput="cw()"/></div>
+  <div class="tcalc"><span class="tcalc-l">待機時間（自動算出）</span><span class="tcalc-v" id="wr">-- 分</span></div>
+  <button class="sbtn" id="b3" onclick="sf3()" style="margin-top:12px;">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn3">送信中...</div><div class="toast" id="t3"></div>
+</div></div>
 
-<!-- ⑤ 回収時間 -->
+<!-- ④排出量 -->
+<div class="page" id="page3">
+<div class="card">
+  <div class="card-title">📊 排出量の報告</div>
+  <div class="fi"><label class="fl">報告日</label>
+    <div class="drow"><input type="date" id="f4d" oninput="sd('f4d','f4dt')"/><input type="text" id="f4dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f4dt','f4d')"/></div>
+  </div>
+  <div class="dtabs">
+    <div class="dtab active" onclick="showDay(0)">月</div><div class="dtab" onclick="showDay(1)">火</div>
+    <div class="dtab" onclick="showDay(2)">水</div><div class="dtab" onclick="showDay(3)">木</div>
+    <div class="dtab" onclick="showDay(4)">金</div><div class="dtab" onclick="showDay(5)">土</div>
+  </div>
+  <!-- 月 -->
+  <div class="dpage active" id="dy0">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d0k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d0k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d0k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d0k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d0k5" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid"><div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d0pA" type="number" placeholder="kg"/></div></div>
+  </div>
+  <!-- 火 -->
+  <div class="dpage" id="dy1">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d1k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d1k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d1k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d1k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d1k5" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d1kC" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d1pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d1pB" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <!-- 水 -->
+  <div class="dpage" id="dy2">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d2k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d2k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d2k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d2k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d2k5" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d2pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d2pB" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d2pC" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <!-- 木 -->
+  <div class="dpage" id="dy3">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d3k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース（午前）</div><input class="cinp" id="d3k2am" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d3k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d3k4" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d3pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d3pB" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d3pC" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース（午後）</div><input class="cinp" id="d3k2pm" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d3p2" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <!-- 金 -->
+  <div class="dpage" id="dy4">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d4k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d4k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d4k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d4k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d4k5" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d4pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d4pB" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <!-- 土 -->
+  <div class="dpage" id="dy5">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d5k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d5k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d5k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d5k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d5k5" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <button class="sbtn" id="b4" onclick="sf4()" style="margin-top:8px;">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn4">送信中...</div><div class="toast" id="t4"></div>
+</div></div>
+
+<!-- ⑤回収時間 -->
 <div class="page" id="page4">
-  <div class="form-card">
-    <div class="form-title"><span class="form-title-icon">⏰</span>回収所要時間の報告</div>
-    <div class="field">
-      <label class="field-label">報告したドライバー名</label>
-      <select id="f5-drv"></select>
-    </div>
-    <div class="field">
-      <label class="field-label">業務開始時刻（固定）</label>
-      <div class="fixed-time-display">8:30（固定）</div>
-    </div>
-    <div class="field">
-      <label class="field-label">荷下ろし終了時刻</label>
-      <input type="time" id="f5-end" oninput="calcWork()"/>
-    </div>
-    <div class="time-calc">
-      <span class="time-calc-label">所要時間（自動算出）</span>
-      <span class="time-calc-value" id="work-result">-- 時間 -- 分</span>
-    </div>
-    <button class="submit-btn" id="btn5" onclick="submitForm5()" style="margin-top:14px;">📤 スプレッドシートに送信する</button>
-    <div class="sending" id="sending5">送信中...</div>
-    <div class="toast" id="toast5"></div>
-  </div>
-</div>
+<div class="card">
+  <div class="card-title">⏰ 回収所要時間の報告</div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f5drv"></select></div>
+  <div class="fi"><label class="fl">業務開始時刻（固定）</label><div class="ftd">8:30（固定）</div></div>
+  <div class="fi"><label class="fl">荷下ろし終了時刻</label><input type="time" id="f5e" oninput="cwork()"/></div>
+  <div class="tcalc"><span class="tcalc-l">所要時間（自動算出）</span><span class="tcalc-v" id="wkr">-- 時間 -- 分</span></div>
+  <button class="sbtn" id="b5" onclick="sf5()" style="margin-top:12px;">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn5">送信中...</div><div class="toast" id="t5"></div>
+</div></div>
 
-
-<!-- ⑥ 粗大・不適正排出物・その他 -->
+<!-- ⑥粗大・不適正 -->
 <div class="page" id="page5">
-  <div class="form-card">
-    <div class="form-title"><span class="form-title-icon">🚨</span>粗大・不適正排出物・その他集積所報告</div>
-    <div class="field">
-      <label class="field-label">報告したドライバー名</label>
-      <select id="f6-drv"></select>
-    </div>
-    <div class="field">
-      <label class="field-label">ページ番号（P〇〇）</label>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-size:14px;color:#888;font-weight:600;">P</span>
-        <input type="text" placeholder="例: 12" style="width:90px;" id="f6-page"/>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label">左右</label>
-      <div class="check-group">
-        <div class="check-item" id="f6-lr-left" onclick="selectLR6('left')">左</div>
-        <div class="check-item" id="f6-lr-right" onclick="selectLR6('right')">右</div>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label">集積所番号</label>
-      <div style="display:flex;align-items:center;gap:8px;">
-        <input type="text" placeholder="例: 5" style="width:90px;" id="f6-spotno"/>
-        <span style="font-size:14px;color:#888;">番</span>
-      </div>
-    </div>
-    <div class="field">
-      <label class="field-label">住所</label>
-      <button type="button" onclick="getLocation6()" style="width:100%;padding:10px;border:1px solid #E0E0DB;border-radius:8px;background:#F8F8F5;font-size:13px;color:#1A1A18;cursor:pointer;margin-bottom:8px;text-align:left;">
-        📍 現在地の住所を自動取得
-      </button>
-      <div id="f6-addr-status" style="font-size:12px;color:#888;margin-bottom:6px;display:none;"></div>
-      <input type="text" id="f6-address" placeholder="住所を入力（自動取得または手入力）"/>
-    </div>
-    <div class="field">
-      <label class="field-label">報告理由</label>
-      <div class="radio-group" id="f6-reason-group">
-        <label class="radio-item"><input type="radio" name="f6reason" value="粗大ごみ" onchange="checkF6();styleRadio('f6-reason-group')"/> 粗大ごみ</label>
-        <div id="f6-detail-wrap1" style="display:none;margin:4px 0 6px 26px;">
-          <textarea id="f6-detail1" placeholder="詳細を入力してください"></textarea>
-        </div>
-        <label class="radio-item"><input type="radio" name="f6reason" value="排出禁止物" onchange="checkF6();styleRadio('f6-reason-group')"/> 排出禁止物</label>
-        <div id="f6-detail-wrap2" style="display:none;margin:4px 0 6px 26px;">
-          <textarea id="f6-detail2" placeholder="詳細を入力してください"></textarea>
-        </div>
-        <label class="radio-item"><input type="radio" name="f6reason" value="その他集積所に関する報告" onchange="checkF6();styleRadio('f6-reason-group')"/> その他集積所に関する報告</label>
-        <div id="f6-detail-wrap3" style="display:none;margin:4px 0 6px 26px;">
-          <textarea id="f6-detail3" placeholder="詳細を入力してください"></textarea>
-        </div>
-      </div>
-    </div>
-    <button class="submit-btn" id="btn6" onclick="submitForm6()">📤 スプレッドシートに送信する</button>
-    <div class="sending" id="sending6">送信中...</div>
-    <div class="toast" id="toast6"></div>
+<div class="card">
+  <div class="card-title">🚨 粗大・不適正排出物・その他集積所報告</div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f6drv"></select></div>
+  <div class="fi"><label class="fl">ページ番号（P〇〇）</label>
+    <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;color:#888;font-weight:700;">P</span><input type="text" placeholder="例: 12" style="width:85px;" id="f6pg"/></div>
   </div>
-</div>
+  <div class="fi"><label class="fl">左右</label>
+    <div class="cg"><div class="ci" id="f6ll" onclick="slr6('left')">左</div><div class="ci" id="f6lr" onclick="slr6('right')">右</div></div>
+  </div>
+  <div class="fi"><label class="fl">集積所番号</label>
+    <div style="display:flex;align-items:center;gap:7px;"><input type="text" placeholder="例: 5" style="width:85px;" id="f6sn"/><span style="font-size:14px;color:#888;">番</span></div>
+  </div>
+  <div class="fi"><label class="fl">住所</label>
+    <button type="button" onclick="getGPS()" style="width:100%;padding:10px;border:1px solid #E0E0DB;border-radius:8px;background:#F8F8F5;font-size:13px;color:#1A1A18;cursor:pointer;margin-bottom:7px;text-align:left;">📍 現在地の住所を自動取得</button>
+    <div id="gps-status" style="font-size:12px;color:#888;margin-bottom:6px;display:none;"></div>
+    <input type="text" id="f6addr" placeholder="住所を入力（自動取得または手入力）"/>
+  </div>
+  <div class="fi"><label class="fl">報告理由</label>
+    <div class="rg" id="f6rg">
+      <label class="ri"><input type="radio" name="f6r" value="粗大ごみ" onchange="cv6();sr('f6rg')"/> 粗大ごみ</label>
+      <div id="f6w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d1" placeholder="詳細を入力してください"></textarea></div>
+      <label class="ri"><input type="radio" name="f6r" value="排出禁止物" onchange="cv6();sr('f6rg')"/> 排出禁止物</label>
+      <div id="f6w2" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d2" placeholder="詳細を入力してください"></textarea></div>
+      <label class="ri"><input type="radio" name="f6r" value="その他集積所に関する報告" onchange="cv6();sr('f6rg')"/> その他集積所に関する報告</label>
+      <div id="f6w3" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d3" placeholder="詳細を入力してください"></textarea></div>
+    </div>
+  </div>
+  <button class="sbtn" id="b6" onclick="sf6()">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn6">送信中...</div><div class="toast" id="t6"></div>
+</div></div>
 
-
-<!-- ⑦ ダッシュボード -->
+<!-- 📊集計ダッシュボード -->
 <div class="page" id="page6">
-
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-    <div style="font-size:14px;font-weight:600;color:#1A1A18;">集計ダッシュボード</div>
-    <button onclick="loadDashboard()" id="dash-reload-btn" style="font-size:12px;padding:6px 14px;border:1px solid #E0E0DB;border-radius:20px;background:#fff;color:#1A1A18;cursor:pointer;">🔄 更新</button>
+    <div style="font-size:14px;font-weight:700;color:#1A1A18;">集計ダッシュボード</div>
+    <button class="dash-reload" onclick="loadDash()">🔄 更新</button>
   </div>
   <div id="dash-loading" style="text-align:center;padding:40px 0;color:#888;font-size:13px;display:none;">データを読み込み中...</div>
-  <div id="dash-error" style="display:none;background:#FDECEA;color:#B71C1C;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
+  <div id="dash-err" style="display:none;background:#FDECEA;color:#B71C1C;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
 
-  <!-- 集積所ワースト -->
-  <div class="form-card" id="dash-spot-card" style="display:none;">
-    <div class="form-title"><span class="form-title-icon">📍</span>集積所 報告ワースト</div>
-    <div id="dash-spot-list"></div>
+  <div class="card" id="dc-spot" style="display:none;">
+    <div class="card-title">📍 集積所 報告ワーストTOP5</div>
+    <div id="dd-spot"></div>
   </div>
-
-  <!-- 粗大・不適正 -->
-  <div class="form-card" id="dash-foul-card" style="display:none;">
-    <div class="form-title"><span class="form-title-icon">🚨</span>粗大・不適正 最近の報告</div>
-    <div id="dash-foul-list"></div>
+  <div class="card" id="dc-foul" style="display:none;">
+    <div class="card-title">🚨 粗大・不適正 最近の報告</div>
+    <div id="dd-foul"></div>
   </div>
-
-  <!-- 車両状況 -->
-  <div class="form-card" id="dash-car-card" style="display:none;">
-    <div class="form-title"><span class="form-title-icon">🚛</span>車両 最近の報告</div>
-    <div id="dash-car-list"></div>
+  <div class="card" id="dc-car" style="display:none;">
+    <div class="card-title">🚛 車両 最近の報告</div>
+    <div id="dd-car"></div>
   </div>
-
-  <!-- 処分場待機時間 -->
-  <div class="form-card" id="dash-wait-card" style="display:none;">
-    <div class="form-title"><span class="form-title-icon">⏱️</span>処分場 待機時間</div>
-    <div id="dash-wait-avg" style="display:flex;gap:10px;margin-bottom:12px;"></div>
-    <div id="dash-wait-chart" style="display:flex;align-items:flex-end;gap:5px;height:100px;padding:4px 0;"></div>
-    <div id="dash-wait-labels" style="display:flex;gap:5px;margin-top:4px;"></div>
+  <div class="card" id="dc-wait" style="display:none;">
+    <div class="card-title">⏱️ 処分場 待機時間</div>
+    <div class="dstat" id="dd-wait-stat"></div>
+    <div class="chart-wrap" id="dd-wait-chart"></div>
+    <div class="chart-lbl" id="dd-wait-lbl"></div>
   </div>
-
-  <!-- 排出量推移 -->
-  <div class="form-card" id="dash-emit-card" style="display:none;">
-    <div class="form-title"><span class="form-title-icon">📊</span>排出量 推移（直近10件）</div>
-    <div id="dash-emit-legend" style="display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:#666;"></div>
+  <div class="card" id="dc-emit" style="display:none;">
+    <div class="card-title">📊 排出量 推移（直近10件）</div>
+    <div class="legend" id="dd-emit-leg"></div>
     <div style="overflow-x:auto;">
-      <div id="dash-emit-chart" style="display:flex;align-items:flex-end;gap:4px;height:100px;min-width:280px;padding:4px 0;"></div>
-      <div id="dash-emit-labels" style="display:flex;gap:4px;margin-top:4px;min-width:280px;"></div>
+      <div class="chart-wrap" id="dd-emit-chart" style="min-width:260px;"></div>
+      <div class="chart-lbl" id="dd-emit-lbl" style="min-width:260px;"></div>
     </div>
   </div>
-
-  <!-- ドライバー別回収時間 -->
-  <div class="form-card" id="dash-drv-card" style="display:none;">
-    <div class="form-title"><span class="form-title-icon">⏰</span>ドライバー別 平均回収時間</div>
-    <div id="dash-drv-list"></div>
+  <div class="card" id="dc-drv" style="display:none;">
+    <div class="card-title">⏰ ドライバー別 平均回収時間</div>
+    <div id="dd-drv"></div>
   </div>
-
 </div>
+
 </div><!-- content -->
 
-<!-- ドライバー管理 -->
-<div class="overlay" id="drvOverlay">
-  <div class="back-row">
-    <button class="back-btn" onclick="hideOverlay('drvOverlay')" aria-label="戻る">←</button>
-    <div class="back-title">ドライバー管理</div>
+<!-- ドライバー管理オーバーレイ -->
+<div class="overlay" id="drvOv">
+  <div class="brow">
+    <button class="bbtn" onclick="hideOverlay('drvOv')">←</button>
+    <div class="btitle">ドライバー管理</div>
   </div>
-  <div class="drv-mgmt">
-    <input type="text" id="drv-add-input" placeholder="新しいドライバー名"/>
-    <button class="drv-add-btn" onclick="addDriver()">追加</button>
+  <div class="dmgmt">
+    <input type="text" id="drv-inp" placeholder="新しいドライバー名"/>
+    <button class="dadd" onclick="addDrv()">追加</button>
   </div>
-  <div class="drv-list" id="drv-list"></div>
-  <button class="submit-btn" onclick="hideOverlay('drvOverlay')">完了</button>
+  <div class="dlist" id="drv-list"></div>
+  <button class="sbtn" onclick="hideOverlay('drvOv')">完了</button>
 </div>
 
 </div><!-- app -->
 
 <script>
-var GAS_URL='https://script.google.com/macros/s/AKfycbx4IzS6eYg_T8ZeNQ-7q8B0R2pXa1zqQXkwqfpjp-fr2-DJSwdTLdmSJULD6bHAK9_SSg/exec';
+var GAS='https://script.google.com/macros/s/AKfycbx4IzS6eYg_T8ZeNQ-7q8B0R2pXa1zqQXkwqfpjp-fr2-DJSwdTLdmSJULD6bHAK9_SSg/exec';
 var drivers=['菊池太','渡辺輝','和田啓助','宮野太志','山田伸一','渡辺文男','山田司','野﨑俊','鈴木将太','佐藤蛮治'];
-var lrSelected='';
-var dayIndex=0;
+var lr1='', lr6='', dayIdx=0;
 var dayNames=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
 
-function renderDriverSelects(){
-  ['f1-drv','f2-drv','f3-drv','f5-drv','f6-drv'].forEach(function(id){
-    var sel=document.getElementById(id);if(!sel)return;
-    var cur=sel.value;
-    sel.innerHTML='<option value="">選択してください</option>'+drivers.map(function(d){
-      return '<option value="'+d+'"'+(d===cur?' selected':'')+'>'+d+'</option>';
-    }).join('');
+// ===== ドライバー =====
+function rdrv(){
+  ['f1drv','f2drv','f3drv','f5drv','f6drv'].forEach(function(id){
+    var s=document.getElementById(id); if(!s)return;
+    var cur=s.value;
+    s.innerHTML='<option value="">選択してください</option>'+drivers.map(function(d){return '<option value="'+d+'"'+(d===cur?' selected':'')+'>'+d+'</option>';}).join('');
   });
 }
-function renderDriverList(){
+function rdrvlist(){
   document.getElementById('drv-list').innerHTML=drivers.map(function(d,i){
-    return '<div class="drv-list-item"><span>'+d+'</span><button class="drv-del" onclick="removeDriver('+i+')">🗑</button></div>';
+    return '<div class="ditem"><span>'+d+'</span><button class="ddel" onclick="delDrv('+i+')">🗑</button></div>';
   }).join('');
 }
-function addDriver(){
-  var inp=document.getElementById('drv-add-input');
-  var n=inp.value.trim();if(!n)return;
-  drivers.push(n);inp.value='';
-  
-var lrSelected6='';
+function addDrv(){var inp=document.getElementById('drv-inp'),n=inp.value.trim();if(!n)return;drivers.push(n);inp.value='';rdrv();rdrvlist();}
+function delDrv(i){drivers.splice(i,1);rdrv();rdrvlist();}
 
-function selectLR6(side){
-  lrSelected6=side;
-  document.getElementById('f6-lr-left').classList.toggle('selected',side==='left');
-  document.getElementById('f6-lr-right').classList.toggle('selected',side==='right');
-}
-
-function checkF6(){
-  var v=document.querySelector('input[name="f6reason"]:checked');
-  var val=v?v.value:'';
-  document.getElementById('f6-detail-wrap1').style.display=(val==='粗大ごみ')?'block':'none';
-  document.getElementById('f6-detail-wrap2').style.display=(val==='排出禁止物')?'block':'none';
-  document.getElementById('f6-detail-wrap3').style.display=(val==='その他集積所に関する報告')?'block':'none';
-}
-
-function getLocation6(){
-  var status=document.getElementById('f6-addr-status');
-  status.style.display='block';
-  status.textContent='📡 現在地を取得中...';
-  if(!navigator.geolocation){
-    status.textContent='⚠️ このブラウザでは位置情報を取得できません。手入力してください。';
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(function(pos){
-    var lat=pos.coords.latitude;
-    var lng=pos.coords.longitude;
-    status.textContent='🔍 住所に変換中...';
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ja')
-      .then(function(r){return r.json();})
-      .then(function(data){
-        if(data && data.address){
-          var a=data.address;
-          var addr='';
-          if(a.province||a.state) addr+=(a.province||a.state);
-          if(a.city||a.town||a.village) addr+=(a.city||a.town||a.village);
-          if(a.suburb||a.neighbourhood) addr+=(a.suburb||a.neighbourhood);
-          if(a.road) addr+=a.road;
-          if(a.house_number) addr+=a.house_number;
-          if(!addr) addr=data.display_name;
-          document.getElementById('f6-address').value=addr;
-          status.textContent='✅ 住所を取得しました（修正可能）';
-        } else {
-          status.textContent='⚠️ 住所を取得できませんでした。手入力してください。';
-        }
-      })
-      .catch(function(){
-        status.textContent='⚠️ 変換に失敗しました。手入力してください。';
-      });
-  }, function(err){
-    status.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';
-  },{timeout:10000});
-}
-
-function submitForm6(){
-  var reason=document.querySelector('input[name="f6reason"]:checked');
-  var val=reason?reason.value:'';
-  var detail='';
-  if(val==='粗大ごみ') detail=getVal('f6-detail1');
-  else if(val==='排出禁止物') detail=getVal('f6-detail2');
-  else if(val==='その他集積所に関する報告') detail=getVal('f6-detail3');
-  postToGAS({
-    type:'粗大・不適正',
-    driver:getVal('f6-drv'),
-    page:getVal('f6-page'),
-    lr:lrSelected6,
-    spotNo:getVal('f6-spotno'),
-    address:getVal('f6-address'),
-    reason:val,
-    detail:detail
-  },'btn6','sending6','toast6',function(){
-    document.getElementById('f6-page').value='';
-    document.getElementById('f6-spotno').value='';
-    document.getElementById('f6-address').value='';
-    document.getElementById('f6-detail1').value='';
-    document.getElementById('f6-detail2').value='';
-    document.getElementById('f6-detail3').value='';
-    document.getElementById('f6-addr-status').style.display='none';
-    document.querySelectorAll('input[name="f6reason"]').forEach(function(r){r.checked=false;});
-    document.querySelectorAll('#f6-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
-    document.getElementById('f6-detail-wrap1').style.display='none';
-    document.getElementById('f6-detail-wrap2').style.display='none';
-    document.getElementById('f6-detail-wrap3').style.display='none';
-    lrSelected6='';
-    document.getElementById('f6-lr-left').classList.remove('selected');
-    document.getElementById('f6-lr-right').classList.remove('selected');
-  });
-}
-
-
-// ========== ダッシュボード ==========
-var dashLoaded = false;
-
-function loadDashboard(){
-  var loading = document.getElementById('dash-loading');
-  var errEl = document.getElementById('dash-error');
-  loading.style.display = 'block';
-  errEl.style.display = 'none';
-  hideAllDashCards();
-
-  fetch(GAS_URL + '?action=getAll')
-    .then(function(r){ return r.json(); })
-    .then(function(res){
-      loading.style.display = 'none';
-      if(res.status !== 'ok'){ showDashError('データ取得エラー: ' + res.message); return; }
-      var d = res.data;
-      renderSpotWorst(d['集積所'] || []);
-      renderFoulList(d['粗大不適正'] || []);
-      renderCarList(d['車両'] || []);
-      renderWaitChart(d['処分場'] || []);
-      renderEmitChart(d['排出量'] || []);
-      renderDriverTime(d['回収時間'] || []);
-      dashLoaded = true;
-    })
-    .catch(function(e){
-      loading.style.display = 'none';
-      showDashError('通信エラーが発生しました。ネットワークを確認してください。');
-    });
-}
-
-function hideAllDashCards(){
-  ['dash-spot-card','dash-foul-card','dash-car-card','dash-wait-card','dash-emit-card','dash-drv-card'].forEach(function(id){
-    document.getElementById(id).style.display='none';
-  });
-}
-
-function showDashError(msg){
-  var el = document.getElementById('dash-error');
-  el.textContent = '⚠️ ' + msg;
-  el.style.display = 'block';
-}
-
-function showCard(id){ document.getElementById(id).style.display='block'; }
-
-// 集積所ワースト
-function renderSpotWorst(rows){
-  if(!rows.length) return;
-  var count = {};
-  rows.forEach(function(r){
-    var key = 'P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'');
-    count[key] = (count[key]||0) + 1;
-  });
-  var sorted = Object.keys(count).sort(function(a,b){return count[b]-count[a];}).slice(0,5);
-  var html = '';
-  sorted.forEach(function(k,i){
-    var badge = i===0?'#A32D2D':i===1?'#854F0B':'#555';
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="width:22px;height:22px;border-radius:50%;background:'+badge+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>'
-      +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
-      +'<div style="font-size:13px;font-weight:600;color:'+badge+';">'+count[k]+'件</div>'
-      +'</div>';
-  });
-  document.getElementById('dash-spot-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-spot-card');
-}
-
-// 粗大・不適正 最近5件
-function renderFoulList(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-5).reverse();
-  var html = '';
-  recent.forEach(function(r){
-    var reason = r['報告理由']||'';
-    var badgeColor = reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
-    var badgeBg = reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
-    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+reason+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
-      +'</div>'
-      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
-      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')
-      +'</div>';
-  });
-  document.getElementById('dash-foul-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-foul-card');
-}
-
-// 車両 最近5件
-function renderCarList(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-5).reverse();
-  var html = '';
-  recent.forEach(function(r){
-    var content = r['内容']||'';
-    var badgeColor = content==='車両の不具合'?'#A32D2D':content==='車両の修理・点検日程'?'#854F0B':'#555';
-    var badgeBg = content==='車両の不具合'?'#FCEBEB':content==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
-    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+content+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
-      +'</div>'
-      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
-      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')
-      +'</div>';
-  });
-  document.getElementById('dash-car-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-car-card');
-}
-
-// 処分場待機時間グラフ（直近10件）
-function renderWaitChart(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-10);
-  var vals = recent.map(function(r){ return parseFloat(r['待機時間(分)'])||0; });
-  var avg = vals.length ? Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length) : 0;
-  var max = Math.max.apply(null, vals);
-
-  document.getElementById('dash-wait-avg').innerHTML =
-    '<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
-    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">直近平均</div>'
-    +'<div style="font-size:22px;font-weight:700;color:#1A1A18;">'+avg+'<span style="font-size:13px;font-weight:400;">分</span></div>'
-    +'</div>'
-    +'<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
-    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">最長</div>'
-    +'<div style="font-size:22px;font-weight:700;color:#A32D2D;">'+max+'<span style="font-size:13px;font-weight:400;">分</span></div>'
-    +'</div>';
-
-  var chartEl = document.getElementById('dash-wait-chart');
-  var labelEl = document.getElementById('dash-wait-labels');
-  chartEl.innerHTML = '';
-  labelEl.innerHTML = '';
-  var maxH = 90;
-  vals.forEach(function(v, i){
-    var h = max > 0 ? Math.round((v/max)*maxH) : 0;
-    var color = v >= 60 ? '#F09595' : v >= 40 ? '#FAC775' : '#9FE1CB';
-    var col = document.createElement('div');
-    col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;';
-    col.innerHTML = '<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+v+'分"></div>';
-    chartEl.appendChild(col);
-    var lbl = document.createElement('div');
-    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;';
-    lbl.textContent = recent[i]['ドライバー名'] ? recent[i]['ドライバー名'].slice(0,2) : (i+1);
-    labelEl.appendChild(lbl);
-  });
-  showCard('dash-wait-card');
-}
-
-// 排出量推移グラフ（直近10件、可燃合計とプラ合計）
-function renderEmitChart(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-10);
-  var kanenKeys = ['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
-  var plaKeys = ['プラA','プラB','プラC','プラ2'];
-  var kanenVals = recent.map(function(r){
-    return kanenKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
-  });
-  var plaVals = recent.map(function(r){
-    return plaKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
-  });
-  var allMax = Math.max.apply(null, kanenVals.concat(plaVals));
-
-  document.getElementById('dash-emit-legend').innerHTML =
-    '<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px;"></span>可燃ごみ合計</div>'
-    +'<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B5D4F4;margin-right:4px;"></span>プラスチック合計</div>';
-
-  var chartEl = document.getElementById('dash-emit-chart');
-  var labelEl = document.getElementById('dash-emit-labels');
-  chartEl.innerHTML = '';
-  labelEl.innerHTML = '';
-  var maxH = 90;
-  recent.forEach(function(r, i){
-    var kH = allMax > 0 ? Math.round((kanenVals[i]/allMax)*maxH) : 0;
-    var pH = allMax > 0 ? Math.round((plaVals[i]/allMax)*maxH) : 0;
-    var col = document.createElement('div');
-    col.style.cssText = 'flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:24px;';
-    col.innerHTML = '<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kH+'px;" title="可燃'+kanenVals[i]+'kg"></div>'
-      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+pH+'px;" title="プラ'+plaVals[i]+'kg"></div>';
-    chartEl.appendChild(col);
-    var lbl = document.createElement('div');
-    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;min-width:24px;';
-    lbl.textContent = (r['曜日']||'').slice(0,1)||String(i+1);
-    labelEl.appendChild(lbl);
-  });
-  showCard('dash-emit-card');
-}
-
-// ドライバー別平均回収時間
-function renderDriverTime(rows){
-  if(!rows.length) return;
-  var drvMap = {};
-  rows.forEach(function(r){
-    var drv = r['ドライバー名']||'不明';
-    var t = r['所要時間']||'';
-    var match = t.match(/(\d+)時間(\d+)分/);
-    if(!match) return;
-    var mins = parseInt(match[1])*60 + parseInt(match[2]);
-    if(!drvMap[drv]) drvMap[drv] = {total:0, count:0};
-    drvMap[drv].total += mins;
-    drvMap[drv].count += 1;
-  });
-  var drvList = Object.keys(drvMap).map(function(k){
-    return {name:k, avg: Math.round(drvMap[k].total/drvMap[k].count), count:drvMap[k].count};
-  }).sort(function(a,b){return b.avg-a.avg;});
-  var maxAvg = drvList.length ? drvList[0].avg : 1;
-  var html = '';
-  drvList.forEach(function(d){
-    var h = Math.floor(d.avg/60);
-    var m = d.avg%60;
-    var pct = Math.round((d.avg/maxAvg)*100);
-    var color = d.avg > 420 ? '#FAC775' : '#9FE1CB';
-    html += '<div style="margin-bottom:10px;">'
-      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
-      +'<span style="color:#1A1A18;font-weight:500;">'+d.name+'</span>'
-      +'<span style="color:#555;">平均 '+h+'時間'+m+'分　('+d.count+'件)</span>'
-      +'</div>'
-      +'<div style="height:6px;background:#F0F0EC;border-radius:3px;overflow:hidden;">'
-      +'<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;"></div>'
-      +'</div>'
-      +'</div>';
-  });
-  document.getElementById('dash-drv-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-drv-card');
-}
-
-renderDriverSelects();renderDriverList();
-}
-function removeDriver(i){drivers.splice(i,1);
-var lrSelected6='';
-
-function selectLR6(side){
-  lrSelected6=side;
-  document.getElementById('f6-lr-left').classList.toggle('selected',side==='left');
-  document.getElementById('f6-lr-right').classList.toggle('selected',side==='right');
-}
-
-function checkF6(){
-  var v=document.querySelector('input[name="f6reason"]:checked');
-  var val=v?v.value:'';
-  document.getElementById('f6-detail-wrap1').style.display=(val==='粗大ごみ')?'block':'none';
-  document.getElementById('f6-detail-wrap2').style.display=(val==='排出禁止物')?'block':'none';
-  document.getElementById('f6-detail-wrap3').style.display=(val==='その他集積所に関する報告')?'block':'none';
-}
-
-function getLocation6(){
-  var status=document.getElementById('f6-addr-status');
-  status.style.display='block';
-  status.textContent='📡 現在地を取得中...';
-  if(!navigator.geolocation){
-    status.textContent='⚠️ このブラウザでは位置情報を取得できません。手入力してください。';
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(function(pos){
-    var lat=pos.coords.latitude;
-    var lng=pos.coords.longitude;
-    status.textContent='🔍 住所に変換中...';
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ja')
-      .then(function(r){return r.json();})
-      .then(function(data){
-        if(data && data.address){
-          var a=data.address;
-          var addr='';
-          if(a.province||a.state) addr+=(a.province||a.state);
-          if(a.city||a.town||a.village) addr+=(a.city||a.town||a.village);
-          if(a.suburb||a.neighbourhood) addr+=(a.suburb||a.neighbourhood);
-          if(a.road) addr+=a.road;
-          if(a.house_number) addr+=a.house_number;
-          if(!addr) addr=data.display_name;
-          document.getElementById('f6-address').value=addr;
-          status.textContent='✅ 住所を取得しました（修正可能）';
-        } else {
-          status.textContent='⚠️ 住所を取得できませんでした。手入力してください。';
-        }
-      })
-      .catch(function(){
-        status.textContent='⚠️ 変換に失敗しました。手入力してください。';
-      });
-  }, function(err){
-    status.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';
-  },{timeout:10000});
-}
-
-function submitForm6(){
-  var reason=document.querySelector('input[name="f6reason"]:checked');
-  var val=reason?reason.value:'';
-  var detail='';
-  if(val==='粗大ごみ') detail=getVal('f6-detail1');
-  else if(val==='排出禁止物') detail=getVal('f6-detail2');
-  else if(val==='その他集積所に関する報告') detail=getVal('f6-detail3');
-  postToGAS({
-    type:'粗大・不適正',
-    driver:getVal('f6-drv'),
-    page:getVal('f6-page'),
-    lr:lrSelected6,
-    spotNo:getVal('f6-spotno'),
-    address:getVal('f6-address'),
-    reason:val,
-    detail:detail
-  },'btn6','sending6','toast6',function(){
-    document.getElementById('f6-page').value='';
-    document.getElementById('f6-spotno').value='';
-    document.getElementById('f6-address').value='';
-    document.getElementById('f6-detail1').value='';
-    document.getElementById('f6-detail2').value='';
-    document.getElementById('f6-detail3').value='';
-    document.getElementById('f6-addr-status').style.display='none';
-    document.querySelectorAll('input[name="f6reason"]').forEach(function(r){r.checked=false;});
-    document.querySelectorAll('#f6-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
-    document.getElementById('f6-detail-wrap1').style.display='none';
-    document.getElementById('f6-detail-wrap2').style.display='none';
-    document.getElementById('f6-detail-wrap3').style.display='none';
-    lrSelected6='';
-    document.getElementById('f6-lr-left').classList.remove('selected');
-    document.getElementById('f6-lr-right').classList.remove('selected');
-  });
-}
-
-
-// ========== ダッシュボード ==========
-var dashLoaded = false;
-
-function loadDashboard(){
-  var loading = document.getElementById('dash-loading');
-  var errEl = document.getElementById('dash-error');
-  loading.style.display = 'block';
-  errEl.style.display = 'none';
-  hideAllDashCards();
-
-  fetch(GAS_URL + '?action=getAll')
-    .then(function(r){ return r.json(); })
-    .then(function(res){
-      loading.style.display = 'none';
-      if(res.status !== 'ok'){ showDashError('データ取得エラー: ' + res.message); return; }
-      var d = res.data;
-      renderSpotWorst(d['集積所'] || []);
-      renderFoulList(d['粗大不適正'] || []);
-      renderCarList(d['車両'] || []);
-      renderWaitChart(d['処分場'] || []);
-      renderEmitChart(d['排出量'] || []);
-      renderDriverTime(d['回収時間'] || []);
-      dashLoaded = true;
-    })
-    .catch(function(e){
-      loading.style.display = 'none';
-      showDashError('通信エラーが発生しました。ネットワークを確認してください。');
-    });
-}
-
-function hideAllDashCards(){
-  ['dash-spot-card','dash-foul-card','dash-car-card','dash-wait-card','dash-emit-card','dash-drv-card'].forEach(function(id){
-    document.getElementById(id).style.display='none';
-  });
-}
-
-function showDashError(msg){
-  var el = document.getElementById('dash-error');
-  el.textContent = '⚠️ ' + msg;
-  el.style.display = 'block';
-}
-
-function showCard(id){ document.getElementById(id).style.display='block'; }
-
-// 集積所ワースト
-function renderSpotWorst(rows){
-  if(!rows.length) return;
-  var count = {};
-  rows.forEach(function(r){
-    var key = 'P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'');
-    count[key] = (count[key]||0) + 1;
-  });
-  var sorted = Object.keys(count).sort(function(a,b){return count[b]-count[a];}).slice(0,5);
-  var html = '';
-  sorted.forEach(function(k,i){
-    var badge = i===0?'#A32D2D':i===1?'#854F0B':'#555';
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="width:22px;height:22px;border-radius:50%;background:'+badge+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>'
-      +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
-      +'<div style="font-size:13px;font-weight:600;color:'+badge+';">'+count[k]+'件</div>'
-      +'</div>';
-  });
-  document.getElementById('dash-spot-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-spot-card');
-}
-
-// 粗大・不適正 最近5件
-function renderFoulList(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-5).reverse();
-  var html = '';
-  recent.forEach(function(r){
-    var reason = r['報告理由']||'';
-    var badgeColor = reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
-    var badgeBg = reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
-    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+reason+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
-      +'</div>'
-      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
-      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')
-      +'</div>';
-  });
-  document.getElementById('dash-foul-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-foul-card');
-}
-
-// 車両 最近5件
-function renderCarList(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-5).reverse();
-  var html = '';
-  recent.forEach(function(r){
-    var content = r['内容']||'';
-    var badgeColor = content==='車両の不具合'?'#A32D2D':content==='車両の修理・点検日程'?'#854F0B':'#555';
-    var badgeBg = content==='車両の不具合'?'#FCEBEB':content==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
-    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+content+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
-      +'</div>'
-      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
-      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')
-      +'</div>';
-  });
-  document.getElementById('dash-car-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-car-card');
-}
-
-// 処分場待機時間グラフ（直近10件）
-function renderWaitChart(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-10);
-  var vals = recent.map(function(r){ return parseFloat(r['待機時間(分)'])||0; });
-  var avg = vals.length ? Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length) : 0;
-  var max = Math.max.apply(null, vals);
-
-  document.getElementById('dash-wait-avg').innerHTML =
-    '<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
-    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">直近平均</div>'
-    +'<div style="font-size:22px;font-weight:700;color:#1A1A18;">'+avg+'<span style="font-size:13px;font-weight:400;">分</span></div>'
-    +'</div>'
-    +'<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
-    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">最長</div>'
-    +'<div style="font-size:22px;font-weight:700;color:#A32D2D;">'+max+'<span style="font-size:13px;font-weight:400;">分</span></div>'
-    +'</div>';
-
-  var chartEl = document.getElementById('dash-wait-chart');
-  var labelEl = document.getElementById('dash-wait-labels');
-  chartEl.innerHTML = '';
-  labelEl.innerHTML = '';
-  var maxH = 90;
-  vals.forEach(function(v, i){
-    var h = max > 0 ? Math.round((v/max)*maxH) : 0;
-    var color = v >= 60 ? '#F09595' : v >= 40 ? '#FAC775' : '#9FE1CB';
-    var col = document.createElement('div');
-    col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;';
-    col.innerHTML = '<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+v+'分"></div>';
-    chartEl.appendChild(col);
-    var lbl = document.createElement('div');
-    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;';
-    lbl.textContent = recent[i]['ドライバー名'] ? recent[i]['ドライバー名'].slice(0,2) : (i+1);
-    labelEl.appendChild(lbl);
-  });
-  showCard('dash-wait-card');
-}
-
-// 排出量推移グラフ（直近10件、可燃合計とプラ合計）
-function renderEmitChart(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-10);
-  var kanenKeys = ['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
-  var plaKeys = ['プラA','プラB','プラC','プラ2'];
-  var kanenVals = recent.map(function(r){
-    return kanenKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
-  });
-  var plaVals = recent.map(function(r){
-    return plaKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
-  });
-  var allMax = Math.max.apply(null, kanenVals.concat(plaVals));
-
-  document.getElementById('dash-emit-legend').innerHTML =
-    '<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px;"></span>可燃ごみ合計</div>'
-    +'<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B5D4F4;margin-right:4px;"></span>プラスチック合計</div>';
-
-  var chartEl = document.getElementById('dash-emit-chart');
-  var labelEl = document.getElementById('dash-emit-labels');
-  chartEl.innerHTML = '';
-  labelEl.innerHTML = '';
-  var maxH = 90;
-  recent.forEach(function(r, i){
-    var kH = allMax > 0 ? Math.round((kanenVals[i]/allMax)*maxH) : 0;
-    var pH = allMax > 0 ? Math.round((plaVals[i]/allMax)*maxH) : 0;
-    var col = document.createElement('div');
-    col.style.cssText = 'flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:24px;';
-    col.innerHTML = '<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kH+'px;" title="可燃'+kanenVals[i]+'kg"></div>'
-      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+pH+'px;" title="プラ'+plaVals[i]+'kg"></div>';
-    chartEl.appendChild(col);
-    var lbl = document.createElement('div');
-    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;min-width:24px;';
-    lbl.textContent = (r['曜日']||'').slice(0,1)||String(i+1);
-    labelEl.appendChild(lbl);
-  });
-  showCard('dash-emit-card');
-}
-
-// ドライバー別平均回収時間
-function renderDriverTime(rows){
-  if(!rows.length) return;
-  var drvMap = {};
-  rows.forEach(function(r){
-    var drv = r['ドライバー名']||'不明';
-    var t = r['所要時間']||'';
-    var match = t.match(/(\d+)時間(\d+)分/);
-    if(!match) return;
-    var mins = parseInt(match[1])*60 + parseInt(match[2]);
-    if(!drvMap[drv]) drvMap[drv] = {total:0, count:0};
-    drvMap[drv].total += mins;
-    drvMap[drv].count += 1;
-  });
-  var drvList = Object.keys(drvMap).map(function(k){
-    return {name:k, avg: Math.round(drvMap[k].total/drvMap[k].count), count:drvMap[k].count};
-  }).sort(function(a,b){return b.avg-a.avg;});
-  var maxAvg = drvList.length ? drvList[0].avg : 1;
-  var html = '';
-  drvList.forEach(function(d){
-    var h = Math.floor(d.avg/60);
-    var m = d.avg%60;
-    var pct = Math.round((d.avg/maxAvg)*100);
-    var color = d.avg > 420 ? '#FAC775' : '#9FE1CB';
-    html += '<div style="margin-bottom:10px;">'
-      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
-      +'<span style="color:#1A1A18;font-weight:500;">'+d.name+'</span>'
-      +'<span style="color:#555;">平均 '+h+'時間'+m+'分　('+d.count+'件)</span>'
-      +'</div>'
-      +'<div style="height:6px;background:#F0F0EC;border-radius:3px;overflow:hidden;">'
-      +'<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;"></div>'
-      +'</div>'
-      +'</div>';
-  });
-  document.getElementById('dash-drv-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-drv-card');
-}
-
-renderDriverSelects();renderDriverList();}
+// ===== ナビ =====
 function showTab(i){
   document.querySelectorAll('.tab').forEach(function(t,j){t.classList.toggle('active',i===j);});
   document.querySelectorAll('.page').forEach(function(p,j){p.classList.toggle('active',i===j);});
-  if(i===6) loadDashboard();
+  if(i===6)loadDash();
 }
 function showDay(i){
-  dayIndex=i;
-  document.querySelectorAll('.day-tab').forEach(function(t,j){t.classList.toggle('active',i===j);});
-  document.querySelectorAll('.day-page').forEach(function(p,j){p.classList.toggle('active',i===j);});
+  dayIdx=i;
+  document.querySelectorAll('.dtab').forEach(function(t,j){t.classList.toggle('active',i===j);});
+  document.querySelectorAll('.dpage').forEach(function(p,j){p.classList.toggle('active',i===j);});
 }
-function showOverlay(id){document.getElementById(id).classList.add('open');renderDriverList();}
+function showOverlay(id){document.getElementById(id).classList.add('open');rdrvlist();}
 function hideOverlay(id){document.getElementById(id).classList.remove('open');}
-function selectLR(side){
-  lrSelected=side;
-  document.getElementById('lr-left').classList.toggle('selected',side==='left');
-  document.getElementById('lr-right').classList.toggle('selected',side==='right');
+
+// ===== ユーティリティ =====
+function gv(id){var e=document.getElementById(id);return e?e.value:'';}
+function tm(t){var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);}
+function sd(did,tid){var v=document.getElementById(did).value;if(!v)return;var p=v.split('-');document.getElementById(tid).value=p[0]+'/'+p[1]+'/'+p[2];}
+function sdt(tid,did){var v=document.getElementById(tid).value,p=v.split('/');if(p.length===3&&p[0].length===4&&p[1].length===2&&p[2].length===2)document.getElementById(did).value=p[0]+'-'+p[1]+'-'+p[2];}
+function slr1(s){lr1=s;document.getElementById('f1ll').classList.toggle('sel',s==='left');document.getElementById('f1lr').classList.toggle('sel',s==='right');}
+function slr6(s){lr6=s;document.getElementById('f6ll').classList.toggle('sel',s==='left');document.getElementById('f6lr').classList.toggle('sel',s==='right');}
+function sr(gid){document.querySelectorAll('#'+gid+' .ri').forEach(function(item){item.classList.toggle('sel',item.querySelector('input[type=radio]').checked);});}
+function cr1(){var v=document.querySelector('input[name="f1r"]:checked');document.getElementById('f1ow').style.display=(v&&v.value==='その他')?'block':'none';}
+function cv2(){
+  var v=document.querySelector('input[name="f2r"]:checked'),val=v?v.value:'';
+  document.getElementById('f2w1').style.display=val==='車両の不具合'?'block':'none';
+  document.getElementById('f2w2').style.display=val==='車両の修理・点検日程'?'block':'none';
+  document.getElementById('f2w3').style.display=val==='その他'?'block':'none';
 }
-function styleRadio(groupId){
-  document.querySelectorAll('#'+groupId+' .radio-item').forEach(function(item){
-    var radio=item.querySelector('input[type=radio]');
-    item.classList.toggle('selected-item',radio&&radio.checked);
-  });
+function cv6(){
+  var v=document.querySelector('input[name="f6r"]:checked'),val=v?v.value:'';
+  document.getElementById('f6w1').style.display=val==='粗大ごみ'?'block':'none';
+  document.getElementById('f6w2').style.display=val==='排出禁止物'?'block':'none';
+  document.getElementById('f6w3').style.display=val==='その他集積所に関する報告'?'block':'none';
 }
-function checkOther1(){
-  var v=document.querySelector('input[name="f1reason"]:checked');
-  document.getElementById('f1-other-wrap').style.display=(v&&v.value==='その他')?'block':'none';
-}
-function checkVehicle(){
-  var v=document.querySelector('input[name="f2type"]:checked');
-  var val=v?v.value:'';
-  document.getElementById('f2-detail-wrap1').style.display=(val==='車両の不具合')?'block':'none';
-  document.getElementById('f2-detail-wrap2').style.display=(val==='車両の修理・点検日程')?'block':'none';
-  document.getElementById('f2-other-wrap').style.display=(val==='その他')?'block':'none';
-}
-function checkOther2(){ checkVehicle(); }
-function toMin(t){var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);}
-function calcWait(){
-  var s=document.getElementById('f3-start').value;
-  var e=document.getElementById('f3-end').value;
-  var el=document.getElementById('wait-result');
+function cw(){
+  var s=gv('f3s'),e=gv('f3e'),el=document.getElementById('wr');
   if(!s||!e){el.textContent='-- 分';return;}
-  var diff=toMin(e)-toMin(s);
-  el.textContent=diff<0?'時刻を確認':Math.round(diff)+'分';
+  var d=tm(e)-tm(s);el.textContent=d<0?'時刻を確認':Math.round(d)+'分';
 }
-function calcWork(){
-  var e=document.getElementById('f5-end').value;
-  var el=document.getElementById('work-result');
+function cwork(){
+  var e=gv('f5e'),el=document.getElementById('wkr');
   if(!e){el.textContent='-- 時間 -- 分';return;}
-  var diff=toMin(e)-(8*60+30);
-  if(diff<0){el.textContent='終了時刻を確認';return;}
-  el.textContent=Math.floor(diff/60)+'時間 '+Math.round(diff%60)+'分';
+  var d=tm(e)-(8*60+30);if(d<0){el.textContent='終了時刻を確認';return;}
+  el.textContent=Math.floor(d/60)+'時間 '+Math.round(d%60)+'分';
 }
-function syncDate(dId,tId){
-  var v=document.getElementById(dId).value;if(!v)return;
-  var p=v.split('-');document.getElementById(tId).value=p[0]+'/'+p[1]+'/'+p[2];
-}
-function syncDateText(tId,dId){
-  var v=document.getElementById(tId).value;
-  var p=v.split('/');
-  if(p.length===3&&p[0].length===4&&p[1].length===2&&p[2].length===2)
-    document.getElementById(dId).value=p[0]+'-'+p[1]+'-'+p[2];
-}
-function getVal(id){var el=document.getElementById(id);return el?el.value:'';}
 
-function postToGAS(payload, btnId, sendingId, toastId, resetFn){
-  var btn=document.getElementById(btnId);
-  var sending=document.getElementById(sendingId);
-  var toast=document.getElementById(toastId);
-  btn.disabled=true;
-  sending.style.display='block';
-  toast.style.display='none';
+// ===== GPS =====
+function getGPS(){
+  var st=document.getElementById('gps-status');st.style.display='block';st.textContent='📡 現在地を取得中...';
+  if(!navigator.geolocation){st.textContent='⚠️ このブラウザでは位置情報を取得できません。';return;}
+  navigator.geolocation.getCurrentPosition(function(pos){
+    st.textContent='🔍 住所に変換中...';
+    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+pos.coords.latitude+'&lon='+pos.coords.longitude+'&accept-language=ja')
+      .then(function(r){return r.json();})
+      .then(function(data){
+        if(data&&data.address){
+          var a=data.address,addr='';
+          if(a.province||a.state)addr+=(a.province||a.state);
+          if(a.city||a.town||a.village)addr+=(a.city||a.town||a.village||'');
+          if(a.suburb||a.neighbourhood)addr+=(a.suburb||a.neighbourhood||'');
+          if(a.road)addr+=a.road;
+          if(a.house_number)addr+=a.house_number;
+          if(!addr)addr=data.display_name;
+          document.getElementById('f6addr').value=addr;
+          st.textContent='✅ 住所を取得しました（修正可能）';
+        }else{st.textContent='⚠️ 住所を取得できませんでした。手入力してください。';}
+      }).catch(function(){st.textContent='⚠️ 変換に失敗しました。手入力してください。';});
+  },function(){st.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';},{timeout:10000});
+}
 
+// ===== 送信（フォームPOST方式） =====
+function post(payload,bid,snid,tid,reset){
+  var btn=document.getElementById(bid),sn=document.getElementById(snid),toast=document.getElementById(tid);
+  btn.disabled=true;sn.style.display='block';toast.style.display='none';
   var form=document.createElement('form');
-  form.method='POST';
-  form.action=GAS_URL;
-  form.target='gas_iframe_'+btnId;
-  form.style.display='none';
-  var inp=document.createElement('input');
-  inp.type='hidden';inp.name='payload';inp.value=JSON.stringify(payload);
-  form.appendChild(inp);
-  document.body.appendChild(form);
-
-  var iframeName='gas_iframe_'+btnId;
-  var iframe=document.getElementById(iframeName);
-  if(!iframe){
-    iframe=document.createElement('iframe');
-    iframe.name=iframeName;
-    iframe.id=iframeName;
-    iframe.style.display='none';
-    document.body.appendChild(iframe);
-  }
-
+  form.method='POST';form.action=GAS;form.target='gif_'+bid;form.style.display='none';
+  var inp=document.createElement('input');inp.type='hidden';inp.name='payload';inp.value=JSON.stringify(payload);
+  form.appendChild(inp);document.body.appendChild(form);
+  var iname='gif_'+bid,ifr=document.getElementById(iname);
+  if(!ifr){ifr=document.createElement('iframe');ifr.name=iname;ifr.id=iname;ifr.style.display='none';document.body.appendChild(ifr);}
   var done=false;
-  iframe.onload=function(){
-    if(done)return;done=true;
-    sending.style.display='none';
-    toast.className='toast ok';
-    toast.textContent='✅ スプレッドシートに保存しました';
-    toast.style.display='block';
-    btn.disabled=false;
+  ifr.onload=function(){if(done)return;done=true;finish();};
+  setTimeout(function(){if(done)return;done=true;finish();},4000);
+  function finish(){
+    sn.style.display='none';toast.className='toast tok';toast.textContent='✅ スプレッドシートに保存しました';
+    toast.style.display='block';btn.disabled=false;
     if(form.parentNode)document.body.removeChild(form);
-    if(resetFn)resetFn();
+    if(reset)reset();
     setTimeout(function(){toast.style.display='none';},5000);
-  };
-
-  setTimeout(function(){
-    if(done)return;done=true;
-    sending.style.display='none';
-    toast.className='toast ok';
-    toast.textContent='✅ 送信しました（スプレッドシートを確認してください）';
-    toast.style.display='block';
-    btn.disabled=false;
-    if(form.parentNode)document.body.removeChild(form);
-    if(resetFn)resetFn();
-    setTimeout(function(){toast.style.display='none';},5000);
-  },4000);
-
+  }
   form.submit();
 }
 
-function submitForm1(){
-  var reason=document.querySelector('input[name="f1reason"]:checked');
-  postToGAS({type:'集積所',date:getVal('f1-datetext')||getVal('f1-date'),driver:getVal('f1-drv'),page:getVal('f1-page'),lr:lrSelected,spotNo:getVal('f1-spotno'),reason:reason?reason.value:'',otherDetail:getVal('f1-other')},'btn1','sending1','toast1',function(){
-    document.getElementById('f1-page').value='';document.getElementById('f1-spotno').value='';document.getElementById('f1-other').value='';
-    document.querySelectorAll('input[name="f1reason"]').forEach(function(r){r.checked=false;});
-    document.querySelectorAll('#f1-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
-    document.getElementById('f1-other-wrap').style.display='none';
-    lrSelected='';document.getElementById('lr-left').classList.remove('selected');document.getElementById('lr-right').classList.remove('selected');
+// ===== 各フォーム送信 =====
+function sf1(){
+  var r=document.querySelector('input[name="f1r"]:checked');
+  post({type:'集積所',date:gv('f1dt')||gv('f1d'),driver:gv('f1drv'),page:gv('f1pg'),lr:lr1,spotNo:gv('f1sn'),reason:r?r.value:'',otherDetail:gv('f1ot')},'b1','sn1','t1',function(){
+    ['f1pg','f1sn','f1ot'].forEach(function(id){document.getElementById(id).value='';});
+    document.querySelectorAll('input[name="f1r"]').forEach(function(x){x.checked=false;});
+    document.querySelectorAll('#f1rg .ri').forEach(function(x){x.classList.remove('sel');});
+    document.getElementById('f1ow').style.display='none';
+    lr1='';document.getElementById('f1ll').classList.remove('sel');document.getElementById('f1lr').classList.remove('sel');
   });
 }
-function submitForm2(){
-  var type=document.querySelector('input[name="f2type"]:checked');
-  var val=type?type.value:'';
-  var detail='';
-  if(val==='車両の不具合')detail=getVal('f2-detail1');
-  else if(val==='車両の修理・点検日程'){
-    var df=getVal('f2-date-from'),dt=getVal('f2-date-to'),memo=getVal('f2-detail2');
-    detail=(df||'?')+'〜'+(dt||'?')+(memo?' ('+memo+')':'');
-  }
-  else if(val==='その他')detail=getVal('f2-other');
-  postToGAS({type:'車両',driver:getVal('f2-drv'),content:val,otherDetail:detail},'btn2','sending2','toast2',function(){
-    document.querySelectorAll('input[name="f2type"]').forEach(function(r){r.checked=false;});
-    document.querySelectorAll('#f2-type-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
-    document.getElementById('f2-detail1').value='';
-    document.getElementById('f2-detail2').value='';
-    document.getElementById('f2-date-from').value='';
-    document.getElementById('f2-date-to').value='';
-    document.getElementById('f2-other').value='';
-    document.getElementById('f2-detail-wrap1').style.display='none';
-    document.getElementById('f2-detail-wrap2').style.display='none';
-    document.getElementById('f2-other-wrap').style.display='none';
+function sf2(){
+  var r=document.querySelector('input[name="f2r"]:checked'),val=r?r.value:'',detail='';
+  if(val==='車両の不具合')detail=gv('f2d1');
+  else if(val==='車両の修理・点検日程'){var df=gv('f2df'),dt=gv('f2dt2'),m=gv('f2d2');detail=(df||'?')+'〜'+(dt||'?')+(m?' ('+m+')');}
+  else if(val==='その他')detail=gv('f2d3');
+  post({type:'車両',date:gv('f2dt')||gv('f2d'),driver:gv('f2drv'),content:val,otherDetail:detail},'b2','sn2','t2',function(){
+    document.querySelectorAll('input[name="f2r"]').forEach(function(x){x.checked=false;});
+    document.querySelectorAll('#f2rg .ri').forEach(function(x){x.classList.remove('sel');});
+    ['f2d1','f2d2','f2d3'].forEach(function(id){document.getElementById(id).value='';});
+    ['f2df','f2dt2'].forEach(function(id){document.getElementById(id).value='';});
+    ['f2w1','f2w2','f2w3'].forEach(function(id){document.getElementById(id).style.display='none';});
   });
 }
-function submitForm3(){
-  var s=getVal('f3-start'),e=getVal('f3-end'),wait='';
-  if(s&&e){var d=toMin(e)-toMin(s);wait=d>=0?String(Math.round(d)):'';}
-  postToGAS({type:'処分場',date:getVal('f3-datetext')||getVal('f3-date'),driver:getVal('f3-drv'),startTime:s,endTime:e,waitMinutes:wait},'btn3','sending3','toast3',function(){
-    document.getElementById('f3-start').value='';document.getElementById('f3-end').value='';document.getElementById('wait-result').textContent='-- 分';
+function sf3(){
+  var s=gv('f3s'),e=gv('f3e'),w='';
+  if(s&&e){var d=tm(e)-tm(s);w=d>=0?String(Math.round(d)):'';}
+  post({type:'処分場',date:gv('f3dt')||gv('f3d'),driver:gv('f3drv'),startTime:s,endTime:e,waitMinutes:w},'b3','sn3','t3',function(){
+    document.getElementById('f3s').value='';document.getElementById('f3e').value='';document.getElementById('wr').textContent='-- 分';
   });
 }
-function submitForm4(){
-  var d=dayIndex,courses={};
-  var map=[['d0-k1','可燃1'],['d0-k2','可燃2'],['d0-k3','可燃3'],['d0-k4','可燃4'],['d0-k5','可燃5'],['d0-pA','プラA'],
-    ['d1-k1','可燃1'],['d1-k2','可燃2'],['d1-k3','可燃3'],['d1-k4','可燃4'],['d1-k5','可燃5'],['d1-kC','可燃C'],['d1-pA','プラA'],['d1-pB','プラB'],
-    ['d2-k1','可燃1'],['d2-k2','可燃2'],['d2-k3','可燃3'],['d2-k4','可燃4'],['d2-k5','可燃5'],['d2-pA','プラA'],['d2-pB','プラB'],['d2-pC','プラC'],
-    ['d3-k1','可燃1'],['d3-k2am','可燃2午前'],['d3-k3','可燃3'],['d3-k4','可燃4'],['d3-pA','プラA'],['d3-pB','プラB'],['d3-pC','プラC'],['d3-k2pm','可燃2午後'],['d3-p2','プラ2'],
-    ['d4-k1','可燃1'],['d4-k2','可燃2'],['d4-k3','可燃3'],['d4-k4','可燃4'],['d4-k5','可燃5'],['d4-pA','プラA'],['d4-pB','プラB'],
-    ['d5-k1','可燃1'],['d5-k2','可燃2'],['d5-k3','可燃3'],['d5-k4','可燃4'],['d5-k5','可燃5']];
+function sf4(){
+  var d=dayIdx,courses={};
+  var map=[
+    ['d0k1','可燃1'],['d0k2','可燃2'],['d0k3','可燃3'],['d0k4','可燃4'],['d0k5','可燃5'],['d0pA','プラA'],
+    ['d1k1','可燃1'],['d1k2','可燃2'],['d1k3','可燃3'],['d1k4','可燃4'],['d1k5','可燃5'],['d1kC','可燃C'],['d1pA','プラA'],['d1pB','プラB'],
+    ['d2k1','可燃1'],['d2k2','可燃2'],['d2k3','可燃3'],['d2k4','可燃4'],['d2k5','可燃5'],['d2pA','プラA'],['d2pB','プラB'],['d2pC','プラC'],
+    ['d3k1','可燃1'],['d3k2am','可燃2午前'],['d3k3','可燃3'],['d3k4','可燃4'],['d3pA','プラA'],['d3pB','プラB'],['d3pC','プラC'],['d3k2pm','可燃2午後'],['d3p2','プラ2'],
+    ['d4k1','可燃1'],['d4k2','可燃2'],['d4k3','可燃3'],['d4k4','可燃4'],['d4k5','可燃5'],['d4pA','プラA'],['d4pB','プラB'],
+    ['d5k1','可燃1'],['d5k2','可燃2'],['d5k3','可燃3'],['d5k4','可燃4'],['d5k5','可燃5']
+  ];
   map.forEach(function(pair){
-    if(pair[0].startsWith('d'+d+'-')){var el=document.getElementById(pair[0]);if(el&&el.value)courses[pair[1]]=el.value;}
+    if(pair[0].startsWith('d'+d)){var el=document.getElementById(pair[0]);if(el&&el.value)courses[pair[1]]=el.value;}
   });
-  postToGAS({type:'排出量',date:getVal('f4-datetext')||getVal('f4-date'),day:dayNames[d],courses:courses},'btn4','sending4','toast4',null);
+  post({type:'排出量',date:gv('f4dt')||gv('f4d'),day:dayNames[d],courses:courses},'b4','sn4','t4',null);
 }
-function submitForm5(){
-  var e=getVal('f5-end'),workTime='';
-  if(e){var d=toMin(e)-(8*60+30);if(d>=0)workTime=Math.floor(d/60)+'時間'+Math.round(d%60)+'分';}
-  postToGAS({type:'回収時間',driver:getVal('f5-drv'),endTime:e,workTime:workTime},'btn5','sending5','toast5',function(){
-    document.getElementById('f5-end').value='';document.getElementById('work-result').textContent='-- 時間 -- 分';
+function sf5(){
+  var e=gv('f5e'),wt='';
+  if(e){var d=tm(e)-(8*60+30);if(d>=0)wt=Math.floor(d/60)+'時間'+Math.round(d%60)+'分';}
+  post({type:'回収時間',driver:gv('f5drv'),endTime:e,workTime:wt},'b5','sn5','t5',function(){
+    document.getElementById('f5e').value='';document.getElementById('wkr').textContent='-- 時間 -- 分';
   });
 }
-
-var lrSelected6='';
-
-function selectLR6(side){
-  lrSelected6=side;
-  document.getElementById('f6-lr-left').classList.toggle('selected',side==='left');
-  document.getElementById('f6-lr-right').classList.toggle('selected',side==='right');
-}
-
-function checkF6(){
-  var v=document.querySelector('input[name="f6reason"]:checked');
-  var val=v?v.value:'';
-  document.getElementById('f6-detail-wrap1').style.display=(val==='粗大ごみ')?'block':'none';
-  document.getElementById('f6-detail-wrap2').style.display=(val==='排出禁止物')?'block':'none';
-  document.getElementById('f6-detail-wrap3').style.display=(val==='その他集積所に関する報告')?'block':'none';
-}
-
-function getLocation6(){
-  var status=document.getElementById('f6-addr-status');
-  status.style.display='block';
-  status.textContent='📡 現在地を取得中...';
-  if(!navigator.geolocation){
-    status.textContent='⚠️ このブラウザでは位置情報を取得できません。手入力してください。';
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(function(pos){
-    var lat=pos.coords.latitude;
-    var lng=pos.coords.longitude;
-    status.textContent='🔍 住所に変換中...';
-    fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+lat+'&lon='+lng+'&accept-language=ja')
-      .then(function(r){return r.json();})
-      .then(function(data){
-        if(data && data.address){
-          var a=data.address;
-          var addr='';
-          if(a.province||a.state) addr+=(a.province||a.state);
-          if(a.city||a.town||a.village) addr+=(a.city||a.town||a.village);
-          if(a.suburb||a.neighbourhood) addr+=(a.suburb||a.neighbourhood);
-          if(a.road) addr+=a.road;
-          if(a.house_number) addr+=a.house_number;
-          if(!addr) addr=data.display_name;
-          document.getElementById('f6-address').value=addr;
-          status.textContent='✅ 住所を取得しました（修正可能）';
-        } else {
-          status.textContent='⚠️ 住所を取得できませんでした。手入力してください。';
-        }
-      })
-      .catch(function(){
-        status.textContent='⚠️ 変換に失敗しました。手入力してください。';
-      });
-  }, function(err){
-    status.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';
-  },{timeout:10000});
-}
-
-function submitForm6(){
-  var reason=document.querySelector('input[name="f6reason"]:checked');
-  var val=reason?reason.value:'';
-  var detail='';
-  if(val==='粗大ごみ') detail=getVal('f6-detail1');
-  else if(val==='排出禁止物') detail=getVal('f6-detail2');
-  else if(val==='その他集積所に関する報告') detail=getVal('f6-detail3');
-  postToGAS({
-    type:'粗大・不適正',
-    driver:getVal('f6-drv'),
-    page:getVal('f6-page'),
-    lr:lrSelected6,
-    spotNo:getVal('f6-spotno'),
-    address:getVal('f6-address'),
-    reason:val,
-    detail:detail
-  },'btn6','sending6','toast6',function(){
-    document.getElementById('f6-page').value='';
-    document.getElementById('f6-spotno').value='';
-    document.getElementById('f6-address').value='';
-    document.getElementById('f6-detail1').value='';
-    document.getElementById('f6-detail2').value='';
-    document.getElementById('f6-detail3').value='';
-    document.getElementById('f6-addr-status').style.display='none';
-    document.querySelectorAll('input[name="f6reason"]').forEach(function(r){r.checked=false;});
-    document.querySelectorAll('#f6-reason-group .radio-item').forEach(function(i){i.classList.remove('selected-item');});
-    document.getElementById('f6-detail-wrap1').style.display='none';
-    document.getElementById('f6-detail-wrap2').style.display='none';
-    document.getElementById('f6-detail-wrap3').style.display='none';
-    lrSelected6='';
-    document.getElementById('f6-lr-left').classList.remove('selected');
-    document.getElementById('f6-lr-right').classList.remove('selected');
+function sf6(){
+  var r=document.querySelector('input[name="f6r"]:checked'),val=r?r.value:'',detail='';
+  if(val==='粗大ごみ')detail=gv('f6d1');
+  else if(val==='排出禁止物')detail=gv('f6d2');
+  else if(val==='その他集積所に関する報告')detail=gv('f6d3');
+  post({type:'粗大・不適正',driver:gv('f6drv'),page:gv('f6pg'),lr:lr6,spotNo:gv('f6sn'),address:gv('f6addr'),reason:val,detail:detail},'b6','sn6','t6',function(){
+    ['f6pg','f6sn','f6addr','f6d1','f6d2','f6d3'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('gps-status').style.display='none';
+    document.querySelectorAll('input[name="f6r"]').forEach(function(x){x.checked=false;});
+    document.querySelectorAll('#f6rg .ri').forEach(function(x){x.classList.remove('sel');});
+    ['f6w1','f6w2','f6w3'].forEach(function(id){document.getElementById(id).style.display='none';});
+    lr6='';document.getElementById('f6ll').classList.remove('sel');document.getElementById('f6lr').classList.remove('sel');
   });
 }
 
-
-// ========== ダッシュボード ==========
-var dashLoaded = false;
-
-function loadDashboard(){
-  var loading = document.getElementById('dash-loading');
-  var errEl = document.getElementById('dash-error');
-  loading.style.display = 'block';
-  errEl.style.display = 'none';
-  hideAllDashCards();
-
-  fetch(GAS_URL + '?action=getAll')
-    .then(function(r){ return r.json(); })
+// ===== ダッシュボード =====
+function loadDash(){
+  var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err');
+  loading.style.display='block';errEl.style.display='none';
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv'].forEach(function(id){document.getElementById(id).style.display='none';});
+  fetch(GAS+'?action=getAll')
+    .then(function(r){return r.json();})
     .then(function(res){
-      loading.style.display = 'none';
-      if(res.status !== 'ok'){ showDashError('データ取得エラー: ' + res.message); return; }
-      var d = res.data;
-      renderSpotWorst(d['集積所'] || []);
-      renderFoulList(d['粗大不適正'] || []);
-      renderCarList(d['車両'] || []);
-      renderWaitChart(d['処分場'] || []);
-      renderEmitChart(d['排出量'] || []);
-      renderDriverTime(d['回収時間'] || []);
-      dashLoaded = true;
+      loading.style.display='none';
+      if(res.status!=='ok'){errEl.textContent='⚠️ '+res.message;errEl.style.display='block';return;}
+      var d=res.data;
+      rSpot(d['集積所']||[]);
+      rFoul(d['粗大不適正']||[]);
+      rCar(d['車両']||[]);
+      rWait(d['処分場']||[]);
+      rEmit(d['排出量']||[]);
+      rDrv(d['回収時間']||[]);
     })
-    .catch(function(e){
-      loading.style.display = 'none';
-      showDashError('通信エラーが発生しました。ネットワークを確認してください。');
+    .catch(function(){
+      loading.style.display='none';
+      errEl.textContent='⚠️ 通信エラー。ネットワークを確認してください。';errEl.style.display='block';
     });
 }
 
-function hideAllDashCards(){
-  ['dash-spot-card','dash-foul-card','dash-car-card','dash-wait-card','dash-emit-card','dash-drv-card'].forEach(function(id){
-    document.getElementById(id).style.display='none';
-  });
-}
+function showDC(id){document.getElementById(id).style.display='block';}
 
-function showDashError(msg){
-  var el = document.getElementById('dash-error');
-  el.textContent = '⚠️ ' + msg;
-  el.style.display = 'block';
-}
-
-function showCard(id){ document.getElementById(id).style.display='block'; }
-
-// 集積所ワースト
-function renderSpotWorst(rows){
-  if(!rows.length) return;
-  var count = {};
-  rows.forEach(function(r){
-    var key = 'P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'');
-    count[key] = (count[key]||0) + 1;
-  });
-  var sorted = Object.keys(count).sort(function(a,b){return count[b]-count[a];}).slice(0,5);
-  var html = '';
-  sorted.forEach(function(k,i){
-    var badge = i===0?'#A32D2D':i===1?'#854F0B':'#555';
-    html += '<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="width:22px;height:22px;border-radius:50%;background:'+badge+';color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;">'+(i+1)+'</div>'
+function rSpot(rows){
+  if(!rows.length)return;
+  var cnt={};
+  rows.forEach(function(r){var k='P'+(r['ページ']||'').replace('P','')+(r['左右']||'')+(r['集積所番号']||'');cnt[k]=(cnt[k]||0)+1;});
+  var sorted=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,5);
+  var colors=['#A32D2D','#854F0B','#555','#555','#555'];
+  var html=sorted.map(function(k,i){
+    return '<div class="worst-item"><div class="wnum" style="background:'+colors[i]+';">'+(i+1)+'</div>'
       +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
-      +'<div style="font-size:13px;font-weight:600;color:'+badge+';">'+count[k]+'件</div>'
-      +'</div>';
-  });
-  document.getElementById('dash-spot-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-spot-card');
+      +'<div style="font-size:13px;font-weight:700;color:'+colors[i]+';">'+cnt[k]+'件</div></div>';
+  }).join('');
+  document.getElementById('dd-spot').innerHTML=html||'<div class="no-data">データなし</div>';
+  showDC('dc-spot');
 }
 
-// 粗大・不適正 最近5件
-function renderFoulList(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-5).reverse();
-  var html = '';
-  recent.forEach(function(r){
-    var reason = r['報告理由']||'';
-    var badgeColor = reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
-    var badgeBg = reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
-    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+reason+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
-      +'</div>'
-      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　P'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
-      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')
-      +'</div>';
-  });
-  document.getElementById('dash-foul-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-foul-card');
+function rFoul(rows){
+  if(!rows.length)return;
+  var recent=rows.slice(-5).reverse();
+  var html=recent.map(function(r){
+    var reason=r['報告理由']||'';
+    var bc=reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
+    var tc=reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
+    return '<div class="ritem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span class="rbadge" style="background:'+bc+';color:'+tc+';">'+reason+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span></div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
+      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')+'</div>';
+  }).join('');
+  document.getElementById('dd-foul').innerHTML=html||'<div class="no-data">データなし</div>';
+  showDC('dc-foul');
 }
 
-// 車両 最近5件
-function renderCarList(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-5).reverse();
-  var html = '';
-  recent.forEach(function(r){
-    var content = r['内容']||'';
-    var badgeColor = content==='車両の不具合'?'#A32D2D':content==='車両の修理・点検日程'?'#854F0B':'#555';
-    var badgeBg = content==='車両の不具合'?'#FCEBEB':content==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
-    html += '<div style="padding:8px 0;border-bottom:1px solid #F0F0EC;">'
-      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span style="font-size:11px;padding:2px 8px;border-radius:10px;background:'+badgeBg+';color:'+badgeColor+';font-weight:600;">'+content+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span>'
-      +'</div>'
+function rCar(rows){
+  if(!rows.length)return;
+  var recent=rows.slice(-5).reverse();
+  var html=recent.map(function(r){
+    var c=r['内容']||'';
+    var bc=c==='車両の不具合'?'#FCEBEB':c==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
+    var tc=c==='車両の不具合'?'#A32D2D':c==='車両の修理・点検日程'?'#854F0B':'#555';
+    return '<div class="ritem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span class="rbadge" style="background:'+bc+';color:'+tc+';">'+c+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span></div>'
       +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
-      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')
-      +'</div>';
-  });
-  document.getElementById('dash-car-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-car-card');
+      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')+'</div>';
+  }).join('');
+  document.getElementById('dd-car').innerHTML=html||'<div class="no-data">データなし</div>';
+  showDC('dc-car');
 }
 
-// 処分場待機時間グラフ（直近10件）
-function renderWaitChart(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-10);
-  var vals = recent.map(function(r){ return parseFloat(r['待機時間(分)'])||0; });
-  var avg = vals.length ? Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length) : 0;
-  var max = Math.max.apply(null, vals);
-
-  document.getElementById('dash-wait-avg').innerHTML =
-    '<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
-    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">直近平均</div>'
-    +'<div style="font-size:22px;font-weight:700;color:#1A1A18;">'+avg+'<span style="font-size:13px;font-weight:400;">分</span></div>'
-    +'</div>'
-    +'<div style="flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;">'
-    +'<div style="font-size:11px;color:#888;margin-bottom:4px;">最長</div>'
-    +'<div style="font-size:22px;font-weight:700;color:#A32D2D;">'+max+'<span style="font-size:13px;font-weight:400;">分</span></div>'
-    +'</div>';
-
-  var chartEl = document.getElementById('dash-wait-chart');
-  var labelEl = document.getElementById('dash-wait-labels');
-  chartEl.innerHTML = '';
-  labelEl.innerHTML = '';
-  var maxH = 90;
-  vals.forEach(function(v, i){
-    var h = max > 0 ? Math.round((v/max)*maxH) : 0;
-    var color = v >= 60 ? '#F09595' : v >= 40 ? '#FAC775' : '#9FE1CB';
-    var col = document.createElement('div');
-    col.style.cssText = 'flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;';
-    col.innerHTML = '<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+v+'分"></div>';
-    chartEl.appendChild(col);
-    var lbl = document.createElement('div');
-    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;';
-    lbl.textContent = recent[i]['ドライバー名'] ? recent[i]['ドライバー名'].slice(0,2) : (i+1);
-    labelEl.appendChild(lbl);
+function rWait(rows){
+  if(!rows.length)return;
+  var recent=rows.slice(-10);
+  var vals=recent.map(function(r){return parseFloat(r['待機時間(分)'])||0;});
+  var avg=Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length);
+  var max=Math.max.apply(null,vals);
+  document.getElementById('dd-wait-stat').innerHTML=
+    '<div class="dstat-box"><div class="dstat-l">直近平均</div><div class="dstat-v">'+avg+'<span class="dstat-u">分</span></div></div>'
+    +'<div class="dstat-box"><div class="dstat-l">最長</div><div class="dstat-v" style="color:#A32D2D;">'+max+'<span class="dstat-u">分</span></div></div>';
+  var cEl=document.getElementById('dd-wait-chart'),lEl=document.getElementById('dd-wait-lbl');
+  cEl.innerHTML='';lEl.innerHTML='';
+  vals.forEach(function(v,i){
+    var h=max>0?Math.round((v/max)*82):0;
+    var col=v>=60?'#F09595':v>=40?'#FAC775':'#9FE1CB';
+    cEl.innerHTML+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">'
+      +'<div style="width:100%;border-radius:3px 3px 0 0;background:'+col+';height:'+h+'px;" title="'+v+'分"></div></div>';
+    lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:10px;color:#888;">'+(recent[i]['ドライバー名']||'').slice(0,2)+'</div>';
   });
-  showCard('dash-wait-card');
+  showDC('dc-wait');
 }
 
-// 排出量推移グラフ（直近10件、可燃合計とプラ合計）
-function renderEmitChart(rows){
-  if(!rows.length) return;
-  var recent = rows.slice(-10);
-  var kanenKeys = ['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
-  var plaKeys = ['プラA','プラB','プラC','プラ2'];
-  var kanenVals = recent.map(function(r){
-    return kanenKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
+function rEmit(rows){
+  if(!rows.length)return;
+  var recent=rows.slice(-10);
+  var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
+  var pKeys=['プラA','プラB','プラC','プラ2'];
+  var kv=recent.map(function(r){return kKeys.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);});
+  var pv=recent.map(function(r){return pKeys.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);});
+  var mx=Math.max.apply(null,kv.concat(pv));
+  document.getElementById('dd-emit-leg').innerHTML=
+    '<div><span class="ldot" style="background:#9FE1CB;"></span>可燃ごみ合計</div>'
+    +'<div><span class="ldot" style="background:#B5D4F4;"></span>プラスチック合計</div>';
+  var cEl=document.getElementById('dd-emit-chart'),lEl=document.getElementById('dd-emit-lbl');
+  cEl.innerHTML='';lEl.innerHTML='';
+  recent.forEach(function(r,i){
+    var kh=mx>0?Math.round((kv[i]/mx)*82):0,ph=mx>0?Math.round((pv[i]/mx)*82):0;
+    cEl.innerHTML+='<div style="flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:22px;">'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kh+'px;"></div>'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+ph+'px;"></div></div>';
+    lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:10px;color:#888;min-width:22px;">'+(r['曜日']||'').slice(0,1)+'</div>';
   });
-  var plaVals = recent.map(function(r){
-    return plaKeys.reduce(function(s,k){ return s+(parseFloat(r[k])||0); }, 0);
-  });
-  var allMax = Math.max.apply(null, kanenVals.concat(plaVals));
-
-  document.getElementById('dash-emit-legend').innerHTML =
-    '<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#9FE1CB;margin-right:4px;"></span>可燃ごみ合計</div>'
-    +'<div><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#B5D4F4;margin-right:4px;"></span>プラスチック合計</div>';
-
-  var chartEl = document.getElementById('dash-emit-chart');
-  var labelEl = document.getElementById('dash-emit-labels');
-  chartEl.innerHTML = '';
-  labelEl.innerHTML = '';
-  var maxH = 90;
-  recent.forEach(function(r, i){
-    var kH = allMax > 0 ? Math.round((kanenVals[i]/allMax)*maxH) : 0;
-    var pH = allMax > 0 ? Math.round((plaVals[i]/allMax)*maxH) : 0;
-    var col = document.createElement('div');
-    col.style.cssText = 'flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:24px;';
-    col.innerHTML = '<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kH+'px;" title="可燃'+kanenVals[i]+'kg"></div>'
-      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+pH+'px;" title="プラ'+plaVals[i]+'kg"></div>';
-    chartEl.appendChild(col);
-    var lbl = document.createElement('div');
-    lbl.style.cssText = 'flex:1;text-align:center;font-size:10px;color:#888;min-width:24px;';
-    lbl.textContent = (r['曜日']||'').slice(0,1)||String(i+1);
-    labelEl.appendChild(lbl);
-  });
-  showCard('dash-emit-card');
+  showDC('dc-emit');
 }
 
-// ドライバー別平均回収時間
-function renderDriverTime(rows){
-  if(!rows.length) return;
-  var drvMap = {};
+function rDrv(rows){
+  if(!rows.length)return;
+  var dm={};
   rows.forEach(function(r){
-    var drv = r['ドライバー名']||'不明';
-    var t = r['所要時間']||'';
-    var match = t.match(/(\d+)時間(\d+)分/);
-    if(!match) return;
-    var mins = parseInt(match[1])*60 + parseInt(match[2]);
-    if(!drvMap[drv]) drvMap[drv] = {total:0, count:0};
-    drvMap[drv].total += mins;
-    drvMap[drv].count += 1;
+    var drv=r['ドライバー名']||'不明',t=r['所要時間']||'';
+    var m=t.match(/(\d+)時間(\d+)分/);if(!m)return;
+    var mins=parseInt(m[1])*60+parseInt(m[2]);
+    if(!dm[drv])dm[drv]={total:0,count:0};
+    dm[drv].total+=mins;dm[drv].count+=1;
   });
-  var drvList = Object.keys(drvMap).map(function(k){
-    return {name:k, avg: Math.round(drvMap[k].total/drvMap[k].count), count:drvMap[k].count};
-  }).sort(function(a,b){return b.avg-a.avg;});
-  var maxAvg = drvList.length ? drvList[0].avg : 1;
-  var html = '';
-  drvList.forEach(function(d){
-    var h = Math.floor(d.avg/60);
-    var m = d.avg%60;
-    var pct = Math.round((d.avg/maxAvg)*100);
-    var color = d.avg > 420 ? '#FAC775' : '#9FE1CB';
-    html += '<div style="margin-bottom:10px;">'
-      +'<div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;">'
-      +'<span style="color:#1A1A18;font-weight:500;">'+d.name+'</span>'
-      +'<span style="color:#555;">平均 '+h+'時間'+m+'分　('+d.count+'件)</span>'
-      +'</div>'
-      +'<div style="height:6px;background:#F0F0EC;border-radius:3px;overflow:hidden;">'
-      +'<div style="height:100%;width:'+pct+'%;background:'+color+';border-radius:3px;"></div>'
-      +'</div>'
-      +'</div>';
-  });
-  document.getElementById('dash-drv-list').innerHTML = html || '<div style="font-size:13px;color:#888;">データなし</div>';
-  showCard('dash-drv-card');
+  var list=Object.keys(dm).map(function(k){return{name:k,avg:Math.round(dm[k].total/dm[k].count),count:dm[k].count};})
+    .sort(function(a,b){return b.avg-a.avg;});
+  var mx=list.length?list[0].avg:1;
+  var html=list.map(function(d){
+    var h=Math.floor(d.avg/60),m=d.avg%60,pct=Math.round((d.avg/mx)*100);
+    var col=d.avg>420?'#FAC775':'#9FE1CB';
+    return '<div class="drvbar"><div class="drvbar-top"><span style="font-weight:500;color:#1A1A18;">'+d.name+'</span>'
+      +'<span style="color:#555;">平均 '+h+'時間'+m+'分（'+d.count+'件）</span></div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+col+';"></div></div></div>';
+  }).join('');
+  document.getElementById('dd-drv').innerHTML=html||'<div class="no-data">データなし</div>';
+  showDC('dc-drv');
 }
 
-renderDriverSelects();
+rdrv();
 </script>
 </body>
 </html>
