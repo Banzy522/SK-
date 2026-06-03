@@ -1,61 +1,176 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>回収業務 報告フォーム</title>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="回収業務">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#ffffff">
-<style>
-*{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;background:#F5F5F0;min-height:100vh;}
-.app{max-width:430px;margin:0 auto;background:#fff;min-height:100vh;}
-.header{background:#fff;border-bottom:1px solid #E8E8E4;padding:12px 16px 0;position:sticky;top:0;z-index:100;}
-.header-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
-.header-title{font-size:15px;font-weight:700;color:#1A1A18;}
-.hbtn{background:none;border:none;cursor:pointer;font-size:20px;padding:2px;color:#888;}
-.status-bar{font-size:11px;color:#3B7D1A;padding-bottom:8px;display:flex;align-items:center;gap:5px;}
-.sdot{width:7px;height:7px;border-radius:50%;background:#3B7D1A;display:inline-block;flex-shrink:0;}
-.tabs{display:flex;overflow-x:auto;scrollbar-width:none;}
-.tabs::-webkit-scrollbar{display:none;}
-.maintab{flex-shrink:0;padding:8px 10px;font-size:11px;color:#888;border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;}
-.maintab.active{color:#1A1A18;border-bottom-color:#1A1A18;font-weight:700;}
-.content{padding:14px;}
-.page{display:none;}.page.active{display:block;}
-.card{background:#fff;border:1px solid #E8E8E4;border-radius:12px;padding:14px;margin-bottom:12px;}
-.card-title{font-size:13px;font-weight:700;color:#1A1A18;margin-bottom:14px;display:flex;align-items:center;gap:6px;}
-.fi{margin-bottom:12px;}
-.fl{font-size:12px;color:#666;margin-bottom:5px;display:block;font-weight:500;}
-.fi input[type=text],.fi input[type=date],.fi input[type=time],.fi input[type=number],.fi select,.fi textarea{width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;}
-.fi textarea{resize:vertical;min-height:65px;}
-.fi input:focus,.fi select:focus,.fi textarea:focus{outline:none;border-color:#1A1A18;}
-.drow{display:flex;gap:8px;}.drow input{flex:1;}
-.rg{display:flex;flex-direction:column;gap:7px;}
-.ri{display:flex;align-items:center;gap:9px;font-size:14px;color:#1A1A18;cursor:pointer;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;}
-.ri input[type=radio]{width:16px;height:16px;accent-color:#1A1A18;flex-shrink:0;}
-.ri.sel{border-color:#1A1A18;background:#F8F8F5;}
-.cg{display:flex;gap:8px;}
-.ci{flex:1;display:flex;align-items:center;justify-content:center;padding:10px 4px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;cursor:pointer;font-weight:500;}
-.ci.sel{border-color:#1A1A18;color:#1A1A18;background:#F8F8F5;}
-.tcalc{background:#F8F8F5;border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;margin-top:7px;}
-.tcalc-l{font-size:12px;color:#666;}
-.tcalc-v{font-size:18px;font-weight:700;color:#1A1A18;}
-.sbtn{width:100%;background:#1A1A18;color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;}
-.sbtn:disabled{opacity:0.4;cursor:not-allowed;}
-.ssub{font-size:12px;font-weight:600;color:#666;margin:12px 0 7px;padding-bottom:4px;border-bottom:1px solid #E8E8E4;}
-.cgrid{display:grid;grid-template-columns:repeat(2,1fr);gap:7px;margin-bottom:6px;}
-.ci2{display:flex;flex-direction:column;gap:3px;}
-.cl{font-size:11px;color:#666;font-weight:500;}
-.cinp{width:100%;font-size:14px;padding:7px 9px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;}
-.cinp:focus{outline:none;border-color:#1A1A18;}
-.dtabs{display:flex;gap:5px;margin-bottom:12px;flex-wrap:wrap;}
-.dtab{padding:5px 12px;font-size:12px;border:1px solid #E0E0DB;border-radius:20px;cursor:pointer;color:#888;background:#fff;font-weight:500;}
-.dtab.active{background:#1A1A18;color:#fff;border-color:#1A1A18;}
-.dpage{display:none;}.dpage.active{display:block;}
-.toast{font-size:13px;padding:10px 13px;border-radius:10px;display:none;text-align:center;margin-top:8px;font-weight:500;}
-.tok{background:#EAF5DC;color:#2D6B0F;}
-.terr{background:#FDECEA;color:#B71C1C;}
-.tsend{background:#E8
+// ===================================================
+// 廃棄物管理アプリ - Google Apps Script v3 (修正版)
+// ===================================================
+var SPREADSHEET_ID = '1DcDn2NEgb_uMh5bavenh_lW8wNGxB0RmCKN8jC6G618';
+
+function doPost(e) {
+  try {
+    var data;
+
+    // フォームPOST（payload パラメータ）とJSON両方に対応
+    if (e.parameter && e.parameter.payload) {
+      data = JSON.parse(e.parameter.payload);
+    } else if (e.postData && e.postData.contents) {
+      data = JSON.parse(e.postData.contents);
+    } else {
+      return buildResponse({status:'error', message:'no data received'});
+    }
+
+    var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var type = data.type;
+
+    if (type === '集積所') {
+      var sheet = getOrCreateSheet(ss, '①集積所');
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(['報告日','ドライバー名','ページ','左右','集積所番号','報告理由','その他詳細','送信日時']);
+        formatHeader(sheet);
+      }
+      sheet.appendRow([data.date||'', data.driver||'', 'P'+(data.page||''), data.lr||'', (data.spotNo||'')+'番', data.reason||'', data.otherDetail||'', new Date()]);
+    }
+    else if (type === '車両') {
+      var sheet = getOrCreateSheet(ss, '②車両');
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(['報告日','ドライバー名','内容','詳細','送信日時']);
+        formatHeader(sheet);
+      }
+      sheet.appendRow([data.date||'', data.driver||'', data.content||'', data.otherDetail||'', new Date()]);
+    } // ⭕️ 全角スペースを削除しました
+    else if (type === '排出量_CSV') {
+      var sheet = getOrCreateSheet(ss, '④排出量');
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(['報告日','曜日','コース','可燃(kg)','不燃(kg)','ペット(kg)','送信日時']);
+        formatHeader(sheet);
+      }
+      
+      // 送られてきた配列データをループしてすべて追記
+      if (data.list && data.list.length > 0) {
+        var now = new Date();
+        data.list.forEach(function(row) {
+          sheet.appendRow([
+            row.date || '', 
+            row.yob || '', 
+            row.course || '', 
+            row.kanen || 0, 
+            row.funen || 0, 
+            row.pet || 0, 
+            now
+          ]);
+        });
+      }
+      return buildResponse({status:'ok', message: data.list.length + '件のデータをインポートしました'});
+    }
+    else if (type === '処分場') {
+      var sheet = getOrCreateSheet(ss, '③処分場');
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(['報告日','ドライバー名','待機開始','待機終了','待機時間(分)','送信日時']);
+        formatHeader(sheet);
+      }
+      sheet.appendRow([data.date||'', data.driver||'', data.startTime||'', data.endTime||'', data.waitMinutes||'', new Date()]);
+    }
+    else if (type === '排出量') {
+      var sheet = getOrCreateSheet(ss, '④排出量');
+      if (sheet.getLastRow() === 0) {
+        // ⭕️ CSV側と列の形式を一致させました
+        sheet.appendRow(['報告日','曜日','コース','可燃(kg)','不燃(kg)','ペット(kg)','送信日時']);
+        formatHeader(sheet);
+      }
+      // 通常の画面入力データもCSVと同じ形式で1行ずつ正しく入るように調整
+      var k = parseFloat(data.kanen) || 0;
+      var f = parseFloat(data.funen) || 0;
+      var p = parseFloat(data.pet) || 0;
+      sheet.appendRow([data.date||'', data.day||'', data.course||'手動入力', k, f, p, new Date()]);
+    }
+    else if (type === '回収時間') {
+      var sheet = getOrCreateSheet(ss, '⑤回収時間');
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(['ドライバー名','開始時刻','荷下ろし終了時刻','所要時間','送信日時']);
+        formatHeader(sheet);
+      }
+      sheet.appendRow([data.driver||'', '8:30', data.endTime||'', data.workTime||'', new Date()]);
+    }
+    else if (type === '粗大・不適正') {
+      var sheet = getOrCreateSheet(ss, '⑥粗大・不適正');
+      if (sheet.getLastRow() === 0) {
+        sheet.appendRow(['ドライバー名','ページ','左右','集積所番号','住所','報告理由','詳細','送信日時']);
+        formatHeader(sheet);
+      }
+      sheet.appendRow([data.driver||'', 'P'+(data.page||''), data.lr||'', (data.spotNo||'')+'番', data.address||'', data.reason||'', data.detail||'', new Date()]);
+    }
+    else {
+      return buildResponse({status:'error', message:'unknown type: '+type});
+    }
+
+    return buildResponse({status:'ok'});
+
+  } catch(err) {
+    return buildResponse({status:'error', message: err.message});
+  }
+}
+
+function doGet(e) {
+  var action = e && e.parameter && e.parameter.action ? e.parameter.action : 'ping';
+
+  if (action === 'ping') {
+    return buildResponse({status:'ok', message:'稼働中'});
+  }
+
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+
+  if (action === 'getAll') {
+    var result = {};
+    result['集積所']   = sheetToJson(ss, '①集積所');
+    result['車両']     = sheetToJson(ss, '②車両');
+    result['処分場']   = sheetToJson(ss, '③処分場');
+    result['排出量']   = sheetToJson(ss, '④排出量');
+    result['回収時間'] = sheetToJson(ss, '⑤回収時間');
+    result['粗大不適正'] = sheetToJson(ss, '⑥粗大・不適正');
+    return buildResponse({status:'ok', data: result});
+  }
+
+  return buildResponse({status:'error', message:'unknown action'});
+}
+
+function sheetToJson(ss, sheetName) {
+  var sheet = ss.getSheetByName(sheetName);
+  if (!sheet || sheet.getLastRow() < 2) return [];
+  var rows = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var result = [];
+  for (var i = 1; i < rows.length; i++) {
+    var obj = {};
+    for (var j = 0; j < headers.length; j++) {
+      var val = rows[i][j];
+      if (val instanceof Date) {
+        val = Utilities.formatDate(val, 'Asia/Tokyo', 'yyyy/MM/dd HH:mm');
+      }
+      obj[headers[j]] = val;
+    }
+    result.push(obj);
+  }
+  return result;
+}
+
+function buildResponse(obj) {
+  var output = ContentService.createTextOutput(JSON.stringify(obj));
+  output.setMimeType(ContentService.MimeType.JSON);
+  return output;
+}
+
+function getOrCreateSheet(ss, name) {
+  var sheet = ss.getSheetByName(name);
+  if (!sheet) sheet = ss.insertSheet(name);
+  return sheet;
+}
+
+function formatHeader(sheet) {
+  var range = sheet.getRange(1, 1, 1, sheet.getLastColumn());
+  range.setBackground('#4A4A4A');
+  range.setFontColor('#FFFFFF');
+  range.setFontWeight('bold');
+}
+
+function testWrite() {
+  var ss = SpreadsheetApp.openById(SPREADSHEET_ID);
+  var sheet = getOrCreateSheet(ss, 'テスト');
+  sheet.appendRow(['接続テスト成功', new Date()]);
+}
