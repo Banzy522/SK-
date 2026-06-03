@@ -94,6 +94,85 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .legend{display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:#666;}
 .ldot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;}
 .no-data{font-size:13px;color:#888;text-align:center;padding:12px 0;}
+
+.csv-upload-box {
+  margin-top: 15px;
+  padding: 15px;
+  background: #fdfdfd;
+  border: 2px dashed #9FE1CB;
+  border-radius: 8px;
+  text-align: center;
+}
+.csv-upload-box input[type="file"] {
+  display: none;
+}
+.csv-label {
+  display: inline-block;
+  padding: 8px 16px;
+  background: #9FE1CB;
+  color: #1A1A18;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 8px;
+}
+.csv-hint {
+  font-size: 11px;
+  color: #666;
+}
+.chart-container {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.chart-title {
+  font-size: 13px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+.matrix-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.matrix-table th, .matrix-table td {
+  border: 1px solid #eee;
+  padding: 6px 4px;
+  text-align: center;
+}
+.matrix-table th {
+  background: #f5f5f5;
+}
+.bar-chart-flex {
+  display: flex;
+  align-items: flex-end;
+  height: 120px;
+  border-left: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  padding: 10px 5px 0;
+  margin-bottom: 15px;
+}
+.bar-group {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 100%;
+  margin: 0 2px;
+  position: relative;
+}
+.bar-item {
+  width: 100%;
+  border-radius: 2px 2px 0 0;
+  min-height: 2px;
+}
+.bar-item-yob { background: #9FE1CB; }
+.bar-item-crs { background: #B5D4F4; }
+
 </style>
 </head>
 <body>
@@ -501,42 +580,27 @@ function getGPS(){
   },function(){st.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';},{timeout:10000});
 }
 
-// ===== 送信（Fetch API方式に修正） =====
-function post(payload, bid, snid, tid, reset){
-  var btn = document.getElementById(bid), sn = document.getElementById(snid), toast = document.getElementById(tid);
-  btn.disabled = true;
-  sn.style.display = 'block';
-  toast.style.display = 'none';
-
-  // モダンな通信方式（Fetch API）でGASに直接データを送信
-  fetch(GAS, {
-    method: 'POST',
-    mode: 'no-cors', // ← GASのCORSエラーを回避する重要な設定です
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(payload) // GASの「e.postData.contents」に届きます
-  })
-  .then(function() {
-    // 送信が成功したときの処理
-    sn.style.display = 'none';
-    toast.className = 'toast tok';
-    toast.textContent = '✅ 保存しました';
-    toast.style.display = 'block';
-    btn.disabled = false;
-    
-    if (reset) reset();
-    setTimeout(function(){ toast.style.display = 'none'; }, 5000);
-  })
-  .catch(function(err) {
-    // 万が一エラーが起きたときの処理
-    sn.style.display = 'none';
-    toast.className = 'toast terr';
-    toast.textContent = '⚠️ 送信に失敗しました';
-    toast.style.display = 'block';
-    btn.disabled = false;
-    setTimeout(function(){ toast.style.display = 'none'; }, 5000);
-  });
+// ===== 送信（フォームPOST方式） =====
+function post(payload,bid,snid,tid,reset){
+  var btn=document.getElementById(bid),sn=document.getElementById(snid),toast=document.getElementById(tid);
+  btn.disabled=true;sn.style.display='block';toast.style.display='none';
+  var form=document.createElement('form');
+  form.method='POST';form.action=GAS;form.target='gif_'+bid;form.style.display='none';
+  var inp=document.createElement('input');inp.type='hidden';inp.name='payload';inp.value=JSON.stringify(payload);
+  form.appendChild(inp);document.body.appendChild(form);
+  var iname='gif_'+bid,ifr=document.getElementById(iname);
+  if(!ifr){ifr=document.createElement('iframe');ifr.name=iname;ifr.id=iname;ifr.style.display='none';document.body.appendChild(ifr);}
+  var done=false;
+  ifr.onload=function(){if(done)return;done=true;finish();};
+  setTimeout(function(){if(done)return;done=true;finish();},4000);
+  function finish(){
+    sn.style.display='none';toast.className='toast tok';toast.textContent='✅ スプレッドシートに保存しました';
+    toast.style.display='block';btn.disabled=false;
+    if(form.parentNode)document.body.removeChild(form);
+    if(reset)reset();
+    setTimeout(function(){toast.style.display='none';},5000);
+  }
+  form.submit();
 }
 
 // ===== 各フォーム送信 =====
@@ -751,6 +815,177 @@ function rDrv(rows){
 }
 
 rdrv();
+
+// ===== CSVアップロード処理 =====
+function handleCsvUpload() {
+  var fileInput = document.getElementById('csvFile');
+  if (!fileInput.files.length) return;
+  var file = fileInput.files[0];
+  var reader = new FileReader();
+  
+  reader.onload = function(e) {
+    var text = e.target.result;
+    var lines = text.split(/\r\n|\r|\n/);
+    if (lines.length <= 1) {
+      alert('CSVファイルにデータが含まれていません。');
+      return;
+    }
+    
+    var csvData = [];
+    var headers = [];
+    var startIdx = 0;
+    
+    // ヘッダー行の判定
+    var firstLine = lines[0].split(',');
+    if (isNaN(parseFloat(firstLine[3])) && firstLine[3] !== "") {
+      headers = firstLine.map(function(h) { return h.trim(); });
+      startIdx = 1;
+    }
+    
+    for (var i = startIdx; i < lines.length; i++) {
+      if (!lines[i]) continue;
+      var cols = lines[i].split(',');
+      if (cols.length < 4) continue;
+      
+      var rowObj = {};
+      if (headers.length > 0) {
+        rowObj['date'] = cols[headers.indexOf('日付')] || cols[0];
+        rowObj['yob'] = cols[headers.indexOf('曜日')] || cols[1];
+        rowObj['course'] = cols[headers.indexOf('コース')] || cols[2];
+        rowObj['kanen'] = cols[headers.indexOf('可燃(kg)')] || cols[headers.indexOf('可燃')] || cols[3];
+        rowObj['funen'] = cols[headers.indexOf('不燃(kg)')] || cols[headers.indexOf('不燃')] || cols[4];
+        rowObj['pet'] = cols[headers.indexOf('ペット(kg)')] || cols[headers.indexOf('ペット')] || cols[5];
+      } else {
+        rowObj['date'] = cols[0];
+        rowObj['yob'] = cols[1];
+        rowObj['course'] = cols[2];
+        rowObj['kanen'] = cols[3];
+        rowObj['funen'] = cols[4];
+        rowObj['pet'] = cols[5];
+      }
+      csvData.push(rowObj);
+    }
+    
+    if (csvData.length === 0) {
+      alert('有効なデータがパースできませんでした。');
+      return;
+    }
+    
+    if (confirm(csvData.length + '件の排出量データを一括インポートしますか？')) {
+      var payload = {
+        type: '排出量_CSV',
+        list: csvData
+      };
+      post(payload, 'btn-nav-3', 'sn', 'toast', function() {
+        fileInput.value = "";
+        alert('CSVデータのインポートリクエストを送信しました。シートを確認してください。');
+        loadData();
+      });
+    }
+  };
+  reader.readAsText(file, 'Shift_JIS');
+}
+
+// ===== 年間ダッシュボード描画ロジックの拡張 =====
+// rEmit関数（既存）をラップ拡張して月次グラフとマトリクスを生成する
+var original_rEmit = rEmit;
+rEmit = function(rows) {
+  // 既存の曜日・コース別ダッシュボード処理を実行
+  original_rEmit(rows);
+  
+  if (!rows || !rows.length) return;
+  
+  // 月次集計用 (1月〜12月)
+  var monthlyYob = {}, monthlyCourse = {};
+  // 曜日×コースのマトリクス用
+  var matrix = {}, yobSet = ['月','火','水','木','金','土','日'], courseSet = {};
+  
+  for(var m=1; m<=12; m++) {
+    monthlyYob[m] = { total: 0, count: 0 };
+    monthlyCourse[m] = { total: 0, count: 0 };
+  }
+  
+  rows.forEach(function(r) {
+    var dStr = r['報告日'] || r['日付'];
+    if (!dStr) return;
+    var d = new Date(dStr);
+    var month = d.getMonth() + 1;
+    if (isNaN(month)) return;
+    
+    var k = parseFloat(r['可燃(kg)']) || 0;
+    var f = parseFloat(r['不燃(kg)']) || 0;
+    var p = parseFloat(r['ペット(kg)']) || 0;
+    var totalKg = k + f + p;
+    
+    var yob = (r['曜日'] || '').replace(/[曜日]/g, '');
+    var course = r['コース'] || 'その他';
+    
+    if(month >= 1 && month <= 12) {
+      monthlyYob[month].total += totalKg;
+      monthlyYob[month].count += 1;
+      monthlyCourse[month].total += totalKg;
+      monthlyCourse[month].count += 1;
+    }
+    
+    if(yob) {
+      if(!matrix[yob]) matrix[yob] = {};
+      if(!matrix[yob][course]) matrix[yob][course] = 0;
+      matrix[yob][course] += totalKg;
+      courseSet[course] = true;
+    }
+  });
+  
+  // 1. 月次グラフのHTML生成
+  var chartHtml = '<div class="bar-chart-flex">';
+  var maxVal = 1;
+  for(var m=1; m<=12; m++) {
+    var yAvg = monthlyYob[m].count ? (monthlyYob[m].total / monthlyYob[m].count) : 0;
+    var cAvg = monthlyCourse[m].count ? (monthlyCourse[m].total / monthlyCourse[m].count) : 0;
+    if (yAvg > maxVal) maxVal = yAvg;
+    if (cAvg > maxVal) maxVal = cAvg;
+  }
+  
+  for(var m=1; m<=12; m++) {
+    var yAvg = monthlyYob[m].count ? (monthlyYob[m].total / monthlyYob[m].count) : 0;
+    var cAvg = monthlyCourse[m].count ? (monthlyCourse[m].total / monthlyCourse[m].count) : 0;
+    var yPct = (yAvg / maxVal) * 100;
+    var cPct = (cAvg / maxVal) * 100;
+    
+    chartHtml += '<div class="bar-group" title="' + m + '月: 曜日平均 ' + Math.round(yAvg) + 'kg / コース平均 ' + Math.round(cAvg) + 'kg">';
+    chartHtml += '  <div class="bar-item bar-item-yob" style="height:' + yPct + '%;"></div>';
+    chartHtml += '  <div class="bar-item bar-item-crs" style="height:' + cPct + '%;"></div>';
+    chartHtml += '</div>';
+  }
+  chartHtml += '</div>';
+  
+  // 月ラベル
+  chartHtml += '<div style="display:flex; justify-content:space-between; padding-left:10px; font-size:10px; color:#666; margin-bottom:10px;">';
+  for(var m=1; m<=12; m++) {
+    chartHtml += '<div style="flex:1; text-align:center;">' + m + '月</div>';
+  }
+  chartHtml += '</div>';
+  
+  document.getElementById('dashboard-monthly-chart').innerHTML = chartHtml;
+  
+  // 2. マトリクス詳細テーブルの生成
+  var courses = Object.keys(courseSet);
+  var tableHtml = '<table class="matrix-table"><thead><tr><th>曜日</th>';
+  courses.forEach(function(c) { tableHtml += '<th>' + c + '</th>'; });
+  tableHtml += '</tr></thead><tbody>';
+  
+  yobSet.forEach(function(y) {
+    tableHtml += '<tr><th>' + y + '</th>';
+    courses.forEach(function(c) {
+      var val = (matrix[y] && matrix[y][course]) ? Math.round(matrix[y][course]) : 0;
+      tableHtml += '<td>' + (val > 0 ? val.toLocaleString() : '-') + '</td>';
+    });
+    tableHtml += '</tr>';
+  });
+  tableHtml += '</tbody></table>';
+  
+  document.getElementById('dashboard-matrix-table').innerHTML = tableHtml;
+};
+
 </script>
 </body>
 </html>
