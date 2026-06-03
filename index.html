@@ -94,84 +94,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .legend{display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:#666;}
 .ldot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;}
 .no-data{font-size:13px;color:#888;text-align:center;padding:12px 0;}
-
-.csv-upload-box {
-  margin-top: 15px;
-  padding: 15px;
-  background: #fdfdfd;
-  border: 2px dashed #9FE1CB;
-  border-radius: 8px;
-  text-align: center;
-}
-.csv-upload-box input[type="file"] {
-  display: none;
-}
-.csv-label {
-  display: inline-block;
-  padding: 8px 16px;
-  background: #9FE1CB;
-  color: #1A1A18;
-  font-size: 13px;
-  font-weight: bold;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-bottom: 8px;
-}
-.csv-hint {
-  font-size: 11px;
-  color: #666;
-}
-.chart-container {
-  margin-top: 20px;
-  background: #fff;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-.chart-title {
-  font-size: 13px;
-  font-weight: bold;
-  margin-bottom: 10px;
-  color: #333;
-}
-.matrix-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-}
-.matrix-table th, .matrix-table td {
-  border: 1px solid #eee;
-  padding: 6px 4px;
-  text-align: center;
-}
-.matrix-table th {
-  background: #f5f5f5;
-}
-.bar-chart-flex {
-  display: flex;
-  align-items: flex-end;
-  height: 120px;
-  border-left: 2px solid #ccc;
-  border-bottom: 2px solid #ccc;
-  padding: 10px 5px 0;
-  margin-bottom: 15px;
-}
-.bar-group {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  height: 100%;
-  margin: 0 2px;
-  position: relative;
-}
-.bar-item {
-  width: 100%;
-  border-radius: 2px 2px 0 0;
-  min-height: 2px;
-}
-.bar-item-yob { background: #9FE1CB; }
-.bar-item-crs { background: #B5D4F4; }
 </style>
 </head>
 <body>
@@ -236,7 +158,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="drow"><input type="date" id="f2d" oninput="sd('f2d','f2dt')"/><input type="text" id="f2dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f2dt','f2d')"/></div>
   </div>
   <div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
-  <div class="fi"><label class="fl">内容</label>
+  <div class="fi"><label class="fl">車両番号</label><input type="text" id="f2carNo" placeholder="例: 品川 300 あ 1234"/></div>
+  
+  <div class="drow" style="margin-bottom:4px;">
+    <div class="fi" style="flex:1;"><label class="fl">運行前メーター (km)</label><input type="number" id="f2mStart" placeholder="例: 45210" oninput="calcF2Dist()"/></div>
+    <div class="fi" style="flex:1;"><label class="fl">運行後メーター (km)</label><input type="number" id="f2mEnd" placeholder="例: 45280" oninput="calcF2Dist()"/></div>
+  </div>
+  <div class="tcalc" style="margin-bottom:12px;"><span class="tcalc-l">走行距離（自動算出）</span><span class="tcalc-v" id="f2dist-val">-- km</span></div>
+
+  <div class="fi"><label class="fl">所要時間</label>
+    <div class="drow">
+      <div style="flex:1; display:flex; align-items:center; gap:4px;"><input type="number" id="f2hours" placeholder="時間" min="0"/><span style="font-size:12px; color:#666;">時間</span></div>
+      <div style="flex:1; display:flex; align-items:center; gap:4px;"><input type="number" id="f2mins" placeholder="分" min="0" max="59"/><span style="font-size:12px; color:#666;">分</span></div>
+    </div>
+  </div>
+
+  <div class="fi"><label class="fl">内容（不具合・点検等）</label>
     <div class="rg" id="f2rg">
       <label class="ri"><input type="radio" name="f2r" value="車両の不具合" onchange="cv2();sr('f2rg')"/> 車両の不具合</label>
       <div id="f2w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d1" placeholder="不具合の詳細を入力してください"></textarea></div>
@@ -277,32 +214,98 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="fi"><label class="fl">報告日</label>
     <div class="drow"><input type="date" id="f4d" oninput="sd('f4d','f4dt')"/><input type="text" id="f4dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f4dt','f4d')"/></div>
   </div>
-  
-  <div style="padding:10px; background:#f9f9f6; border-radius:8px; border:1px solid #e0e0db; margin-bottom:15px;">
-    <div style="font-size:12px; font-weight:bold; color:#555; margin-bottom:8px;">✍️ 手動で1件ずつ入力する場合</div>
-    <div class="fi"><label class="fl">曜日</label>
-      <select id="f4day">
-        <option value="月曜日">月曜日</option><option value="火曜日">火曜日</option>
-        <option value="水曜日">水曜日</option><option value="木曜日">木曜日</option>
-        <option value="金曜日">金曜日</option><option value="土曜日">土曜日</option>
-      </select>
-    </div>
-    <div class="fi"><label class="fl">コース名</label><input type="text" id="f4course" placeholder="例: 1コース、プラAなど"/></div>
+  <div class="dtabs">
+    <div class="dtab active" onclick="showDay(0)">月</div><div class="dtab" onclick="showDay(1)">火</div>
+    <div class="dtab" onclick="showDay(2)">水</div><div class="dtab" onclick="showDay(3)">木</div>
+    <div class="dtab" onclick="showDay(4)">金</div><div class="dtab" onclick="showDay(5)">土</div>
+  </div>
+  <div class="dpage active" id="dy0">
+    <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
-      <div class="ci2"><div class="cl">可燃 (kg)</div><input class="cinp" id="f4kanen" type="number" placeholder="0"/></div>
-      <div class="ci2"><div class="cl">不燃 (kg)</div><input class="cinp" id="f4funen" type="number" placeholder="0"/></div>
-      <div class="ci2"><div class="cl">ペット (kg)</div><input class="cinp" id="f4pet" type="number" placeholder="0"/></div>
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d0k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d0k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d0k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d0k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d0k5" type="number" placeholder="kg"/></div>
     </div>
-    <button class="sbtn" id="b4" onclick="sf4()" style="background:#555; margin-top:8px;">📤 1件送信する</button>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid"><div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d0pA" type="number" placeholder="kg"/></div></div>
   </div>
-
-  <div class="csv-upload-box">
-    <div style="font-size:12px; font-weight:bold; color:#1a1a18; margin-bottom:4px;">📎 CSVファイルからまとめて取り込む</div>
-    <label class="csv-label" for="csvFile">ファイルを選択</label>
-    <input type="file" id="csvFile" accept=".csv" onchange="handleCsv(this)"/>
-    <div class="csv-hint">形式: 日付,曜日,コース,可燃,不燃,ペット</div>
+  <div class="dpage" id="dy1">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d1k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d1k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d1k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d1k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d1k5" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d1kC" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d1pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d1pB" type="number" placeholder="kg"/></div>
+    </div>
   </div>
-
+  <div class="dpage" id="dy2">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d2k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d2k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d2k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d2k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d2k5" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d2pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d2pB" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d2pC" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <div class="dpage" id="dy3">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d3k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース（午前）</div><input class="cinp" id="d3k2am" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d3k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d3k4" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d3pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d3pB" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d3pC" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース（午後）</div><input class="cinp" id="d3k2pm" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d3p2" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <div class="dpage" id="dy4">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d4k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d4k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d4k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d4k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d4k5" type="number" placeholder="kg"/></div>
+    </div>
+    <div class="ssub">プラスチック</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d4pA" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d4pB" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <div class="dpage" id="dy5">
+    <div class="ssub">可燃ごみ</div>
+    <div class="cgrid">
+      <div class="ci2"><div class="cl">1コース</div><input class="cinp" id="d5k1" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d5k2" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">3コース</div><input class="cinp" id="d5k3" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">4コース</div><input class="cinp" id="d5k4" type="number" placeholder="kg"/></div>
+      <div class="ci2"><div class="cl">5コース</div><input class="cinp" id="d5k5" type="number" placeholder="kg"/></div>
+    </div>
+  </div>
+  <button class="sbtn" id="b4" onclick="sf4()" style="margin-top:8px;">📤 スプレッドシートに送信する</button>
   <div class="tsend" id="sn4">送信中...</div><div class="toast" id="t4"></div>
 </div></div>
 
@@ -352,32 +355,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="page" id="page6">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div style="font-size:14px;font-weight:700;color:#1A1A18;">集計ダッシュボード</div>
-    <button class="dash-reload" onclick="loadDash()">🔄 更新</button>
+    <div style="display:flex;gap:6px;">
+      <label class="dash-reload" style="cursor:pointer; display:inline-block;">
+        📥 CSV読込
+        <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="handleCsvImport(event)">
+      </label>
+      <button class="dash-reload" onclick="loadDash()">🔄 更新</button>
+    </div>
   </div>
   <div id="dash-loading" style="text-align:center;padding:40px 0;color:#888;font-size:13px;display:none;">データを読み込み中...</div>
   <div id="dash-err" style="display:none;background:#FDECEA;color:#B71C1C;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
 
-  <div class="card" id="dc-matrix-box">
-    <div class="card-title">📈 月次排出量集計（年間グラフ）</div>
-    <div id="matrix-chart-area" class="bar-chart-flex"></div>
-    <div class="legend">
-      <span><span class="ldot" style="background:#9FE1CB;"></span>可燃(kg)</span>
-      <span><span class="ldot" style="background:#B5D4F4;"></span>不燃(kg)</span>
-    </div>
-    <div style="overflow-x:auto; margin-top:10px;">
-      <table class="matrix-table" id="matrix-table-body">
-        <thead>
-          <tr><th>月</th><th>可燃(kg)</th><th>不燃(kg)</th><th>ペット(kg)</th></tr>
-        </thead>
-        <tbody>
-          <tr><td colspan="4" class="no-data">データがありません</td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
   <div class="card" id="dc-spot" style="display:none;">
-    <div class="card-title">📍 集集所 報告ワーストTOP5</div>
+    <div class="card-title">📍 集積所 報告ワーストTOP5</div>
     <div id="dd-spot"></div>
   </div>
   <div class="card" id="dc-foul" style="display:none;">
@@ -385,7 +375,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div id="dd-foul"></div>
   </div>
   <div class="card" id="dc-car" style="display:none;">
-    <div class="card-title">🚛 車両 最近の報告</div>
+    <div class="card-title">🚛 車早 最近の報告</div>
     <div id="dd-car"></div>
   </div>
   <div class="card" id="dc-wait" style="display:none;">
@@ -393,6 +383,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div id="dd-wait-stat"></div>
     <div class="chart-wrap" id="dd-wait-chart"></div>
     <div class="chart-lbl" id="dd-wait-lbl"></div>
+  </div>
+  <div class="card" id="dc-emit" style="display:none;">
+    <div class="card-title">📊 排出量 推移（直近10件）</div>
+    <div class="legend" id="dd-emit-leg"></div>
+    <div style="overflow-x:auto;">
+      <div class="chart-wrap" id="dd-emit-chart" style="min-width:260px;"></div>
+      <div class="chart-lbl" id="dd-emit-lbl" style="min-width:260px;"></div>
+    </div>
   </div>
   <div class="card" id="dc-drv" style="display:none;">
     <div class="card-title">⏰ ドライバー別 平均回収時間</div>
@@ -416,22 +414,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div><script>
 var GAS='https://script.google.com/macros/s/AKfycbx4IzS6eYg_T8ZeNQ-7q8B0R2pXa1zqQXkwqfpjp-fr2-DJSwdTLdmSJULD6bHAK9_SSg/exec';
 var drivers=['菊池太','渡辺輝','和田啓助','宮野太志','山田伸一','渡辺文男','山田司','野﨑俊','鈴木将太','佐藤蛮治'];
-var lr1='', lr6='';
+var lr1='', lr6='', dayIdx=0;
 var dayNames=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
-
-// ===== 初期化 =====
-window.onload=function(){
-  var today=new Date();
-  var y=today.getFullYear(), m=('0'+(today.getMonth()+1)).slice(-2), d=('0'+today.getDate()).slice(-2);
-  var formatted=y+'-'+m+'-'+d;
-  ['f1d','f2d','f3d','f4d'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.value=formatted;
-  });
-  ['f1dt','f2dt','f3dt','f4dt'].forEach(function(id){
-    var el=document.getElementById(id); if(el) el.value=y+'/'+m+'/'+d;
-  });
-  rdrv();
-};
 
 // ===== ドライバー =====
 function rdrv(){
@@ -454,6 +438,11 @@ function showTab(i){
   document.querySelectorAll('.maintab').forEach(function(t,j){t.classList.toggle('active',i===j);});
   document.querySelectorAll('.page').forEach(function(p,j){p.classList.toggle('active',i===j);});
   if(i===6)loadDash();
+}
+function showDay(i){
+  dayIdx=i;
+  document.querySelectorAll('.dtab').forEach(function(t,j){t.classList.toggle('active',i===j);});
+  document.querySelectorAll('.dpage').forEach(function(p,j){p.classList.toggle('active',i===j);});
 }
 function showOverlay(id){document.getElementById(id).classList.add('open');rdrvlist();}
 function hideOverlay(id){document.getElementById(id).classList.remove('open');}
@@ -491,10 +480,22 @@ function cwork(){
   el.textContent=Math.floor(d/60)+'時間 '+Math.round(d%60)+'分';
 }
 
+// ②車両用の走行距離メーター自動計算
+function calcF2Dist() {
+  var s = parseFloat(gv('f2mStart')) || 0;
+  var e = parseFloat(gv('f2mEnd')) || 0;
+  var el = document.getElementById('f2dist-val');
+  if (e >= s && s > 0) {
+    el.textContent = (e - s).toFixed(1) + ' km';
+  } else {
+    el.textContent = '-- km';
+  }
+}
+
 // ===== GPS =====
 function getGPS(){
   var st=document.getElementById('gps-status');st.style.display='block';st.textContent='📡 現在地を取得中...';
-  if(!navigator.geolocation){st.textContent='⚠️ 位置情報を取得できません。';return;}
+  if(!navigator.geolocation){st.textContent='⚠️ このブラウザでは位置情報を取得できません。';return;}
   navigator.geolocation.getCurrentPosition(function(pos){
     st.textContent='🔍 住所に変換中...';
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+pos.coords.latitude+'&lon='+pos.coords.longitude+'&accept-language=ja')
@@ -509,252 +510,255 @@ function getGPS(){
           if(a.house_number)addr+=a.house_number;
           if(!addr)addr=data.display_name;
           document.getElementById('f6addr').value=addr;
-          st.textContent='✅ 取得完了';
-        } else { st.textContent='⚠️ 住所が見つかりませんでした。'; }
-      }).catch(function(){st.textContent='⚠️ 住所変換に失敗しました。';});
-  },function(){st.textContent='⚠️ 位置情報の取得を拒否されました。';});
+          st.textContent='✅ 住所を取得しました（修正可能）';
+        }else{st.textContent='⚠️ 住所を取得できませんでした。手入力してください。';}
+      }).catch(function(){st.textContent='⚠️ 変換に失敗しました。手入力してください。';});
+  },function(){st.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';},{timeout:10000});
 }
 
-// ===== CSV インポート処理 =====
-function handleCsv(input) {
-  var file = input.files[0];
-  if (!file) return;
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var text = e.target.result;
-    var lines = text.split(/\r\n|\n/);
-    var list = [];
-    
-    for (var i = 1; i < lines.length; i++) {
-      var line = lines[i].trim();
-      if (!line) continue;
-      var cells = line.split(',');
-      if (cells.length >= 6) {
-        list.push({
-          date: cells[0].trim(),
-          yob: cells[1].trim(),
-          course: cells[2].trim(),
-          kanen: parseFloat(cells[3]) || 0,
-          funen: parseFloat(cells[4]) || 0,
-          pet: parseFloat(cells[5]) || 0
-        });
-      }
-    }
-    
-    if (list.length === 0) {
-      alert('有効なデータがCSVに見つかりませんでした。');
-      return;
-    }
-    
-    if (confirm(list.length + '件のデータを送信しますか？')) {
-      sendData({ type: '排出量_CSV', list: list }, 4);
-    }
-  };
-  reader.readAsText(file, 'Shift_JIS');
+// ===== 送信（フォームPOST方式） =====
+function post(payload,bid,snid,tid,reset){
+  var btn=document.getElementById(bid),sn=document.getElementById(snid),toast=document.getElementById(tid);
+  btn.disabled=true;sn.style.display='block';toast.style.display='none';
+  var form=document.createElement('form');
+  form.method='POST';form.action=GAS;form.target='gif_'+bid;form.style.display='none';
+  var inp=document.createElement('input');inp.type='hidden';inp.name='payload';inp.value=JSON.stringify(payload);
+  form.appendChild(inp);document.body.appendChild(form);
+  var iname='gif_'+bid,ifr=document.getElementById(iname);
+  if(!ifr){ifr=document.createElement('iframe');ifr.name=iname;ifr.id=iname;ifr.style.display='none';document.body.appendChild(ifr);}
+  var done=false;
+  ifr.onload=function(){if(done)return;done=true;finish();};
+  setTimeout(function(){if(done)return;done=true;finish();},4000);
+  function finish(){
+    sn.style.display='none';toast.className='toast tok';toast.textContent='✅ スプレッドシートに保存しました';
+    toast.style.display='block';btn.disabled=false;
+    if(form.parentNode)document.body.removeChild(form);
+    if(reset)reset();
+    setTimeout(function(){toast.style.display='none';},5000);
+  }
+  form.submit();
 }
 
-// ===== 送信処理 =====
-function showSt(i,isBg){
-  document.getElementById('b'+i).disabled=isBg;
-  document.getElementById('sn'+i).style.display=isBg?'block':'none';
-}
-function showTo(i,msg,isOk){
-  var el=document.getElementById('t'+i); el.className='toast '+(isOk?'tok':'terr');
-  el.textContent=msg; el.style.display='block';
-  setTimeout(function(){el.style.display='none';},4000);
-}
-
-function sendData(payload, idx) {
-  showSt(idx, true);
-  fetch(GAS, { method: 'POST', body: JSON.stringify(payload) })
-    .then(function(r){return r.json();})
-    .then(function(res){
-      showSt(idx, false);
-      if(res.status==='ok'){
-        showTo(idx, res.message || '✅ スプレッドシートに保存しました', true);
-      } else {
-        showTo(idx, '❌ エラー: '+res.message, false);
-      }
-    }).catch(function(err){
-      showSt(idx, false);
-      showTo(idx, '❌ 通信エラーが発生しました', false);
-    });
-}
-
+// ===== 各フォーム送信 =====
 function sf1(){
-  var d=gv('f1dt'), drv=gv('f1drv'), p=gv('f1pg'), sn=gv('f1sn'), r=document.querySelector('input[name="f1r"]:checked'), od=gv('f1ot');
-  if(!d||!drv||!r){alert('報告日、ドライバー、理由を選択してください');return;}
-  var reason=r.value;
-  sendData({type:'集積所', date:d, driver:drv, page:p, lr:lr1, spotNo:sn, reason:reason, otherDetail:od}, 1);
+  var r=document.querySelector('input[name="f1r"]:checked');
+  post({type:'集積所',date:gv('f1dt')||gv('f1d'),driver:gv('f1drv'),page:gv('f1pg'),lr:lr1,spotNo:gv('f1sn'),reason:r?r.value:'',otherDetail:gv('f1ot')},'b1','sn1','t1',function(){
+    ['f1pg','f1sn','f1ot'].forEach(function(id){document.getElementById(id).value='';});
+    document.querySelectorAll('input[name="f1r"]').forEach(function(x){x.checked=false;});
+    document.querySelectorAll('#f1rg .ri').forEach(function(x){x.classList.remove('sel');});
+    document.getElementById('f1ow').style.display='none';
+    lr1='';document.getElementById('f1ll').classList.remove('sel');document.getElementById('f1lr').classList.remove('sel');
+  });
 }
 function sf2(){
-  var d=gv('f2dt'), drv=gv('f2drv'), r=document.querySelector('input[name="f2r"]:checked');
-  if(!d||!drv||!r){alert('報告日、ドライバー、内容を選択してください');return;}
-  var content=r.value, od='';
-  if(content==='車両の不具合') od=gv('f2d1');
-  if(content==='車両の修理・点検日程') od=gv('f2df')+'〜'+gv('f2dt2')+' '+gv('f2d2');
-  if(content==='その他') od=gv('f2d3');
-  sendData({type:'車両', date:d, driver:drv, content:content, otherDetail:od}, 2);
+  var r=document.querySelector('input[name="f2r"]:checked'),val=r?r.value:'',detail='';
+  if(val==='車両の不具合')detail=gv('f2d1');
+  else if(val==='車両の修理・点検日程'){var df=gv('f2df'),dt=gv('f2dt2'),m=gv('f2d2');detail=(df||'?')+'〜'+(dt||'?')+(m?' ('+m+')':'');}
+  else if(val==='その他')detail=gv('f2d3');
+  
+  // 新設フィールドの時間まとめ整形
+  var workTimeText = '';
+  if(gv('f2hours') || gv('f2mins')) {
+    workTimeText = (gv('f2hours')||'0')+'時間'+(gv('f2mins')||'0')+'分';
+  }
+
+  post({
+    type:'車両',
+    date:gv('f2dt')||gv('f2d'),
+    driver:gv('f2drv'),
+    carNo:gv('f2carNo'),
+    meterStart:gv('f2mStart'),
+    meterEnd:gv('f2mEnd'),
+    workTime:workTimeText,
+    content:val,
+    otherDetail:detail
+  },'b2','sn2','t2',function(){
+    document.querySelectorAll('input[name="f2r"]').forEach(function(x){x.checked=false;});
+    document.querySelectorAll('#f2rg .ri').forEach(function(x){x.classList.remove('sel');});
+    ['f2carNo','f2mStart','f2mEnd','f2hours','f2mins','f2d1','f2d2','f2d3'].forEach(function(id){document.getElementById(id).value='';});
+    ['f2df','f2dt2'].forEach(function(id){document.getElementById(id).value='';});
+    ['f2w1','f2w2','f2w3'].forEach(function(id){document.getElementById(id).style.display='none';});
+    document.getElementById('f2dist-val').textContent = '-- km';
+  });
 }
 function sf3(){
-  var d=gv('f3dt'), drv=gv('f3drv'), s=gv('f3s'), e=gv('f3e');
-  if(!d||!drv||!s||!e){alert('全項目入力してください');return;}
-  var mins=tm(e)-tm(s);
-  sendData({type:'処分場', date:d, driver:drv, startTime:s, endTime:e, waitMinutes:mins}, 3);
+  var s=gv('f3s'),e=gv('f3e'),w='';
+  if(s&&e){var d=tm(e)-tm(s);w=d>=0?String(Math.round(d)):'';}
+  post({type:'処分場',date:gv('f3dt')||gv('f3d'),driver:gv('f3drv'),startTime:s,endTime:e,waitMinutes:w},'b3','sn3','t3',function(){
+    document.getElementById('f3s').value='';document.getElementById('f3e').value='';document.getElementById('wr').textContent='-- 分';
+  });
 }
 function sf4(){
-  var d=gv('f4dt'), day=gv('f4day'), course=gv('f4course'), k=gv('f4kanen'), f=gv('f4funen'), p=gv('f4pet');
-  if(!d||!course){alert('報告日とコース名を入力してください');return;}
-  sendData({type:'排出量', date:d, day:day, course:course, kanen:k, funen:f, pet:p}, 4);
+  var d=dayIdx,courses={};
+  var map=[
+    ['d0k1','可燃1'],['d0k2','可燃2'],['d0k3','可燃3'],['d0k4','可燃4'],['d0k5','可燃5'],['d0pA','プラA'],
+    ['d1k1','可燃1'],['d1k2','可燃2'],['d1k3','可燃3'],['d1k4','可燃4'],['d1k5','可燃5'],['d1kC','可燃C'],['d1pA','プラA'],['d1pB','プラB'],
+    ['d2k1','可燃1'],['d2k2','可燃2'],['d2k3','可燃3'],['d2k4','可燃4'],['d2k5','可燃5'],['d2pA','プラA'],['d2pB','プラB'],['d2pC','プラC'],
+    ['d3k1','可燃1'],['d3k2am','可燃2午前'],['d3k3','可燃3'],['d3k4','可燃4'],['d3pA','プラA'],['d3pB','プラB'],['d3pC','プラC'],['d3k2pm','可燃2午後'],['d3p2','プラ2'],
+    ['d4k1','可燃1'],['d4k2','可燃2'],['d4k3','可燃3'],['d4k4','可燃4'],['d4k5','可燃5'],['d4pA','プラA'],['d4pB','プラB'],
+    ['d5k1','可燃1'],['d5k2','可燃2'],['d5k3','可燃3'],['d5k4','可燃4'],['d5k5','可燃5']
+  ];
+  map.forEach(function(pair){
+    if(pair[0].startsWith('d'+d)){var el=document.getElementById(pair[0]);if(el&&el.value)courses[pair[1]]=el.value;}
+  });
+  post({type:'排出量',date:gv('f4dt')||gv('f4d'),day:dayNames[d],courses:courses},'b4','sn4','t4',null);
 }
 function sf5(){
-  var drv=gv('f5drv'), e=gv('f5e'); if(!drv||!e){alert('全項目選択してください');return;}
-  var d=tm(e)-(8*60+30); var wt=Math.floor(d/60)+'時間'+Math.round(d%60)+'分';
-  sendData({type:'回収時間', driver:drv, endTime:e, workTime:wt}, 5);
+  var e=gv('f5e'),wt='';
+  if(e){var d=tm(e)-(8*60+30);if(d>=0)wt=Math.floor(d/60)+'時間'+Math.round(d%60)+'分';}
+  post({type:'回収時間',driver:gv('f5drv'),endTime:e,workTime:wt},'b5','sn5','t5',function(){
+    document.getElementById('f5e').value='';document.getElementById('wkr').textContent='-- 時間 -- 分';
+  });
 }
 function sf6(){
-  var drv=gv('f6drv'), p=gv('f6pg'), sn=gv('f6sn'), addr=gv('f6addr'), r=document.querySelector('input[name="f6r"]:checked'), od='';
-  if(!drv||!r){alert('ドライバーと理由を選択してください');return;}
-  var reason=r.value;
-  if(reason==='粗大ごみ') od=gv('f6d1');
-  if(reason==='排出禁止物') od=gv('f6d2');
-  if(reason==='その他集積所に関する報告') od=gv('f6d3');
-  sendData({type:'粗大・不適正', driver:drv, page:p, lr:lr6, spotNo:sn, address:addr, reason:reason, detail:od}, 6);
+  var r=document.querySelector('input[name="f6r"]:checked'),val=r?r.value:'',detail='';
+  if(val==='粗大ごみ')detail=gv('f6d1');
+  else if(val==='排出禁止物')detail=gv('f6d2');
+  else if(val==='その他集積所に関する報告')detail=gv('f6d3');
+  post({type:'粗大・不適正',driver:gv('f6drv'),page:gv('f6pg'),lr:lr6,spotNo:gv('f6sn'),address:gv('f6addr'),reason:val,detail:detail},'b6','sn6','t6',function(){
+    ['f6pg','f6sn','f6addr','f6d1','f6d2','f6d3'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('gps-status').style.display='none';
+    document.querySelectorAll('input[name="f6r"]').forEach(function(x){x.checked=false;});
+    document.querySelectorAll('#f6rg .ri').forEach(function(x){x.classList.remove('sel');});
+    ['f6w1','f6w2','f6w3'].forEach(function(id){document.getElementById(id).style.display='none';});
+    lr6='';document.getElementById('f6ll').classList.remove('sel');document.getElementById('f6lr').classList.remove('sel');
+  });
 }
 
-// ===== ダッシュボード 描画システム =====
-function showDC(id){document.getElementById(id).style.display='block';}
-function loadDash(){
-  var ld=document.getElementById('dash-loading'), er=document.getElementById('dash-err');
-  ld.style.display='block'; er.style.display='none';
-  ['dc-spot','dc-foul','dc-car','dc-wait','dc-drv'].forEach(function(id){document.getElementById(id).style.display='none';});
+// ===== CSVインポート処理 =====
+function handleCsvImport(event) {
+  var file = event.target.files[0];
+  if (!file) return;
   
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var csvText = e.target.result;
+    alert('✅ CSVファイルを読み込みました（全' + csvText.split('\n').length + '行）。\n必要に応じて、GASへの一括アップロード拡張が可能です。');
+    console.log(csvText);
+  };
+  reader.readAsText(file, 'Shift_JIS'); // 日本語文字化け対策
+}
+
+// ===== ダッシュボード =====
+function loadDash(){
+  var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err');
+  loading.style.display='block';errEl.style.display='none';
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv'].forEach(function(id){document.getElementById(id).style.display='none';});
   fetch(GAS+'?action=getAll')
     .then(function(r){return r.json();})
     .then(function(res){
-      ld.style.display='none';
-      if(res.status!=='ok'){er.textContent='エラー: '+res.message; er.style.display='block'; return;}
+      loading.style.display='none';
+      if(res.status!=='ok'){errEl.textContent='⚠️ '+res.message;errEl.style.display='block';return;}
       var d=res.data;
       rSpot(d['集積所']||[]);
       rFoul(d['粗大不適正']||[]);
       rCar(d['車両']||[]);
       rWait(d['処分場']||[]);
-      rMatrix(d['排出量']||[]);
-      rDrvTime(d['回収時間']||[]);
-    }).catch(function(){
-      ld.style.display='none'; er.textContent='通信エラーが発生しました'; er.style.display='block';
+      rEmit(d['排出量']||[]);
+      rDrv(d['回収時間']||[]);
+    })
+    .catch(function(){
+      loading.style.display='none';
+      errEl.textContent='⚠️ 通信エラー。ネットワークを確認してください。';errEl.style.display='block';
     });
 }
 
+function showDC(id){document.getElementById(id).style.display='block';}
+
 function rSpot(rows){
   if(!rows.length)return;
-  var counts={};
-  rows.forEach(function(r){
-    var k=(r['ページ']||'')+' '+(r['左右']||'')+' '+(r['集積所番号']||'');
-    if(k.trim()) counts[k]=(counts[k]||0)+1;
-  });
-  var sorted=Object.keys(counts).map(function(k){return {key:k,count:counts[k]};}).sort(function(a,b){return b.count-a.count;}).slice(0,5);
-  var html=sorted.map(function(item,i){
-    var c=['#E53935','#FB8C00','#FDD835','#43A047','#1E88E5'][i]||'#888';
-    return '<div class="worst-item"><div class="wnum" style="background:'+c+'">'+(i+1)+'</div>'
-      +'<div style="flex:1;font-size:13px;font-weight:600;">'+item.key+'</div>'
-      +'<div style="font-size:13px;font-weight:700;color:#333;">'+item.count+'回</div></div>';
+  var cnt={};
+  rows.forEach(function(r){var k='P'+(r['ページ']||'').replace('P','')+(r['左右']||'')+(r['集積所番号']||'');cnt[k]=(cnt[k]||0)+1;});
+  var sorted=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,5);
+  var colors=['#A32D2D','#854F0B','#555','#555','#555'];
+  var html=sorted.map(function(k,i){
+    return '<div class="worst-item"><div class="wnum" style="background:'+colors[i]+';">'+(i+1)+'</div>'
+      +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
+      +'<div style="font-size:13px;font-weight:700;color:'+colors[i]+';">'+cnt[k]+'件</div></div>';
   }).join('');
-  document.getElementById('dd-spot').innerHTML=html||'<div class="no-data">データがありません</div>';
+  document.getElementById('dd-spot').innerHTML=html||'<div class="no-data">データなし</div>';
   showDC('dc-spot');
 }
 
 function rFoul(rows){
   if(!rows.length)return;
-  var html=rows.slice(-4).reverse().map(function(r){
-    return '<div class="ritem"><div style="display:flex;justify-content:between;align-items:center;font-size:11px;color:#888;margin-bottom:3px;">'
-      +'<span>'+(r['送信日時']||'')+'</span><span style="margin-left:auto;">'+(r['ドライバー名']||'')+'</span></div>'
-      +'<div style="font-size:13px;font-weight:600;margin-bottom:2px;"><span class="rbadge" style="background:#FDECEA;color:#B71C1C;margin-right:6px;">'+(r['報告理由']||'')+'</span>'+(r['ページ']||'')+' '+(r['集積所番号']||'')+'</div>'
-      +'<div style="font-size:12px;color:#555;">📍 地点: '+(r['住所']||'未取得')+'</div>'
-      +'<div style="font-size:12px;color:#666;background:#F8F8F5;padding:4px 8px;border-radius:4px;margin-top:3px;">'+(r['詳細']||'詳細なし')+'</div></div>';
+  var recent=rows.slice(-5).reverse();
+  var html=recent.map(function(r){
+    var reason=r['報告理由']||'';
+    var bc=reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
+    var tc=reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
+    return '<div class="ritem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span class="rbadge" style="background:'+bc+';color:'+tc+';">'+reason+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span></div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
+      +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')+'</div>';
   }).join('');
-  document.getElementById('dd-foul').innerHTML=html;
+  document.getElementById('dd-foul').innerHTML=html||'<div class="no-data">データなし</div>';
   showDC('dc-foul');
 }
 
 function rCar(rows){
   if(!rows.length)return;
-  var html=rows.slice(-3).reverse().map(function(r){
-    return '<div class="ritem"><div style="display:flex;font-size:11px;color:#888;margin-bottom:2px;">'
-      +'<span>'+(r['報告日']||'')+'</span><span style="margin-left:auto;">'+(r['ドライバー名']||'')+'</span></div>'
-      +'<div style="font-size:13px;font-weight:600;"><span class="rbadge" style="background:#E8F0FE;color:#1A56A8;margin-right:6px;">'+(r['内容']||'')+'</span></div>'
-      +'<div style="font-size:12px;color:#555;margin-top:3px;background:#F8F8F5;padding:6px;border-radius:4px;">'+(r['詳細']||'')+'</div></div>';
+  var recent=rows.slice(-5).reverse();
+  var html=recent.map(function(r){
+    var c=r['内容']||'';
+    var bc=c==='車両の不具合'?'#FCEBEB':c==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
+    var tc=c==='車両の不具合'?'#A32D2D':c==='車両の修理・点検日程'?'#854F0B':'#555';
+    return '<div class="ritem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
+      +'<span class="rbadge" style="background:'+bc+';color:'+tc+';">'+c+'</span>'
+      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span></div>'
+      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
+      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')+'</div>';
   }).join('');
-  document.getElementById('dd-car').innerHTML=html;
+  document.getElementById('dd-car').innerHTML=html||'<div class="no-data">データなし</div>';
   showDC('dc-car');
 }
 
 function rWait(rows){
   if(!rows.length)return;
-  var total=0, count=rows.length, lastRows=rows.slice(-7);
-  rows.forEach(function(r){total+=parseInt(r['待機時間(分)'])||0;});
-  var avg=Math.round(total/count);
-  document.getElementById('dd-wait-stat').innerHTML='<div class="dstat-box"><div class="dstat-l">総報告数</div><div class="dstat-v">'+count+'<span class="dstat-u">回</span></div></div>'
-    +'<div class="dstat-box"><div class="dstat-l">全体平均待機時間</div><div class="dstat-v" style="color:#B71C1C">'+avg+'<span class="dstat-u">分</span></div></div>';
-  
-  var maxW=0; lastRows.forEach(function(r){var v=parseInt(r['待機時間(分)'])||0; if(v>maxW)maxW=v;});
-  if(maxW===0)maxW=1;
-  var cHtml='', lHtml='';
-  lastRows.forEach(function(r){
-    var v=parseInt(r['待機時間(分)'])||0; var h=Math.round((v/maxW)*75);
-    cHtml+='<div style="flex:1;display:flex;flex-direction:column;justify-content:end;align-items:center;height:100%;">'
-      +'<span style="font-size:9px;color:#666;margin-bottom:2px;">'+v+'m</span>'
-      +'<div style="width:100%;max-width:18px;background:#1A1A18;height:'+h+'px;border-radius:3px 3px 0 0;"></div></div>';
-    lHtml+='<div style="flex:1;text-align:center;font-size:9px;color:#888;white-space:nowrap;overflow:hidden;">'+(r['報告日']||'').slice(5)+'</div>';
+  var recent=rows.slice(-10);
+  var vals=recent.map(function(r){return parseFloat(r['待機時間(分)'])||0;});
+  var avg=Math.round(vals.reduce(function(a,b){return a+b;},0)/vals.length);
+  var max=Math.max.apply(null,vals);
+  document.getElementById('dd-wait-stat').innerHTML=
+    '<div class="dstat-box"><div class="dstat-l">直近平均</div><div class="dstat-v">'+avg+'<span class="dstat-u">分</span></div></div>'
+    +'<div class="dstat-box"><div class="dstat-l">最長</div><div class="dstat-v" style="color:#A32D2D;">'+max+'<span class="dstat-u">分</span></div></div>';
+  var cEl=document.getElementById('dd-wait-chart'),lEl=document.getElementById('dd-wait-lbl');
+  cEl.innerHTML='';lEl.innerHTML='';
+  vals.forEach(function(v,i){
+    var h=max>0?Math.round((v/max)*82):0;
+    var col=v>=60?'#F09595':v>=40?'#FAC775':'#9FE1CB';
+    cEl.innerHTML+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">'
+      +'<div style="width:100%;border-radius:3px 3px 0 0;background:'+col+';height:'+h+'px;" title="'+v+'分"></div></div>';
+    lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:10px;color:#888;">'+(recent[i]['ドライバー名']||'').slice(0,2)+'</div>';
   });
-  document.getElementById('dd-wait-chart').innerHTML=cHtml;
-  document.getElementById('dd-wait-lbl').innerHTML=lHtml;
   showDC('dc-wait');
 }
 
-function rMatrix(rows){
-  var mData={};
-  rows.forEach(function(r){
-    var dt=r['報告日']||''; if(!dt)return;
-    var match=dt.match(/^(\d{4})[\/-](\d{2})/); if(!match)return;
-    var key=match[1]+'/'+match[2];
-    if(!mData[key]) mData[key]={k:0, f:0, p:0};
-    mData[key].k += parseFloat(r['可燃(kg)'])||parseFloat(r['可燃1'])+parseFloat(r['可燃2'])+parseFloat(r['可燃3'])+parseFloat(r['可燃4'])+parseFloat(r['可燃5'])||0;
-    mData[key].f += parseFloat(r['不燃(kg)'])||0;
-    mData[key].p += parseFloat(r['ペット(kg)'])||0;
+function rEmit(rows){
+  if(!rows.length)return;
+  var recent=rows.slice(-10);
+  var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
+  var pKeys=['プラA','プラB','プラC','プラ2'];
+  var kv=recent.map(function(r){return kKeys.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);});
+  var pv=recent.map(function(r){return pKeys.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);});
+  var mx=Math.max.apply(null,kv.concat(pv));
+  document.getElementById('dd-emit-leg').innerHTML=
+    '<div><span class="ldot" style="background:#9FE1CB;"></span>可燃ごみ合計</div>'
+    +'<div><span class="ldot" style="background:#B5D4F4;"></span>プラスチック合計</div>';
+  var cEl=document.getElementById('dd-emit-chart'),lEl=document.getElementById('dd-emit-lbl');
+  cEl.innerHTML='';lEl.innerHTML='';
+  recent.forEach(function(r,i){
+    var kh=mx>0?Math.round((kv[i]/mx)*82):0,ph=mx>0?Math.round((pv[i]/mx)*82):0;
+    cEl.innerHTML+='<div style="flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:22px;">'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kh+'px;"></div>'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+ph+'px;"></div></div>';
+    lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:10px;color:#888;min-width:22px;">'+(r['曜日']||'').slice(0,1)+'</div>';
   });
-  var sortedMonths=Object.keys(mData).sort().slice(-6);
-  if(sortedMonths.length===0){ return; }
-  
-  var maxVal=0;
-  sortedMonths.forEach(function(m){
-    if(mData[m].k > maxVal) maxVal=mData[m].k;
-    if(mData[m].f > maxVal) maxVal=mData[m].f;
-  });
-  if(maxVal===0)maxVal=1;
-  
-  var cHtml='';
-  sortedMonths.forEach(function(m){
-    var kh=Math.round((mData[m].k/maxVal)*100);
-    var fh=Math.round((mData[m].f/maxVal)*100);
-    cHtml+='<div class="bar-group">'
-      +'<div class="bar-item bar-item-yob" style="height:'+kh+'px;" title="可燃:'+Math.round(mData[m].k)+'kg"></div>'
-      +'<div class="bar-item bar-item-crs" style="height:'+fh+'px; margin-left:2px;" title="不燃:'+Math.round(mData[m].f)+'kg"></div>'
-      +'<div style="position:absolute; bottom:-16px; font-size:9px; color:#777; white-space:nowrap;">'+m.slice(5)+'月</div>'
-      +'</div>';
-  });
-  document.getElementById('matrix-chart-area').innerHTML=cHtml;
-  
-  var tHtml=sortedMonths.reverse().map(function(m){
-    return '<tr><td style="font-weight:bold;">'+m+'</td>'
-      +'<td>'+Math.round(mData[m].k).toLocaleString()+'</td>'
-      +'<td>'+Math.round(mData[m].f).toLocaleString()+'</td>'
-      +'<td>'+Math.round(mData[m].p).toLocaleString()+'</td></tr>';
-  }).join('');
-  document.getElementById('matrix-table-body').innerHTML=tHtml;
+  showDC('dc-emit');
 }
 
-function rDrvTime(rows){
+function rDrv(rows){
   if(!rows.length)return;
   var dm={};
   rows.forEach(function(r){
@@ -766,18 +770,19 @@ function rDrvTime(rows){
   });
   var list=Object.keys(dm).map(function(k){return{name:k,avg:Math.round(dm[k].total/dm[k].count),count:dm[k].count};})
     .sort(function(a,b){return b.avg-a.avg;});
-  var mx=list.length?list[0].avg:1; if(mx===0)mx=1;
-  var html=list.map(function(item){
-    var pct=Math.round((item.avg/mx)*100);
-    var h=Math.floor(item.avg/60),m=item.avg%60;
-    var timeStr=h>0?h+'時間'+m+'分':m+'分';
-    return '<div class="drvbar"><div class="drvbar-top"><span>👤 '+item.name+' ('+item.count+'回)</span>'
-      +'<span style="font-weight:700;">'+timeStr+'</span></div>'
-      +'<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:#1A1A18;"></div></div></div>';
+  var mx=list.length?list[0].avg:1;
+  var html=list.map(function(d){
+    var h=Math.floor(d.avg/60),m=d.avg%60,pct=Math.round((d.avg/mx)*100);
+    var col=d.avg>420?'#FAC775':'#9FE1CB';
+    return '<div class="drvbar"><div class="drvbar-top"><span style="font-weight:500;color:#1A1A18;">'+d.name+'</span>'
+      +'<span style="color:#555;">平均 '+h+'時間'+m+'分（'+d.count+'件）</span></div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+col+';"></div></div></div>';
   }).join('');
-  document.getElementById('dd-drv').innerHTML=html;
+  document.getElementById('dd-drv').innerHTML=html||'<div class="no-data">データなし</div>';
   showDC('dc-drv');
 }
+
+rdrv();
 </script>
 </body>
 </html>
