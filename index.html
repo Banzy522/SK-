@@ -126,13 +126,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="page active" id="page0">
 <div class="card">
   <div class="card-title">📍 改善が必要な集積所の報告</div>
-  <div class="fi"><label class="fl">報告日</label>
-    <div class="drow">
-      <input type="date" id="f1d" oninput="sd('f1d','f1dt')"/>
-      <input type="text" id="f1dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f1dt','f1d')"/>
-    </div>
-  </div>
-  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f1drv"></select></div>
+<div class="fi"><label class="fl">報告したドライバー名</label><select id="f1drv"></select></div>
   <div class="fi"><label class="fl">ページ番号（P〇〇）</label>
     <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;color:#888;font-weight:700;">P</span><input type="text" placeholder="例: 12" style="width:85px;" id="f1pg"/></div>
   </div>
@@ -160,10 +154,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="page" id="page1">
 <div class="card">
   <div class="card-title">🚛 車両報告</div>
-  <div class="fi"><label class="fl">報告日</label>
-    <div class="drow"><input type="date" id="f2d" oninput="sd('f2d','f2dt')"/><input type="text" id="f2dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f2dt','f2d')"/></div>
-  </div>
-  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
+<div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
   <div class="fi"><label class="fl">内容</label>
     <div class="rg" id="f2rg">
       <label class="ri"><input type="radio" name="f2r" value="車両の不具合" onchange="cv2();sr('f2rg')"/> 車両の不具合</label>
@@ -189,10 +180,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="page" id="page2">
 <div class="card">
   <div class="card-title">⏱️ 処分場 待機時間の報告</div>
-  <div class="fi"><label class="fl">報告日</label>
-    <div class="drow"><input type="date" id="f3d" oninput="sd('f3d','f3dt')"/><input type="text" id="f3dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f3dt','f3d')"/></div>
-  </div>
-  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f3drv"></select></div>
+<div class="fi"><label class="fl">報告したドライバー名</label><select id="f3drv"></select></div>
   <div class="fi"><label class="fl">待機開始時刻</label><input type="time" id="f3s" oninput="cw()"/></div>
   <div class="fi"><label class="fl">待機終了時刻</label><input type="time" id="f3e" oninput="cw()"/></div>
   <div class="tcalc"><span class="tcalc-l">待機時間（自動算出）</span><span class="tcalc-v" id="wr">-- 分</span></div>
@@ -204,10 +192,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="page" id="page3">
 <div class="card">
   <div class="card-title">📊 排出量の報告</div>
-  <div class="fi"><label class="fl">報告日</label>
-    <div class="drow"><input type="date" id="f4d" oninput="sd('f4d','f4dt')"/><input type="text" id="f4dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f4dt','f4d')"/></div>
-  </div>
-  <div class="dtabs">
+<div class="dtabs">
     <div class="dtab active" onclick="showDay(0)">月</div><div class="dtab" onclick="showDay(1)">火</div>
     <div class="dtab" onclick="showDay(2)">水</div><div class="dtab" onclick="showDay(3)">木</div>
     <div class="dtab" onclick="showDay(4)">金</div><div class="dtab" onclick="showDay(5)">土</div>
@@ -932,3 +917,4 @@ rdrv();
 </script>
 </body>
 </html>
+
