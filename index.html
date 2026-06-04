@@ -363,7 +363,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="page" id="page6">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div style="font-size:14px;font-weight:700;color:#1A1A18;">集計ダッシュボード</div>
-    <button class="dash-reload" onclick="loadDash()">🔄 更新</button>
+    <button class="dash-reload" id="dash-reload-btn" onclick="loadDash()">🔄 更新</button>
   </div>
   <div id="dash-loading" style="text-align:center;padding:40px 0;color:#888;font-size:13px;display:none;">データを読み込み中...</div>
   <div id="dash-err" style="display:none;background:#FDECEA;color:#B71C1C;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
@@ -607,51 +607,84 @@ function sf6(){
 }
 
 // ===== ダッシュボード =====
+var CACHE_KEY='dashCache', CACHE_TTL=5*60*1000; // 5分キャッシュ
+
 function loadDash(){
-  var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err');
-  loading.style.display='block';errEl.style.display='none';
+  var loading=document.getElementById('dash-loading');
+  var errEl=document.getElementById('dash-err');
+  errEl.style.display='none';
+
+  // ② キャッシュチェック：前回データがあれば即表示
+  try {
+    var cached=localStorage.getItem(CACHE_KEY);
+    if(cached){
+      var obj=JSON.parse(cached);
+      if(Date.now()-obj.ts < CACHE_TTL){
+        renderDash(obj.data);
+        // バックグラウンドで最新データを取得（表示は更新済みラベルで通知）
+        fetchDash(true);
+        return;
+      }
+    }
+  } catch(e){}
+
+  // キャッシュなし→ローディング表示してから取得
+  loading.style.display='block';
   ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){
     document.getElementById(id).style.display='none';
   });
+  fetchDash(false);
+}
 
-  // タイムアウト付きfetch（15秒）
-  var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  var timeoutId = setTimeout(function(){
-    if(controller) controller.abort();
-  }, 15000);
+function fetchDash(isBackground){
+  var loading=document.getElementById('dash-loading');
+  var errEl=document.getElementById('dash-err');
+  var reloadBtn=document.getElementById('dash-reload-btn');
 
-  var fetchOpts = controller ? {signal: controller.signal} : {};
+  if(isBackground && reloadBtn){
+    reloadBtn.textContent='🔄 更新中...';
+    reloadBtn.disabled=true;
+  }
 
-  fetch(GAS+'?action=getAll', fetchOpts)
-    .then(function(r){ return r.json(); })
+  var controller=typeof AbortController!=='undefined'?new AbortController():null;
+  var timeoutId=setTimeout(function(){if(controller)controller.abort();},15000);
+  var fetchOpts=controller?{signal:controller.signal}:{};
+
+  fetch(GAS+'?action=getAll',fetchOpts)
+    .then(function(r){return r.json();})
     .then(function(res){
       clearTimeout(timeoutId);
       loading.style.display='none';
+      if(reloadBtn){reloadBtn.textContent='🔄 更新';reloadBtn.disabled=false;}
       if(res.status!=='ok'){
-        errEl.textContent='⚠️ '+res.message;
-        errEl.style.display='block';
+        if(!isBackground){errEl.textContent='⚠️ '+res.message;errEl.style.display='block';}
         return;
       }
-      var d=res.data;
-      // 各セクションを順番に描画（重い処理を分散）
-      setTimeout(function(){ rSpot(d['集積所']||[]); }, 0);
-      setTimeout(function(){ rFoul(d['粗大不適正']||[]); }, 50);
-      setTimeout(function(){ rCar(d['車両']||[]); }, 100);
-      setTimeout(function(){ rWait(d['処分場']||[]); }, 150);
-      setTimeout(function(){ rEmit(d['排出量']||[]); }, 200);
-      setTimeout(function(){ rDrv(d['回収時間']||[]); }, 250);
-      setTimeout(function(){ rAnnual(d['排出量']||[]); }, 300);
+      // キャッシュ保存
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data:res.data}));}catch(e){}
+      renderDash(res.data);
     })
     .catch(function(err){
       clearTimeout(timeoutId);
       loading.style.display='none';
-      if(err && err.name==='AbortError'){
-        errEl.textContent='⚠️ 読み込みがタイムアウトしました。🔄更新ボタンで再試行してください。';
-      } else {
-        errEl.textContent='⚠️ 通信エラー。ネットワークを確認して🔄更新ボタンを押してください。';
+      if(reloadBtn){reloadBtn.textContent='🔄 更新';reloadBtn.disabled=false;}
+      if(!isBackground){
+        var msg=err&&err.name==='AbortError'
+          ?'⚠️ タイムアウトしました。🔄更新ボタンで再試行してください。'
+          :'⚠️ 通信エラー。🔄更新ボタンで再試行してください。';
+        errEl.textContent=msg;errEl.style.display='block';
       }
-      errEl.style.display='block';
     });
+}
+
+function renderDash(d){
+  setTimeout(function(){rSpot(d['集積所']||[]);},0);
+  setTimeout(function(){rFoul(d['粗大不適正']||[]);},50);
+  setTimeout(function(){rCar(d['車両']||[]);},100);
+  setTimeout(function(){rWait(d['処分場']||[]);},150);
+  setTimeout(function(){rEmit(d['排出量']||[]);},200);
+  setTimeout(function(){rDrv(d['回収時間']||[]);},250);
+  setTimeout(function(){rAnnual(d['排出量']||[]);},300);
 }
 
 function showDC(id){document.getElementById(id).style.display='block';}
