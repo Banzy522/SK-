@@ -398,6 +398,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="card-title">⏰ ドライバー別 平均回収時間</div>
     <div id="dd-drv"></div>
   </div>
+  <div class="card" id="dc-annual" style="display:none;">
+    <div class="card-title">📅 年間物量 月次推移</div>
+    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+      <button onclick="setAnnualMode('total')" id="af-total" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">合計</button>
+      <button onclick="setAnnualMode('kanen')" id="af-kanen" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">可燃ごみ</button>
+      <button onclick="setAnnualMode('pla')" id="af-pla" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">プラ</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <div id="annual-chart" style="display:flex;align-items:flex-end;gap:3px;height:120px;min-width:300px;padding:4px 0;"></div>
+      <div id="annual-labels" style="display:flex;gap:3px;margin-top:4px;min-width:300px;"></div>
+    </div>
+    <div id="annual-detail" style="margin-top:14px;"></div>
+  </div>
 </div>
 
 </div><!-- content -->
@@ -619,19 +632,18 @@ function loadDash(){
     var cached=localStorage.getItem(CACHE_KEY);
     if(cached){
       var obj=JSON.parse(cached);
-      if(Date.now()-obj.ts < CACHE_TTL){
+      if(obj && obj.data && (Date.now()-obj.ts < CACHE_TTL)){
         renderDash(obj.data);
-        // バックグラウンドで最新データを取得（表示は更新済みラベルで通知）
         fetchDash(true);
         return;
       }
     }
-  } catch(e){}
+  } catch(e){ console.log('cache error:',e); }
 
   // キャッシュなし→ローディング表示してから取得
   loading.style.display='block';
   ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){
-    document.getElementById(id).style.display='none';
+    var el=document.getElementById(id);if(el)el.style.display='none';
   });
   fetchDash(false);
 }
@@ -678,6 +690,12 @@ function fetchDash(isBackground){
 }
 
 function renderDash(d){
+  // 既存カードを一旦非表示
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.style.display='none';
+  });
+  var loading=document.getElementById('dash-loading');
+  if(loading)loading.style.display='none';
   setTimeout(function(){rSpot(d['集積所']||[]);},0);
   setTimeout(function(){rFoul(d['粗大不適正']||[]);},50);
   setTimeout(function(){rCar(d['車両']||[]);},100);
@@ -687,7 +705,7 @@ function renderDash(d){
   setTimeout(function(){rAnnual(d['排出量']||[]);},300);
 }
 
-function showDC(id){document.getElementById(id).style.display='block';}
+function showDC(id){var el=document.getElementById(id);if(el)el.style.display='block';}
 
 function rSpot(rows){
   if(!rows.length)return;
