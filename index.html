@@ -610,24 +610,47 @@ function sf6(){
 function loadDash(){
   var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err');
   loading.style.display='block';errEl.style.display='none';
-  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){document.getElementById(id).style.display='none';});
-  fetch(GAS+'?action=getAll')
-    .then(function(r){return r.json();})
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){
+    document.getElementById(id).style.display='none';
+  });
+
+  // タイムアウト付きfetch（15秒）
+  var controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  var timeoutId = setTimeout(function(){
+    if(controller) controller.abort();
+  }, 15000);
+
+  var fetchOpts = controller ? {signal: controller.signal} : {};
+
+  fetch(GAS+'?action=getAll', fetchOpts)
+    .then(function(r){ return r.json(); })
     .then(function(res){
+      clearTimeout(timeoutId);
       loading.style.display='none';
-      if(res.status!=='ok'){errEl.textContent='⚠️ '+res.message;errEl.style.display='block';return;}
+      if(res.status!=='ok'){
+        errEl.textContent='⚠️ '+res.message;
+        errEl.style.display='block';
+        return;
+      }
       var d=res.data;
-      rSpot(d['集積所']||[]);
-      rFoul(d['粗大不適正']||[]);
-      rCar(d['車両']||[]);
-      rWait(d['処分場']||[]);
-      rEmit(d['排出量']||[]);
-      rDrv(d['回収時間']||[]);
-      rAnnual(d['排出量']||[]);
+      // 各セクションを順番に描画（重い処理を分散）
+      setTimeout(function(){ rSpot(d['集積所']||[]); }, 0);
+      setTimeout(function(){ rFoul(d['粗大不適正']||[]); }, 50);
+      setTimeout(function(){ rCar(d['車両']||[]); }, 100);
+      setTimeout(function(){ rWait(d['処分場']||[]); }, 150);
+      setTimeout(function(){ rEmit(d['排出量']||[]); }, 200);
+      setTimeout(function(){ rDrv(d['回収時間']||[]); }, 250);
+      setTimeout(function(){ rAnnual(d['排出量']||[]); }, 300);
     })
-    .catch(function(){
+    .catch(function(err){
+      clearTimeout(timeoutId);
       loading.style.display='none';
-      errEl.textContent='⚠️ 通信エラー。ネットワークを確認してください。';errEl.style.display='block';
+      if(err && err.name==='AbortError'){
+        errEl.textContent='⚠️ 読み込みがタイムアウトしました。🔄更新ボタンで再試行してください。';
+      } else {
+        errEl.textContent='⚠️ 通信エラー。ネットワークを確認して🔄更新ボタンを押してください。';
+      }
+      errEl.style.display='block';
     });
 }
 
@@ -635,6 +658,7 @@ function showDC(id){document.getElementById(id).style.display='block';}
 
 function rSpot(rows){
   if(!rows.length)return;
+  rows=rows.slice(-100);
   var cnt={};
   rows.forEach(function(r){var k='P'+(r['ページ']||'').replace('P','')+(r['左右']||'')+(r['集積所番号']||'');cnt[k]=(cnt[k]||0)+1;});
   var sorted=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,5);
@@ -650,6 +674,7 @@ function rSpot(rows){
 
 function rFoul(rows){
   if(!rows.length)return;
+  rows=rows.slice(-20);
   var recent=rows.slice(-5).reverse();
   var html=recent.map(function(r){
     var reason=r['報告理由']||'';
@@ -667,6 +692,7 @@ function rFoul(rows){
 
 function rCar(rows){
   if(!rows.length)return;
+  rows=rows.slice(-20);
   var recent=rows.slice(-5).reverse();
   var html=recent.map(function(r){
     var c=r['内容']||'';
@@ -917,4 +943,3 @@ rdrv();
 </script>
 </body>
 </html>
-
