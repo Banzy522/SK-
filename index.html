@@ -94,6 +94,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .legend{display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:#666;}
 .ldot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;}
 .no-data{font-size:13px;color:#888;text-align:center;padding:12px 0;}
+
+.col-map-row{display:flex;flex-direction:column;gap:3px;}
+.col-map-label{font-size:11px;color:#666;}
+.col-map-sel{font-size:12px;padding:5px 7px;border:1px solid #E0E0DB;border-radius:6px;background:#fff;color:#1A1A18;width:100%;}
 </style>
 </head>
 <body>
@@ -118,6 +122,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div>
 <div class="content">
 
+<!-- ①集積所 -->
 <div class="page active" id="page0">
 <div class="card">
   <div class="card-title">📍 改善が必要な集積所の報告</div>
@@ -151,6 +156,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn1">送信中...</div><div class="toast" id="t1"></div>
 </div></div>
 
+<!-- ②車両 -->
 <div class="page" id="page1">
 <div class="card">
   <div class="card-title">🚛 車両報告</div>
@@ -158,22 +164,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="drow"><input type="date" id="f2d" oninput="sd('f2d','f2dt')"/><input type="text" id="f2dt" placeholder="2026/05/24" style="max-width:122px;" oninput="sdt('f2dt','f2d')"/></div>
   </div>
   <div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
-  <div class="fi"><label class="fl">車両番号</label><input type="text" id="f2carNo" placeholder="例: 品川 300 あ 1234"/></div>
-  
-  <div class="drow" style="margin-bottom:4px;">
-    <div class="fi" style="flex:1;"><label class="fl">運行前メーター (km)</label><input type="number" id="f2mStart" placeholder="例: 45210" oninput="calcF2Dist()"/></div>
-    <div class="fi" style="flex:1;"><label class="fl">運行後メーター (km)</label><input type="number" id="f2mEnd" placeholder="例: 45280" oninput="calcF2Dist()"/></div>
-  </div>
-  <div class="tcalc" style="margin-bottom:12px;"><span class="tcalc-l">走行距離（自動算出）</span><span class="tcalc-v" id="f2dist-val">-- km</span></div>
-
-  <div class="fi"><label class="fl">所要時間</label>
-    <div class="drow">
-      <div style="flex:1; display:flex; align-items:center; gap:4px;"><input type="number" id="f2hours" placeholder="時間" min="0"/><span style="font-size:12px; color:#666;">時間</span></div>
-      <div style="flex:1; display:flex; align-items:center; gap:4px;"><input type="number" id="f2mins" placeholder="分" min="0" max="59"/><span style="font-size:12px; color:#666;">分</span></div>
-    </div>
-  </div>
-
-  <div class="fi"><label class="fl">内容（不具合・点検等）</label>
+  <div class="fi"><label class="fl">内容</label>
     <div class="rg" id="f2rg">
       <label class="ri"><input type="radio" name="f2r" value="車両の不具合" onchange="cv2();sr('f2rg')"/> 車両の不具合</label>
       <div id="f2w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d1" placeholder="不具合の詳細を入力してください"></textarea></div>
@@ -194,6 +185,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn2">送信中...</div><div class="toast" id="t2"></div>
 </div></div>
 
+<!-- ③処分場 -->
 <div class="page" id="page2">
 <div class="card">
   <div class="card-title">⏱️ 処分場 待機時間の報告</div>
@@ -208,6 +200,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn3">送信中...</div><div class="toast" id="t3"></div>
 </div></div>
 
+<!-- ④排出量 -->
 <div class="page" id="page3">
 <div class="card">
   <div class="card-title">📊 排出量の報告</div>
@@ -219,6 +212,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="dtab" onclick="showDay(2)">水</div><div class="dtab" onclick="showDay(3)">木</div>
     <div class="dtab" onclick="showDay(4)">金</div><div class="dtab" onclick="showDay(5)">土</div>
   </div>
+  <!-- 月 -->
   <div class="dpage active" id="dy0">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -231,6 +225,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="ssub">プラスチック</div>
     <div class="cgrid"><div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d0pA" type="number" placeholder="kg"/></div></div>
   </div>
+  <!-- 火 -->
   <div class="dpage" id="dy1">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -247,6 +242,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d1pB" type="number" placeholder="kg"/></div>
     </div>
   </div>
+  <!-- 水 -->
   <div class="dpage" id="dy2">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -263,6 +259,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d2pC" type="number" placeholder="kg"/></div>
     </div>
   </div>
+  <!-- 木 -->
   <div class="dpage" id="dy3">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -280,6 +277,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">2コース</div><input class="cinp" id="d3p2" type="number" placeholder="kg"/></div>
     </div>
   </div>
+  <!-- 金 -->
   <div class="dpage" id="dy4">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -295,6 +293,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d4pB" type="number" placeholder="kg"/></div>
     </div>
   </div>
+  <!-- 土 -->
   <div class="dpage" id="dy5">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -307,8 +306,30 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   </div>
   <button class="sbtn" id="b4" onclick="sf4()" style="margin-top:8px;">📤 スプレッドシートに送信する</button>
   <div class="tsend" id="sn4">送信中...</div><div class="toast" id="t4"></div>
-</div></div>
+</div>
+<div class="card">
+  <div class="card-title">📂 CSVから一括取り込み</div>
+  <div style="font-size:12px;color:#666;margin-bottom:10px;line-height:1.6;">スプレッドシートからエクスポートしたCSVを選択してください。1行目はヘッダー行として扱います。</div>
+  <div class="fi">
+    <label class="fl">CSVファイルを選択</label>
+    <input type="file" id="csv-file" accept=".csv" onchange="previewCSV()" style="width:100%;font-size:13px;padding:8px;border:1px solid #E0E0DB;border-radius:8px;background:#F8F8F5;"/>
+  </div>
+  <div id="csv-preview" style="display:none;margin-bottom:10px;">
+    <div style="font-size:12px;color:#666;margin-bottom:5px;font-weight:500;">プレビュー（先頭3行）</div>
+    <div id="csv-preview-table" style="overflow-x:auto;font-size:11px;border:1px solid #E0E0DB;border-radius:8px;padding:8px;background:#F8F8F5;"></div>
+    <div style="font-size:12px;color:#888;margin-top:6px;" id="csv-row-count"></div>
+  </div>
+  <div id="csv-col-map" style="display:none;margin-bottom:10px;">
+    <div style="font-size:12px;color:#666;margin-bottom:8px;font-weight:500;">列の対応設定（自動検出済み・修正可能）</div>
+    <div id="csv-col-selects" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;"></div>
+  </div>
+  <button class="sbtn" id="csv-import-btn" onclick="importCSV()" style="display:none;background:#2D6B0F;">📥 スプレッドシートに一括保存</button>
+  <div class="tsend" id="csv-sending">送信中...</div>
+  <div class="toast" id="csv-toast"></div>
+</div>
+</div>
 
+<!-- ⑤回収時間 -->
 <div class="page" id="page4">
 <div class="card">
   <div class="card-title">⏰ 回収所要時間の報告</div>
@@ -320,6 +341,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn5">送信中...</div><div class="toast" id="t5"></div>
 </div></div>
 
+<!-- ⑥粗大・不適正 -->
 <div class="page" id="page5">
 <div class="card">
   <div class="card-title">🚨 粗大・不適正排出物・その他集積所報告</div>
@@ -352,16 +374,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn6">送信中...</div><div class="toast" id="t6"></div>
 </div></div>
 
+<!-- 📊集計ダッシュボード -->
 <div class="page" id="page6">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div style="font-size:14px;font-weight:700;color:#1A1A18;">集計ダッシュボード</div>
-    <div style="display:flex;gap:6px;">
-      <label class="dash-reload" style="cursor:pointer; display:inline-block;">
-        📥 CSV読込
-        <input type="file" id="csv-file" accept=".csv" style="display:none;" onchange="handleCsvImport(event)">
-      </label>
-      <button class="dash-reload" onclick="loadDash()">🔄 更新</button>
-    </div>
+    <button class="dash-reload" onclick="loadDash()">🔄 更新</button>
   </div>
   <div id="dash-loading" style="text-align:center;padding:40px 0;color:#888;font-size:13px;display:none;">データを読み込み中...</div>
   <div id="dash-err" style="display:none;background:#FDECEA;color:#B71C1C;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
@@ -375,12 +392,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div id="dd-foul"></div>
   </div>
   <div class="card" id="dc-car" style="display:none;">
-    <div class="card-title">🚛 車早 最近の報告</div>
+    <div class="card-title">🚛 車両 最近の報告</div>
     <div id="dd-car"></div>
   </div>
   <div class="card" id="dc-wait" style="display:none;">
     <div class="card-title">⏱️ 処分場 待機時間</div>
-    <div id="dd-wait-stat"></div>
+    <div class="dstat" id="dd-wait-stat"></div>
     <div class="chart-wrap" id="dd-wait-chart"></div>
     <div class="chart-lbl" id="dd-wait-lbl"></div>
   </div>
@@ -398,7 +415,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   </div>
 </div>
 
-</div><div class="overlay" id="drvOv">
+</div><!-- content -->
+
+<!-- ドライバー管理オーバーレイ -->
+<div class="overlay" id="drvOv">
   <div class="brow">
     <button class="bbtn" onclick="hideOverlay('drvOv')">←</button>
     <div class="btitle">ドライバー管理</div>
@@ -411,7 +431,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <button class="sbtn" onclick="hideOverlay('drvOv')">完了</button>
 </div>
 
-</div><script>
+</div><!-- app -->
+
+<script>
 var GAS='https://script.google.com/macros/s/AKfycbx4IzS6eYg_T8ZeNQ-7q8B0R2pXa1zqQXkwqfpjp-fr2-DJSwdTLdmSJULD6bHAK9_SSg/exec';
 var drivers=['菊池太','渡辺輝','和田啓助','宮野太志','山田伸一','渡辺文男','山田司','野﨑俊','鈴木将太','佐藤蛮治'];
 var lr1='', lr6='', dayIdx=0;
@@ -480,18 +502,6 @@ function cwork(){
   el.textContent=Math.floor(d/60)+'時間 '+Math.round(d%60)+'分';
 }
 
-// ②車両用の走行距離メーター自動計算
-function calcF2Dist() {
-  var s = parseFloat(gv('f2mStart')) || 0;
-  var e = parseFloat(gv('f2mEnd')) || 0;
-  var el = document.getElementById('f2dist-val');
-  if (e >= s && s > 0) {
-    el.textContent = (e - s).toFixed(1) + ' km';
-  } else {
-    el.textContent = '-- km';
-  }
-}
-
 // ===== GPS =====
 function getGPS(){
   var st=document.getElementById('gps-status');st.style.display='block';st.textContent='📡 現在地を取得中...';
@@ -555,30 +565,12 @@ function sf2(){
   if(val==='車両の不具合')detail=gv('f2d1');
   else if(val==='車両の修理・点検日程'){var df=gv('f2df'),dt=gv('f2dt2'),m=gv('f2d2');detail=(df||'?')+'〜'+(dt||'?')+(m?' ('+m+')':'');}
   else if(val==='その他')detail=gv('f2d3');
-  
-  // 新設フィールドの時間まとめ整形
-  var workTimeText = '';
-  if(gv('f2hours') || gv('f2mins')) {
-    workTimeText = (gv('f2hours')||'0')+'時間'+(gv('f2mins')||'0')+'分';
-  }
-
-  post({
-    type:'車両',
-    date:gv('f2dt')||gv('f2d'),
-    driver:gv('f2drv'),
-    carNo:gv('f2carNo'),
-    meterStart:gv('f2mStart'),
-    meterEnd:gv('f2mEnd'),
-    workTime:workTimeText,
-    content:val,
-    otherDetail:detail
-  },'b2','sn2','t2',function(){
+  post({type:'車両',date:gv('f2dt')||gv('f2d'),driver:gv('f2drv'),content:val,otherDetail:detail},'b2','sn2','t2',function(){
     document.querySelectorAll('input[name="f2r"]').forEach(function(x){x.checked=false;});
     document.querySelectorAll('#f2rg .ri').forEach(function(x){x.classList.remove('sel');});
-    ['f2carNo','f2mStart','f2mEnd','f2hours','f2mins','f2d1','f2d2','f2d3'].forEach(function(id){document.getElementById(id).value='';});
+    ['f2d1','f2d2','f2d3'].forEach(function(id){document.getElementById(id).value='';});
     ['f2df','f2dt2'].forEach(function(id){document.getElementById(id).value='';});
     ['f2w1','f2w2','f2w3'].forEach(function(id){document.getElementById(id).style.display='none';});
-    document.getElementById('f2dist-val').textContent = '-- km';
   });
 }
 function sf3(){
@@ -625,25 +617,11 @@ function sf6(){
   });
 }
 
-// ===== CSVインポート処理 =====
-function handleCsvImport(event) {
-  var file = event.target.files[0];
-  if (!file) return;
-  
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var csvText = e.target.result;
-    alert('✅ CSVファイルを読み込みました（全' + csvText.split('\n').length + '行）。\n必要に応じて、GASへの一括アップロード拡張が可能です。');
-    console.log(csvText);
-  };
-  reader.readAsText(file, 'Shift_JIS'); // 日本語文字化け対策
-}
-
 // ===== ダッシュボード =====
 function loadDash(){
   var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err');
   loading.style.display='block';errEl.style.display='none';
-  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv'].forEach(function(id){document.getElementById(id).style.display='none';});
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){document.getElementById(id).style.display='none';});
   fetch(GAS+'?action=getAll')
     .then(function(r){return r.json();})
     .then(function(res){
@@ -656,6 +634,7 @@ function loadDash(){
       rWait(d['処分場']||[]);
       rEmit(d['排出量']||[]);
       rDrv(d['回収時間']||[]);
+      rAnnual(d['排出量']||[]);
     })
     .catch(function(){
       loading.style.display='none';
@@ -780,6 +759,169 @@ function rDrv(rows){
   }).join('');
   document.getElementById('dd-drv').innerHTML=html||'<div class="no-data">データなし</div>';
   showDC('dc-drv');
+}
+
+
+// ===== CSV取り込み =====
+var csvData=[], csvHeaders=[];
+var annualRawData=[], annualMode='total';
+var KANEN_FIELDS=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
+var PLA_FIELDS=['プラA','プラB','プラC','プラ2'];
+var ALL_COURSE=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後','プラA','プラB','プラC','プラ2'];
+
+function parseCSVLine(line){
+  var result=[],cur='',inQ=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
+    else{cur+=c;}
+  }
+  result.push(cur.trim());
+  return result;
+}
+
+function previewCSV(){
+  var file=document.getElementById('csv-file').files[0];
+  if(!file)return;
+  var reader=new FileReader();
+  reader.onload=function(e){
+    var text=e.target.result;
+    if(text.charCodeAt(0)===0xFEFF)text=text.slice(1);
+    var lines=text.split('\n').filter(function(l){return l.trim();});
+    if(lines.length<2){alert('データが不足しています');return;}
+    csvHeaders=parseCSVLine(lines[0]);
+    csvData=lines.slice(1).map(function(l){return parseCSVLine(l);});
+    var previewLines=lines.slice(0,4);
+    var table='<table style="border-collapse:collapse;width:100%;">'
+      +previewLines.map(function(l){
+        return '<tr>'+parseCSVLine(l).map(function(c){
+          return '<td style="border:1px solid #E0E0DB;padding:3px 5px;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis;">'+c+'</td>';
+        }).join('')+'</tr>';
+      }).join('')+'</table>';
+    document.getElementById('csv-preview-table').innerHTML=table;
+    document.getElementById('csv-row-count').textContent='データ行数: '+csvData.length+'行';
+    document.getElementById('csv-preview').style.display='block';
+    buildColMap();
+    document.getElementById('csv-import-btn').style.display='block';
+  };
+  reader.readAsText(file,'UTF-8');
+}
+
+function buildColMap(){
+  var targets=['報告日','曜日'].concat(ALL_COURSE);
+  var selDiv=document.getElementById('csv-col-selects');
+  selDiv.innerHTML=targets.map(function(t){
+    var autoIdx=csvHeaders.indexOf(t);
+    var opts=csvHeaders.map(function(h,i){
+      return '<option value="'+i+'"'+(i===autoIdx?' selected':'')+'>'+h+'</option>';
+    }).join('');
+    return '<div class="col-map-row"><div class="col-map-label">'+t+'</div>'
+      +'<select class="col-map-sel" id="map-'+t+'"><option value="">-- なし --</option>'+opts+'</select></div>';
+  }).join('');
+  document.getElementById('csv-col-map').style.display='block';
+}
+
+function importCSV(){
+  if(!csvData.length){alert('CSVを読み込んでください');return;}
+  var targets=['報告日','曜日'].concat(ALL_COURSE);
+  var colIdx={};
+  targets.forEach(function(t){
+    var sel=document.getElementById('map-'+t);
+    if(sel&&sel.value!=='')colIdx[t]=parseInt(sel.value);
+  });
+  var btn=document.getElementById('csv-import-btn');
+  var sending=document.getElementById('csv-sending');
+  var toast=document.getElementById('csv-toast');
+  btn.disabled=true;sending.style.display='block';toast.style.display='none';
+  var rows=csvData.filter(function(r){return r.some(function(c){return c;});});
+  var errors=0;
+  function sendNext(i){
+    if(i>=rows.length){
+      sending.style.display='none';
+      toast.className='toast tok';
+      toast.textContent='✅ '+(rows.length-errors)+'件保存しました'+(errors?' (エラー'+errors+'件)':'');
+      toast.style.display='block';
+      btn.disabled=false;
+      setTimeout(function(){toast.style.display='none';},6000);
+      return;
+    }
+    var row=rows[i];
+    var courses={};
+    ALL_COURSE.forEach(function(f){
+      if(colIdx[f]!==undefined&&row[colIdx[f]])courses[f]=row[colIdx[f]];
+    });
+    var payload={type:'排出量',date:colIdx['報告日']!==undefined?row[colIdx['報告日']]:'',day:colIdx['曜日']!==undefined?row[colIdx['曜日']]:'',courses:courses};
+    var url=GAS+'?action=save&payload='+encodeURIComponent(JSON.stringify(payload));
+    fetch(url)
+      .then(function(r){return r.json();})
+      .then(function(res){if(res.status!=='ok')errors++;sendNext(i+1);})
+      .catch(function(){errors++;sendNext(i+1);});
+  }
+  sendNext(0);
+}
+
+// ===== 年間グラフ =====
+function setAnnualMode(mode){
+  annualMode=mode;
+  ['total','kanen','pla'].forEach(function(m){
+    var b=document.getElementById('af-'+m);
+    if(m===mode){b.style.background='#1A1A18';b.style.color='#fff';b.style.borderColor='#1A1A18';}
+    else{b.style.background='#fff';b.style.color='#888';b.style.borderColor='#E0E0DB';}
+  });
+  renderAnnualChart(annualRawData);
+}
+
+function rAnnual(rows){
+  if(!rows.length)return;
+  annualRawData=rows;
+  renderAnnualChart(rows);
+}
+
+function renderAnnualChart(rows){
+  var monthly={};
+  rows.forEach(function(r){
+    var date=r['報告日']||r['送信日時']||'';
+    var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
+    if(!m)return;
+    var key=m[1]+'/'+(m[2].length===1?'0':'')+m[2];
+    if(!monthly[key])monthly[key]={kanen:0,pla:0};
+    KANEN_FIELDS.forEach(function(f){monthly[key].kanen+=parseFloat(r[f])||0;});
+    PLA_FIELDS.forEach(function(f){monthly[key].pla+=parseFloat(r[f])||0;});
+  });
+  var months=Object.keys(monthly).sort();
+  if(!months.length)return;
+  var vals=months.map(function(mo){
+    if(annualMode==='kanen')return monthly[mo].kanen;
+    if(annualMode==='pla')return monthly[mo].pla;
+    return monthly[mo].kanen+monthly[mo].pla;
+  });
+  var maxV=Math.max.apply(null,vals)||1;
+  var color=annualMode==='pla'?'#B5D4F4':'#9FE1CB';
+  var cEl=document.getElementById('annual-chart');
+  var lEl=document.getElementById('annual-labels');
+  cEl.innerHTML='';lEl.innerHTML='';
+  months.forEach(function(mo,i){
+    var h=Math.round((vals[i]/maxV)*110);
+    var col=document.createElement('div');
+    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:22px;';
+    col.innerHTML='<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+mo+': '+Math.round(vals[i])+'kg"></div>';
+    cEl.appendChild(col);
+    var lbl=document.createElement('div');
+    lbl.style.cssText='flex:1;text-align:center;font-size:9px;color:#888;min-width:22px;';
+    lbl.textContent=mo.slice(5);
+    lEl.appendChild(lbl);
+  });
+  // 月次テーブル
+  var detail='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:11px;">';
+  detail+='<tr style="background:#F8F8F5;"><th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:left;">月</th><th style="padding:5px 6px;border:1px solid #E0E0DB;">可燃(kg)</th><th style="padding:5px 6px;border:1px solid #E0E0DB;">プラ(kg)</th><th style="padding:5px 6px;border:1px solid #E0E0DB;">合計(kg)</th></tr>';
+  months.forEach(function(mo){
+    var k=Math.round(monthly[mo].kanen),p=Math.round(monthly[mo].pla);
+    detail+='<tr><td style="padding:5px 6px;border:1px solid #E0E0DB;font-weight:500;">'+mo+'</td><td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+k.toLocaleString()+'</td><td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+p.toLocaleString()+'</td><td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+(k+p).toLocaleString()+'</td></tr>';
+  });
+  detail+='</table></div>';
+  document.getElementById('annual-detail').innerHTML=detail;
+  document.getElementById('dc-annual').style.display='block';
 }
 
 rdrv();
