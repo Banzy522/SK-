@@ -111,19 +111,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   </div>
   <div class="status-bar"><span class="sdot"></span>スプレッドシート連携済み</div>
   <div class="tabs">
-    <div class="maintab active" onclick="showTab(0)">①集積所</div>
+    <div class="maintab active" onclick="showTab(0)">①粗大・不適正</div>
     <div class="maintab" onclick="showTab(1)">②車両</div>
-    <div class="maintab" onclick="showTab(2)">③処分場</div>
-    <div class="maintab" onclick="showTab(3)">④排出量</div>
-    <div class="maintab" onclick="showTab(4)">⑤回収時間</div>
-    <div class="maintab" onclick="showTab(5)">⑥粗大・不適正</div>
+    <div class="maintab" onclick="showTab(2)">③集積所</div>
+    <div class="maintab" onclick="showTab(3)">④処分場</div>
+    <div class="maintab" onclick="showTab(4)">⑤排出量</div>
+    <div class="maintab" onclick="showTab(5)">⑥回収時間</div>
     <div class="maintab" onclick="showTab(6)">📊集計</div>
   </div>
 </div>
 <div class="content">
 
 <!-- ①集積所 -->
-<div class="page active" id="page5">
+<div class="page active" id="page0">
 <div class="card">
   <div class="card-title">🚨 粗大・不適正排出物・その他集積所報告</div>
   <div class="fi"><label class="fl">報告したドライバー名</label><select id="f6drv"></select></div>
@@ -193,7 +193,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div></div>
 
 <!-- ③処分場 -->
-<div class="page" id="page0">
+<div class="page" id="page2">
 <div class="card">
   <div class="card-title">📍 改善が必要な集積所の報告</div>
 <div class="fi"><label class="fl">報告したドライバー名</label><select id="f1drv"></select></div>
@@ -221,7 +221,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div></div>
 
 <!-- ②車両 -->
-<div class="page" id="page2">
+<div class="page" id="page3">
 <div class="card">
   <div class="card-title">⏱️ 処分場 待機時間の報告</div>
 <div class="fi"><label class="fl">報告したドライバー名</label><select id="f3drv"></select></div>
@@ -233,7 +233,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div></div>
 
 <!-- ④排出量 -->
-<div class="page" id="page3">
+<div class="page" id="page4">
 <div class="card">
   <div class="card-title">📊 排出量の報告</div>
 <div class="dtabs">
@@ -359,7 +359,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div>
 
 <!-- ⑤回収時間 -->
-<div class="page" id="page4">
+<div class="page" id="page5">
 <div class="card">
   <div class="card-title">⏰ 回収所要時間の報告</div>
   <div class="fi"><label class="fl">報告したドライバー名</label><select id="f5drv"></select></div>
