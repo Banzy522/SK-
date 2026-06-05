@@ -160,6 +160,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="card">
   <div class="card-title">🚛 車両報告</div>
 <div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
+  <div class="fi"><label class="fl">車両</label>
+    <select id="f2-vehicle" style="width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;margin-bottom:4px;" onchange=""></select>
+    <button type="button" onclick="showOverlay('vhOv')" style="width:100%;padding:8px;border:1px dashed #E0E0DB;border-radius:8px;background:none;font-size:12px;color:#888;cursor:pointer;margin-top:4px;">＋ 車両の追加・削除</button>
+  </div>
   <div class="fi"><label class="fl">内容</label>
     <div class="rg" id="f2rg">
       <label class="ri"><input type="radio" name="f2r" value="車両の不具合" onchange="cv2();sr('f2rg')"/> 車両の不具合</label>
@@ -167,10 +171,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <label class="ri"><input type="radio" name="f2r" value="車両の修理・点検日程" onchange="cv2();sr('f2rg')"/> 車両の修理・点検日程</label>
       <div id="f2w2" style="display:none;margin:3px 0 5px 26px;">
         <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
-          <input type="date" id="f2df" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
-          <span style="font-size:13px;color:#888;flex-shrink:0;">〜</span>
-          <input type="date" id="f2dt2" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#888;margin-bottom:3px;">開始日</div>
+            <input type="date" id="f2df" style="width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;" oninput="updRepairLabel()"/>
+          </div>
+          <span style="font-size:16px;color:#888;flex-shrink:0;padding-top:18px;">〜</span>
+          <div style="flex:1;">
+            <div style="font-size:11px;color:#888;margin-bottom:3px;">終了日</div>
+            <input type="date" id="f2dt2" style="width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;" oninput="updRepairLabel()"/>
+          </div>
         </div>
+        <div id="repair-label" style="font-size:13px;color:#1A1A18;font-weight:500;background:#F8F8F5;padding:8px 10px;border-radius:8px;margin-bottom:7px;display:none;"></div>
         <textarea id="f2d2" placeholder="その他詳細（任意）"></textarea>
       </div>
       <label class="ri"><input type="radio" name="f2r" value="その他" onchange="cv2();sr('f2rg')"/> その他</label>
@@ -415,6 +426,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 
 </div><!-- content -->
 
+<!-- 車両管理オーバーレイ -->
+<div class="overlay" id="vhOv">
+  <div class="brow">
+    <button class="bbtn" onclick="hideOverlay('vhOv')">←</button>
+    <div class="btitle">車両管理</div>
+  </div>
+  <div style="font-size:12px;color:#666;margin-bottom:12px;">車種を選んで車両を追加・削除できます。</div>
+  <div class="fi">
+    <label class="fl">車種</label>
+    <select id="vh-type-sel" style="width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;">
+      <option value="3.5t車">3.5t車</option>
+      <option value="4t車">4t車</option>
+      <option value="new">＋ 新しい車種を追加</option>
+    </select>
+  </div>
+  <div id="vh-newtype-wrap" style="display:none;" class="fi">
+    <label class="fl">新しい車種名</label>
+    <input type="text" id="vh-newtype-inp" placeholder="例: 2t車" style="width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;"/>
+  </div>
+  <div class="dmgmt">
+    <input type="text" id="vh-add-inp" placeholder="号車番号（例: 104号車）"/>
+    <button class="dadd" onclick="addVehicle()">追加</button>
+  </div>
+  <div id="vh-list" style="display:flex;flex-direction:column;gap:5px;margin-bottom:14px;"></div>
+  <button class="sbtn" onclick="hideOverlay('vhOv');renderVehicleSelect();">完了</button>
+</div>
+
 <!-- ドライバー管理オーバーレイ -->
 <div class="overlay" id="drvOv">
   <div class="brow">
@@ -434,6 +472,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <script>
 var GAS='https://script.google.com/macros/s/AKfycbwzhDQ4Q5Tm0vF_7Ewm55mqhUK6iEtZdOQjFQIhpdAXptwaNdTGqAG6Qx7QvGQKcL5_Ug/exec';
 var drivers=['菊池太','渡辺輝','和田啓助','宮野太志','山田伸一','渡辺文男','山田司','野﨑俊','鈴木将太','佐藤蛮治'];
+var vehicles={
+  '3.5t車':['95号車','96号車','97号車','98号車','99号車','101号車','103号車'],
+  '4t車':['91号車','100号車','102号車']
+};
 var lr1='', lr6='', dayIdx=0;
 var dayNames=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
 
@@ -567,7 +609,7 @@ function sf2(){
   if(val==='車両の不具合')detail=gv('f2d1');
   else if(val==='車両の修理・点検日程'){var df=gv('f2df'),dt=gv('f2dt2'),m=gv('f2d2');detail=(df||'?')+'〜'+(dt||'?')+(m?' ('+m+')':'');}
   else if(val==='その他')detail=gv('f2d3');
-  post({type:'車両',date:gv('f2dt')||gv('f2d'),driver:gv('f2drv'),content:val,otherDetail:detail},'b2','sn2','t2',function(){
+  post({type:'車両',date:gv('f2dt')||gv('f2d'),driver:gv('f2drv'),vehicle:gv('f2-vehicle'),content:val,otherDetail:detail},'b2','sn2','t2',function(){
     document.querySelectorAll('input[name="f2r"]').forEach(function(x){x.checked=false;});
     document.querySelectorAll('#f2rg .ri').forEach(function(x){x.classList.remove('sel');});
     ['f2d1','f2d2','f2d3'].forEach(function(id){document.getElementById(id).value='';});
@@ -990,6 +1032,99 @@ function renderAnnualChart(rows){
   document.getElementById('dc-annual').style.display='block';
 }
 
+
+// ===== 車両管理 =====
+function renderVehicleSelect(){
+  var sel=document.getElementById('f2-vehicle');
+  if(!sel)return;
+  var opts='<option value="">車両を選択してください</option>';
+  Object.keys(vehicles).forEach(function(type){
+    opts+='<optgroup label="'+type+'">';
+    vehicles[type].forEach(function(v){
+      opts+='<option value="'+v+'">'+v+'</option>';
+    });
+    opts+='</optgroup>';
+  });
+  sel.innerHTML=opts;
+}
+
+function renderVehicleList(){
+  var typeSel=document.getElementById('vh-type-sel');
+  var newTypeWrap=document.getElementById('vh-newtype-wrap');
+  if(!typeSel)return;
+  var selectedType=typeSel.value;
+  if(selectedType==='new'){
+    newTypeWrap.style.display='block';
+    document.getElementById('vh-list').innerHTML='';
+    return;
+  }
+  newTypeWrap.style.display='none';
+  var list=document.getElementById('vh-list');
+  var vlist=vehicles[selectedType]||[];
+  list.innerHTML=vlist.map(function(v,i){
+    return '<div class="ditem"><span>'+v+'</span>'
+      +'<button class="ddel" onclick="delVehicle(this,'+i+')">🗑</button></div>';
+  }).join('');
+  // data属性にtype保存
+  list.setAttribute('data-type', selectedType);
+}
+
+function addVehicle(){
+  var typeSel=document.getElementById('vh-type-sel');
+  var selectedType=typeSel.value;
+  if(selectedType==='new'){
+    var newTypeName=document.getElementById('vh-newtype-inp').value.trim();
+    if(!newTypeName){alert('車種名を入力してください');return;}
+    if(!vehicles[newTypeName])vehicles[newTypeName]=[];
+    // typeselに追加
+    var opt=document.createElement('option');
+    opt.value=newTypeName;opt.textContent=newTypeName;
+    typeSel.insertBefore(opt,typeSel.lastElementChild);
+    typeSel.value=newTypeName;
+    document.getElementById('vh-newtype-inp').value='';
+    document.getElementById('vh-newtype-wrap').style.display='none';
+    selectedType=newTypeName;
+  }
+  var inp=document.getElementById('vh-add-inp');
+  var name=inp.value.trim();
+  if(!name){alert('号車番号を入力してください');return;}
+  if(!vehicles[selectedType])vehicles[selectedType]=[];
+  vehicles[selectedType].push(name);
+  inp.value='';
+  renderVehicleList();
+}
+
+function delVehicle(btn,i){
+  var list=document.getElementById('vh-list');
+  var type=list.getAttribute('data-type');
+  if(type)vehicles[type].splice(i,1);
+  renderVehicleList();
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+  var typeSel=document.getElementById('vh-type-sel');
+  if(typeSel)typeSel.addEventListener('change',renderVehicleList);
+});
+
+function updRepairLabel(){
+  var df=document.getElementById('f2df').value;
+  var dt=document.getElementById('f2dt2').value;
+  var lbl=document.getElementById('repair-label');
+  if(!lbl)return;
+  if(df||dt){
+    var fmt=function(d){
+      if(!d)return '未定';
+      var p=d.split('-');
+      return parseInt(p[1])+'月'+parseInt(p[2])+'日';
+    };
+    lbl.textContent=fmt(df)+' 〜 '+fmt(dt);
+    lbl.style.display='block';
+  } else {
+    lbl.style.display='none';
+  }
+}
+
+renderVehicleSelect();
 rdrv();
 </script>
 </body>
