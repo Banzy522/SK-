@@ -123,7 +123,66 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="content">
 
 <!-- ①集積所 -->
-<div class="page active" id="page0">
+<div class="page active" id="page5">
+<div class="card">
+  <div class="card-title">🚨 粗大・不適正排出物・その他集積所報告</div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f6drv"></select></div>
+  <div class="fi"><label class="fl">ページ番号（P〇〇）</label>
+    <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;color:#888;font-weight:700;">P</span><input type="text" placeholder="例: 12" style="width:85px;" id="f6pg"/></div>
+  </div>
+  <div class="fi"><label class="fl">左右</label>
+    <div class="cg"><div class="ci" id="f6ll" onclick="slr6('left')">左</div><div class="ci" id="f6lr" onclick="slr6('right')">右</div></div>
+  </div>
+  <div class="fi"><label class="fl">集積所番号</label>
+    <div style="display:flex;align-items:center;gap:7px;"><input type="text" placeholder="例: 5" style="width:85px;" id="f6sn"/><span style="font-size:14px;color:#888;">番</span></div>
+  </div>
+  <div class="fi"><label class="fl">住所</label>
+    <button type="button" onclick="getGPS()" style="width:100%;padding:10px;border:1px solid #E0E0DB;border-radius:8px;background:#F8F8F5;font-size:13px;color:#1A1A18;cursor:pointer;margin-bottom:7px;text-align:left;">📍 現在地の住所を自動取得</button>
+    <div id="gps-status" style="font-size:12px;color:#888;margin-bottom:6px;display:none;"></div>
+    <input type="text" id="f6addr" placeholder="住所を入力（自動取得または手入力）"/>
+  </div>
+  <div class="fi"><label class="fl">報告理由</label>
+    <div class="rg" id="f6rg">
+      <label class="ri"><input type="radio" name="f6r" value="粗大ごみ" onchange="cv6();sr('f6rg')"/> 粗大ごみ</label>
+      <div id="f6w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d1" placeholder="詳細を入力してください"></textarea></div>
+      <label class="ri"><input type="radio" name="f6r" value="排出禁止物" onchange="cv6();sr('f6rg')"/> 排出禁止物</label>
+      <div id="f6w2" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d2" placeholder="詳細を入力してください"></textarea></div>
+      <label class="ri"><input type="radio" name="f6r" value="その他集積所に関する報告" onchange="cv6();sr('f6rg')"/> その他集積所に関する報告</label>
+      <div id="f6w3" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d3" placeholder="詳細を入力してください"></textarea></div>
+    </div>
+  </div>
+  <button class="sbtn" id="b6" onclick="sf6()">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn6">送信中...</div><div class="toast" id="t6"></div>
+</div></div>
+
+<!-- 📊集計ダッシュボード -->
+<div class="page" id="page1">
+<div class="card">
+  <div class="card-title">🚛 車両報告</div>
+<div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
+  <div class="fi"><label class="fl">内容</label>
+    <div class="rg" id="f2rg">
+      <label class="ri"><input type="radio" name="f2r" value="車両の不具合" onchange="cv2();sr('f2rg')"/> 車両の不具合</label>
+      <div id="f2w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d1" placeholder="不具合の詳細を入力してください"></textarea></div>
+      <label class="ri"><input type="radio" name="f2r" value="車両の修理・点検日程" onchange="cv2();sr('f2rg')"/> 車両の修理・点検日程</label>
+      <div id="f2w2" style="display:none;margin:3px 0 5px 26px;">
+        <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
+          <input type="date" id="f2df" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
+          <span style="font-size:13px;color:#888;flex-shrink:0;">〜</span>
+          <input type="date" id="f2dt2" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
+        </div>
+        <textarea id="f2d2" placeholder="その他詳細（任意）"></textarea>
+      </div>
+      <label class="ri"><input type="radio" name="f2r" value="その他" onchange="cv2();sr('f2rg')"/> その他</label>
+      <div id="f2w3" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d3" placeholder="詳細を入力してください"></textarea></div>
+    </div>
+  </div>
+  <button class="sbtn" id="b2" onclick="sf2()">📤 スプレッドシートに送信する</button>
+  <div class="tsend" id="sn2">送信中...</div><div class="toast" id="t2"></div>
+</div></div>
+
+<!-- ③処分場 -->
+<div class="page" id="page0">
 <div class="card">
   <div class="card-title">📍 改善が必要な集積所の報告</div>
 <div class="fi"><label class="fl">報告したドライバー名</label><select id="f1drv"></select></div>
@@ -151,32 +210,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div></div>
 
 <!-- ②車両 -->
-<div class="page" id="page1">
-<div class="card">
-  <div class="card-title">🚛 車両報告</div>
-<div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
-  <div class="fi"><label class="fl">内容</label>
-    <div class="rg" id="f2rg">
-      <label class="ri"><input type="radio" name="f2r" value="車両の不具合" onchange="cv2();sr('f2rg')"/> 車両の不具合</label>
-      <div id="f2w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d1" placeholder="不具合の詳細を入力してください"></textarea></div>
-      <label class="ri"><input type="radio" name="f2r" value="車両の修理・点検日程" onchange="cv2();sr('f2rg')"/> 車両の修理・点検日程</label>
-      <div id="f2w2" style="display:none;margin:3px 0 5px 26px;">
-        <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
-          <input type="date" id="f2df" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
-          <span style="font-size:13px;color:#888;flex-shrink:0;">〜</span>
-          <input type="date" id="f2dt2" style="flex:1;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;"/>
-        </div>
-        <textarea id="f2d2" placeholder="その他詳細（任意）"></textarea>
-      </div>
-      <label class="ri"><input type="radio" name="f2r" value="その他" onchange="cv2();sr('f2rg')"/> その他</label>
-      <div id="f2w3" style="display:none;margin:3px 0 5px 26px;"><textarea id="f2d3" placeholder="詳細を入力してください"></textarea></div>
-    </div>
-  </div>
-  <button class="sbtn" id="b2" onclick="sf2()">📤 スプレッドシートに送信する</button>
-  <div class="tsend" id="sn2">送信中...</div><div class="toast" id="t2"></div>
-</div></div>
-
-<!-- ③処分場 -->
 <div class="page" id="page2">
 <div class="card">
   <div class="card-title">⏱️ 処分場 待機時間の報告</div>
@@ -327,39 +360,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div></div>
 
 <!-- ⑥粗大・不適正 -->
-<div class="page" id="page5">
-<div class="card">
-  <div class="card-title">🚨 粗大・不適正排出物・その他集積所報告</div>
-  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f6drv"></select></div>
-  <div class="fi"><label class="fl">ページ番号（P〇〇）</label>
-    <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;color:#888;font-weight:700;">P</span><input type="text" placeholder="例: 12" style="width:85px;" id="f6pg"/></div>
-  </div>
-  <div class="fi"><label class="fl">左右</label>
-    <div class="cg"><div class="ci" id="f6ll" onclick="slr6('left')">左</div><div class="ci" id="f6lr" onclick="slr6('right')">右</div></div>
-  </div>
-  <div class="fi"><label class="fl">集積所番号</label>
-    <div style="display:flex;align-items:center;gap:7px;"><input type="text" placeholder="例: 5" style="width:85px;" id="f6sn"/><span style="font-size:14px;color:#888;">番</span></div>
-  </div>
-  <div class="fi"><label class="fl">住所</label>
-    <button type="button" onclick="getGPS()" style="width:100%;padding:10px;border:1px solid #E0E0DB;border-radius:8px;background:#F8F8F5;font-size:13px;color:#1A1A18;cursor:pointer;margin-bottom:7px;text-align:left;">📍 現在地の住所を自動取得</button>
-    <div id="gps-status" style="font-size:12px;color:#888;margin-bottom:6px;display:none;"></div>
-    <input type="text" id="f6addr" placeholder="住所を入力（自動取得または手入力）"/>
-  </div>
-  <div class="fi"><label class="fl">報告理由</label>
-    <div class="rg" id="f6rg">
-      <label class="ri"><input type="radio" name="f6r" value="粗大ごみ" onchange="cv6();sr('f6rg')"/> 粗大ごみ</label>
-      <div id="f6w1" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d1" placeholder="詳細を入力してください"></textarea></div>
-      <label class="ri"><input type="radio" name="f6r" value="排出禁止物" onchange="cv6();sr('f6rg')"/> 排出禁止物</label>
-      <div id="f6w2" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d2" placeholder="詳細を入力してください"></textarea></div>
-      <label class="ri"><input type="radio" name="f6r" value="その他集積所に関する報告" onchange="cv6();sr('f6rg')"/> その他集積所に関する報告</label>
-      <div id="f6w3" style="display:none;margin:3px 0 5px 26px;"><textarea id="f6d3" placeholder="詳細を入力してください"></textarea></div>
-    </div>
-  </div>
-  <button class="sbtn" id="b6" onclick="sf6()">📤 スプレッドシートに送信する</button>
-  <div class="tsend" id="sn6">送信中...</div><div class="toast" id="t6"></div>
-</div></div>
-
-<!-- 📊集計ダッシュボード -->
 <div class="page" id="page6">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div style="font-size:14px;font-weight:700;color:#1A1A18;">集計ダッシュボード</div>
