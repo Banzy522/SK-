@@ -402,17 +402,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="chart-lbl" id="dd-wait-lbl"></div>
   </div>
   <div class="card" id="dc-emit" style="display:none;">
-    <div class="card-title">📊 排出量 推移（直近10件）</div>
-    <div class="legend" id="dd-emit-leg"></div>
-    <div style="overflow-x:auto;">
-      <div class="chart-wrap" id="dd-emit-chart" style="min-width:260px;"></div>
-      <div class="chart-lbl" id="dd-emit-lbl" style="min-width:260px;"></div>
+    <div class="card-title">📊 排出量</div>
+    <!-- 表示切替タブ -->
+    <div style="display:flex;gap:6px;margin-bottom:12px;">
+      <button onclick="setEmitView('week')" id="ev-week" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">週別（最新）</button>
+      <button onclick="setEmitView('month')" id="ev-month" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">月次推移</button>
+    </div>
+    <!-- 週別ビュー -->
+    <div id="emit-week-view">
+      <div class="legend" id="dd-emit-leg"></div>
+      <div style="overflow-x:auto;">
+        <div class="chart-wrap" id="dd-emit-chart" style="min-width:260px;"></div>
+        <div class="chart-lbl" id="dd-emit-lbl" style="min-width:260px;"></div>
+      </div>
+    </div>
+    <!-- 月次推移ビュー -->
+    <div id="emit-month-view" style="display:none;">
+      <!-- 曜日フィルター -->
+      <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;" id="emit-day-filter">
+        <button onclick="setEmitDay('全曜日')" id="edf-all" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">全曜日</button>
+        <button onclick="setEmitDay('月曜日')" id="edf-月" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">月</button>
+        <button onclick="setEmitDay('火曜日')" id="edf-火" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">火</button>
+        <button onclick="setEmitDay('水曜日')" id="edf-水" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">水</button>
+        <button onclick="setEmitDay('木曜日')" id="edf-木" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">木</button>
+        <button onclick="setEmitDay('金曜日')" id="edf-金" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">金</button>
+        <button onclick="setEmitDay('土曜日')" id="edf-土" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">土</button>
+      </div>
+      <!-- 可燃/プラ切替 -->
+      <div style="display:flex;gap:6px;margin-bottom:10px;">
+        <button onclick="setEmitType('total')" id="et-total" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">合計</button>
+        <button onclick="setEmitType('kanen')" id="et-kanen" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">可燃</button>
+        <button onclick="setEmitType('pla')" id="et-pla" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">プラ</button>
+      </div>
+      <div style="overflow-x:auto;">
+        <div id="emit-month-chart" style="display:flex;align-items:flex-end;gap:3px;height:110px;min-width:300px;padding:4px 0;"></div>
+        <div id="emit-month-labels" style="display:flex;gap:3px;margin-top:4px;min-width:300px;"></div>
+      </div>
+      <div id="emit-month-table" style="margin-top:12px;"></div>
     </div>
   </div>
   <div class="card" id="dc-drv" style="display:none;">
     <div class="card-title">⏰ ドライバー別 平均回収時間</div>
     <div id="dd-drv"></div>
   </div>
+  <div class="card" id="dc-monthly" style="display:none;">
+    <div class="card-title">📅 曜日別 月次推移</div>
+    <div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;" id="monthly-day-filter">
+      <button onclick="setMonthlyDay('all')" id="mdf-all" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">全曜日</button>
+      <button onclick="setMonthlyDay('月曜日')" id="mdf-月曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">月</button>
+      <button onclick="setMonthlyDay('火曜日')" id="mdf-火曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">火</button>
+      <button onclick="setMonthlyDay('水曜日')" id="mdf-水曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">水</button>
+      <button onclick="setMonthlyDay('木曜日')" id="mdf-木曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">木</button>
+      <button onclick="setMonthlyDay('金曜日')" id="mdf-金曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">金</button>
+      <button onclick="setMonthlyDay('土曜日')" id="mdf-土曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">土</button>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;" id="monthly-type-filter">
+      <button onclick="setMonthlyType('total')" id="mtf-total" style="padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">合計</button>
+      <button onclick="setMonthlyType('kanen')" id="mtf-kanen" style="padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">可燃</button>
+      <button onclick="setMonthlyType('pla')" id="mtf-pla" style="padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">プラ</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <div id="monthly-chart" style="display:flex;align-items:flex-end;gap:3px;height:110px;min-width:280px;padding:4px 0;"></div>
+      <div id="monthly-labels" style="display:flex;gap:3px;margin-top:4px;min-width:280px;"></div>
+    </div>
+    <div id="monthly-table" style="margin-top:14px;overflow-x:auto;"></div>
+  </div>
+
   <div class="card" id="dc-annual" style="display:none;">
     <div class="card-title">📅 年間物量 月次推移</div>
     <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
@@ -712,7 +767,7 @@ function loadDash(){
 
   // キャッシュなし→ローディング表示してから取得
   loading.style.display='block';
-  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-monthly','dc-annual'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
   fetchDash(false);
@@ -761,7 +816,7 @@ function fetchDash(isBackground){
 
 function renderDash(d){
   // 既存カードを一旦非表示
-  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-annual'].forEach(function(id){
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-monthly','dc-annual'].forEach(function(id){
     var el=document.getElementById(id);if(el)el.style.display='none';
   });
   var loading=document.getElementById('dash-loading');
@@ -773,6 +828,7 @@ function renderDash(d){
   setTimeout(function(){rEmit(d['排出量']||[]);},200);
   setTimeout(function(){rDrv(d['回収時間']||[]);},250);
   setTimeout(function(){rAnnual(d['排出量']||[]);},300);
+  setTimeout(function(){rMonthly(d['排出量']||[]);},350);
 }
 
 function showDC(id){var el=document.getElementById(id);if(el)el.style.display='block';}
@@ -852,6 +908,7 @@ function rWait(rows){
 
 function rEmit(rows){
   if(!rows.length)return;
+  emitAllRows=rows; // 月次推移用に保存
   var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前'];
   var pKeys=['プラA','プラB','プラC','プラ2午後'];
   var dayOrder=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
@@ -1054,6 +1111,136 @@ function setAnnualMode(mode){
   renderAnnualChart(annualRawData);
 }
 
+var monthlyRawData=[], monthlyDay='all', monthlyType='total';
+
+function setMonthlyDay(day){
+  monthlyDay=day;
+  ['all','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'].forEach(function(d){
+    var btn=document.getElementById('mdf-'+d);
+    if(!btn)return;
+    if(d===day){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
+    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
+  });
+  renderMonthlyChart(monthlyRawData);
+}
+
+function setMonthlyType(type){
+  monthlyType=type;
+  ['total','kanen','pla'].forEach(function(t){
+    var btn=document.getElementById('mtf-'+t);
+    if(!btn)return;
+    if(t===type){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
+    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
+  });
+  renderMonthlyChart(monthlyRawData);
+}
+
+function rMonthly(rows){
+  if(!rows.length)return;
+  monthlyRawData=rows;
+  renderMonthlyChart(rows);
+}
+
+function renderMonthlyChart(rows){
+  var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前'];
+  var pKeys=['プラA','プラB','プラC','プラ2午後'];
+  var dayOrder=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
+  var dayShort=['月','火','水','木','金','土'];
+  var dayColors=['#9FE1CB','#FAC775','#B5D4F4','#F09595','#C5B4E3','#F4C4A0'];
+
+  // 月×曜日で集計
+  var monthDayMap={};
+  rows.forEach(function(r){
+    var date=r['報告日']||r['送信日時']||'';
+    var day=r['曜日']||'';
+    var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
+    if(!m||!day)return;
+    var month=m[1]+'/'+(m[2].length===1?'0':'')+m[2];
+    if(!monthDayMap[month])monthDayMap[month]={};
+    if(!monthDayMap[month][day])monthDayMap[month][day]=[];
+    monthDayMap[month][day].push(r);
+  });
+
+  var months=Object.keys(monthDayMap).sort();
+  if(!months.length)return;
+
+  // 選択曜日に応じてデータを準備
+  var targetDays=monthlyDay==='all'?dayOrder:[monthlyDay];
+  var dispDays=targetDays.filter(function(d){
+    return months.some(function(m){return monthDayMap[m][d];});
+  });
+
+  // 月ごとの値を計算
+  var monthVals=months.map(function(month){
+    var total=0;
+    dispDays.forEach(function(day){
+      var dayRows=monthDayMap[month][day]||[];
+      if(!dayRows.length)return;
+      var latest=dayRows[dayRows.length-1];
+      if(monthlyType==='kanen'||monthlyType==='total'){
+        total+=kKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
+      }
+      if(monthlyType==='pla'||monthlyType==='total'){
+        total+=pKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
+      }
+    });
+    return total;
+  });
+
+  var maxV=Math.max.apply(null,monthVals)||1;
+  var barColor=monthlyType==='pla'?'#B5D4F4':monthlyType==='kanen'?'#9FE1CB':'#9FE1CB';
+
+  // グラフ描画
+  var cEl=document.getElementById('monthly-chart');
+  var lEl=document.getElementById('monthly-labels');
+  cEl.innerHTML='';lEl.innerHTML='';
+
+  months.forEach(function(month,i){
+    var h=Math.round((monthVals[i]/maxV)*100);
+    var col=document.createElement('div');
+    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:28px;';
+    col.innerHTML='<div style="font-size:9px;color:#888;margin-bottom:2px;">'+Math.round(monthVals[i]).toLocaleString()+'</div>'
+      +'<div style="width:100%;border-radius:3px 3px 0 0;background:'+barColor+';height:'+h+'px;" title="'+month+': '+Math.round(monthVals[i])+'kg"></div>';
+    cEl.appendChild(col);
+    var lbl=document.createElement('div');
+    lbl.style.cssText='flex:1;text-align:center;font-size:10px;color:#888;min-width:28px;';
+    lbl.textContent=month.slice(5)+'月';
+    lEl.appendChild(lbl);
+  });
+
+  // 月別×曜日テーブル（全曜日表示時のみ）
+  var tblHtml='';
+  if(monthlyDay==='all'){
+    tblHtml='<table style="width:100%;border-collapse:collapse;font-size:11px;">';
+    tblHtml+='<tr style="background:#F8F8F5;"><th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:left;">月</th>';
+    dispDays.forEach(function(d){
+      var idx=dayOrder.indexOf(d);
+      tblHtml+='<th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+(idx>=0?dayShort[idx]:'?')+'</th>';
+    });
+    tblHtml+='<th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">合計</th></tr>';
+
+    months.forEach(function(month){
+      var rowTotal=0;
+      tblHtml+='<tr><td style="padding:5px 6px;border:1px solid #E0E0DB;font-weight:600;">'+month+'</td>';
+      dispDays.forEach(function(day){
+        var dayRows=monthDayMap[month][day]||[];
+        var val=0;
+        if(dayRows.length){
+          var latest=dayRows[dayRows.length-1];
+          if(monthlyType==='kanen'||monthlyType==='total') val+=kKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
+          if(monthlyType==='pla'||monthlyType==='total') val+=pKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
+        }
+        rowTotal+=val;
+        tblHtml+='<td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+(val?Math.round(val).toLocaleString():'-')+'</td>';
+      });
+      tblHtml+='<td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+Math.round(rowTotal).toLocaleString()+'</td></tr>';
+    });
+    tblHtml+='</table>';
+  }
+  document.getElementById('monthly-table').innerHTML=tblHtml;
+  document.getElementById('dc-monthly').style.display='block';
+}
+
 function rAnnual(rows){
   if(!rows.length)return;
   annualRawData=rows;
@@ -1196,6 +1383,119 @@ function updRepairLabel(){
   } else {
     lbl.style.display='none';
   }
+}
+
+
+// ===== 排出量ビュー切替 =====
+var emitAllRows=[], emitSelectedDay='全曜日', emitType='total';
+var EMIT_KKEYS=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前'];
+var EMIT_PKEYS=['プラA','プラB','プラC','プラ2午後'];
+
+function setEmitView(mode){
+  document.getElementById('emit-week-view').style.display=mode==='week'?'block':'none';
+  document.getElementById('emit-month-view').style.display=mode==='month'?'block':'none';
+  var wb=document.getElementById('ev-week'),mb=document.getElementById('ev-month');
+  if(mode==='week'){wb.style.background='#1A1A18';wb.style.color='#fff';wb.style.borderColor='#1A1A18';mb.style.background='#fff';mb.style.color='#888';mb.style.borderColor='#E0E0DB';}
+  else{mb.style.background='#1A1A18';mb.style.color='#fff';mb.style.borderColor='#1A1A18';wb.style.background='#fff';wb.style.color='#888';wb.style.borderColor='#E0E0DB';}
+  if(mode==='month') renderEmitMonthChart();
+}
+
+function setEmitDay(day){
+  emitSelectedDay=day;
+  var days=['全曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
+  var ids=['all','月','火','水','木','金','土'];
+  days.forEach(function(d,i){
+    var btn=document.getElementById('edf-'+ids[i]);
+    if(!btn)return;
+    if(d===day){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
+    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
+  });
+  renderEmitMonthChart();
+}
+
+function setEmitType(type){
+  emitType=type;
+  ['total','kanen','pla'].forEach(function(t){
+    var btn=document.getElementById('et-'+t);if(!btn)return;
+    if(t===type){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
+    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
+  });
+  renderEmitMonthChart();
+}
+
+function renderEmitMonthChart(){
+  var rows=emitAllRows;
+  if(!rows.length)return;
+
+  // 対象曜日でフィルタ
+  var filtered=emitSelectedDay==='全曜日'?rows:rows.filter(function(r){return r['曜日']===emitSelectedDay;});
+  if(!filtered.length){
+    document.getElementById('emit-month-chart').innerHTML='';
+    document.getElementById('emit-month-labels').innerHTML='';
+    document.getElementById('emit-month-table').innerHTML='<div style="font-size:13px;color:#888;text-align:center;padding:12px;">データなし</div>';
+    return;
+  }
+
+  // 月ごとに集計
+  var monthly={};
+  filtered.forEach(function(r){
+    var date=r['報告日']||r['送信日時']||'';
+    var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
+    if(!m)return;
+    var key=m[1]+'/'+(('0'+m[2]).slice(-2));
+    if(!monthly[key])monthly[key]={kanen:0,pla:0,count:0};
+    monthly[key].kanen+=EMIT_KKEYS.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);
+    monthly[key].pla+=EMIT_PKEYS.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);
+    monthly[key].count++;
+  });
+
+  var months=Object.keys(monthly).sort();
+  if(!months.length)return;
+
+  var vals=months.map(function(mo){
+    if(emitType==='kanen')return monthly[mo].kanen;
+    if(emitType==='pla')return monthly[mo].pla;
+    return monthly[mo].kanen+monthly[mo].pla;
+  });
+  var maxV=Math.max.apply(null,vals)||1;
+  var color=emitType==='pla'?'#B5D4F4':emitType==='kanen'?'#9FE1CB':'#9FE1CB';
+
+  var cEl=document.getElementById('emit-month-chart');
+  var lEl=document.getElementById('emit-month-labels');
+  cEl.innerHTML='';lEl.innerHTML='';
+
+  months.forEach(function(mo,i){
+    var h=Math.round((vals[i]/maxV)*100);
+    var col=document.createElement('div');
+    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:28px;';
+    col.innerHTML='<div style="font-size:9px;color:#888;margin-bottom:2px;">'+Math.round(vals[i]).toLocaleString()+'</div>'
+      +'<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;"></div>';
+    cEl.appendChild(col);
+    var lbl=document.createElement('div');
+    lbl.style.cssText='flex:1;text-align:center;font-size:10px;color:#888;min-width:28px;';
+    lbl.textContent=mo.slice(5)+'月';
+    lEl.appendChild(lbl);
+  });
+
+  // 月次テーブル
+  var tbl='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">'
+    +'<tr style="background:#F8F8F5;">'
+    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:left;">月</th>'
+    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">可燃(kg)</th>'
+    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">プラ(kg)</th>'
+    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">合計(kg)</th>'
+    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">件数</th></tr>';
+  months.forEach(function(mo){
+    var k=Math.round(monthly[mo].kanen),p=Math.round(monthly[mo].pla);
+    tbl+='<tr>'
+      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;font-weight:600;">'+mo+'</td>'
+      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">'+k.toLocaleString()+'</td>'
+      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">'+p.toLocaleString()+'</td>'
+      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+(k+p).toLocaleString()+'</td>'
+      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;color:#888;">'+monthly[mo].count+'</td></tr>';
+  });
+  tbl+='</table></div>';
+  document.getElementById('emit-month-table').innerHTML=tbl;
 }
 
 renderVehicleSelect();
