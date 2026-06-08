@@ -852,24 +852,70 @@ function rWait(rows){
 
 function rEmit(rows){
   if(!rows.length)return;
-  var recent=rows.slice(-10);
-  var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
-  var pKeys=['プラA','プラB','プラC','プラ2'];
-  var kv=recent.map(function(r){return kKeys.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);});
-  var pv=recent.map(function(r){return pKeys.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);});
-  var mx=Math.max.apply(null,kv.concat(pv));
+  var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前'];
+  var pKeys=['プラA','プラB','プラC','プラ2午後'];
+  var dayOrder=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
+  var dayShort=['月','火','水','木','金','土'];
+  // 曜日別に最新データを集計
+  var dayMap={};
+  rows.forEach(function(r){
+    var day=r['曜日']||'';
+    if(!dayMap[day])dayMap[day]=[];
+    dayMap[day].push(r);
+  });
+  var dispDays=dayOrder.filter(function(d){return dayMap[d];});
+  if(!dispDays.length)return;
+  var kv=dispDays.map(function(d){
+    var latest=dayMap[d][dayMap[d].length-1];
+    return kKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
+  });
+  var pv=dispDays.map(function(d){
+    var latest=dayMap[d][dayMap[d].length-1];
+    return pKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
+  });
+  var mx=Math.max.apply(null,kv.concat(pv))||1;
+  // 凡例
   document.getElementById('dd-emit-leg').innerHTML=
-    '<div><span class="ldot" style="background:#9FE1CB;"></span>可燃ごみ合計</div>'
-    +'<div><span class="ldot" style="background:#B5D4F4;"></span>プラスチック合計</div>';
+    '<div><span class="ldot" style="background:#9FE1CB;"></span>可燃ごみ</div>'
+    +'<div><span class="ldot" style="background:#B5D4F4;"></span>プラスチック</div>'
+    +'<div style="font-size:11px;color:#888;margin-left:4px;">※各曜日の最新データ</div>';
+  // グラフ
   var cEl=document.getElementById('dd-emit-chart'),lEl=document.getElementById('dd-emit-lbl');
   cEl.innerHTML='';lEl.innerHTML='';
-  recent.forEach(function(r,i){
-    var kh=mx>0?Math.round((kv[i]/mx)*82):0,ph=mx>0?Math.round((pv[i]/mx)*82):0;
-    cEl.innerHTML+='<div style="flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:22px;">'
-      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kh+'px;"></div>'
-      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+ph+'px;"></div></div>';
-    lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:10px;color:#888;min-width:22px;">'+(r['曜日']||'').slice(0,1)+'</div>';
+  dispDays.forEach(function(day,i){
+    var kh=Math.round((kv[i]/mx)*82),ph=Math.round((pv[i]/mx)*82);
+    var idx=dayOrder.indexOf(day);
+    var short=idx>=0?dayShort[idx]:day.slice(0,1);
+    cEl.innerHTML+='<div style="flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:30px;">'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kh+'px;" title="'+day+' 可燃:'+Math.round(kv[i])+'kg"></div>'
+      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+ph+'px;" title="'+day+' プラ:'+Math.round(pv[i])+'kg"></div></div>';
+    lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:11px;color:#888;min-width:30px;font-weight:500;">'+short+'</div>';
   });
+  // 曜日別テーブル
+  var totalK=0,totalP=0;
+  var tbl='<div style="overflow-x:auto;margin-top:12px;"><table style="width:100%;border-collapse:collapse;font-size:12px;">'
+    +'<tr style="background:#F8F8F5;">'
+    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:left;">曜日</th>'
+    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">可燃(kg)</th>'
+    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">プラ(kg)</th>'
+    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">合計(kg)</th></tr>';
+  dispDays.forEach(function(day,i){
+    var k=Math.round(kv[i]),p=Math.round(pv[i]);
+    totalK+=k;totalP+=p;
+    var idx=dayOrder.indexOf(day);
+    tbl+='<tr>'
+      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;font-weight:600;">'+(idx>=0?dayShort[idx]+'曜日':day)+'</td>'
+      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+k.toLocaleString()+'</td>'
+      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+p.toLocaleString()+'</td>'
+      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+(k+p).toLocaleString()+'</td></tr>';
+  });
+  tbl+='<tr style="background:#F8F8F5;font-weight:700;">'
+    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;">週合計</td>'
+    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+totalK.toLocaleString()+'</td>'
+    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+totalP.toLocaleString()+'</td>'
+    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+(totalK+totalP).toLocaleString()+'</td></tr>'
+    +'</table></div>';
+  lEl.insertAdjacentHTML('afterend', tbl);
   showDC('dc-emit');
 }
 
