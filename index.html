@@ -1151,7 +1151,7 @@ function renderMonthlyChart(rows){
   // 月×曜日で集計
   var monthDayMap={};
   rows.forEach(function(r){
-    var date=r['報告日']||r['送信日時']||'';
+    var date=r['報告日']||''; if(!date)return; // 報告日が空の場合はスキップ
     var day=r['曜日']||'';
     var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
     if(!m||!day)return;
@@ -1250,7 +1250,7 @@ function rAnnual(rows){
 function renderAnnualChart(rows){
   var monthly={};
   rows.forEach(function(r){
-    var date=r['報告日']||r['送信日時']||'';
+    var date=r['報告日']||''; if(!date)return; // 報告日が空の場合はスキップ
     var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
     if(!m)return;
     var key=m[1]+'/'+(m[2].length===1?'0':'')+m[2];
@@ -1439,7 +1439,7 @@ function renderEmitMonthChart(){
   // 月ごとに集計
   var monthly={};
   filtered.forEach(function(r){
-    var date=r['報告日']||r['送信日時']||'';
+    var date=r['報告日']||''; if(!date)return; // 報告日が空の場合はスキップ
     var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
     if(!m)return;
     var key=m[1]+'/'+(('0'+m[2]).slice(-2));
