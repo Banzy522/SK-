@@ -136,6 +136,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .pla-val{color:#1A56A8;}
 
 .emit-section-label{font-size:11px;font-weight:700;color:#888;letter-spacing:.04em;margin-bottom:7px;margin-top:2px;}
+
+/* === 車両カード === */
+.car-item{border-radius:10px;padding:11px 12px;margin-bottom:8px;position:relative;}
+.car-item.defect{background:#FEF2F2;border:1px solid #FECACA;}
+.car-item.defect.alert{border-color:#EF4444;box-shadow:0 0 0 2px #FECACA;}
+.car-item.repair{background:#FFFBEB;border:1px solid #FDE68A;}
+.car-item.repair.expired{border-color:#D97706;}
+.car-item.other{background:#F8F8F5;border:1px solid #E0E0DB;}
+.car-item-head{display:flex;align-items:center;gap:6px;justify-content:space-between;margin-bottom:5px;}
+.car-item-head-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.car-badge{font-size:11px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.car-badge.defect{background:#FEE2E2;color:#B91C1C;}
+.car-badge.repair{background:#FEF3C7;color:#92400E;}
+.car-badge.other{background:#F0F0EC;color:#555;}
+.car-alert-tag{font-size:10px;font-weight:700;color:#fff;background:#EF4444;padding:2px 7px;border-radius:8px;}
+.car-expired-tag{font-size:10px;font-weight:700;color:#fff;background:#D97706;padding:2px 7px;border-radius:8px;}
+.car-del-btn{flex-shrink:0;font-size:11px;padding:4px 10px;border-radius:8px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;white-space:nowrap;}
+.car-del-btn:hover{border-color:#A32D2D;color:#A32D2D;}
+.car-info{font-size:12px;color:#555;margin-bottom:2px;}
+.car-date{font-size:11px;color:#888;}
+.car-detail{font-size:12px;color:#666;margin-top:4px;line-height:1.5;}
+.car-alert-msg{font-size:11px;color:#EF4444;font-weight:600;margin-top:6px;display:flex;align-items:center;gap:4px;}
 </style>
 </head>
 <body>
@@ -795,19 +817,127 @@ function rFoul(rows){
   }).join('')||'<div class="no-data">データなし</div>';
   document.getElementById('dc-foul').style.display='block';
 }
+// 削除済み車両報告IDをlocalStorageで管理
+var CAR_DEL_KEY='carDeleted';
+function getCarDeleted(){try{return JSON.parse(localStorage.getItem(CAR_DEL_KEY)||'[]');}catch(e){return[];}}
+function addCarDeleted(id){var arr=getCarDeleted();if(arr.indexOf(id)<0){arr.push(id);}try{localStorage.setItem(CAR_DEL_KEY,JSON.stringify(arr));}catch(e){}}
+
+// 日付文字列をDateに変換（YYYY/MM/DD HH:MM や YYYY-MM-DD に対応）
+function parseDate(s){
+  if(!s)return null;
+  var m=s.match(/(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/);
+  if(!m)return null;
+  return new Date(parseInt(m[1]),parseInt(m[2])-1,parseInt(m[3]));
+}
+
 function rCar(rows){
   if(!rows.length)return;
-  document.getElementById('dd-car').innerHTML=rows.slice(-5).reverse().map(function(r){
-    var c=r['内容']||'';
-    var bc=c==='車両の不具合'?'#FCEBEB':c==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
-    var tc=c==='車両の不具合'?'#A32D2D':c==='車両の修理・点検日程'?'#854F0B':'#555';
-    return '<div class="ritem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span class="rbadge" style="background:'+bc+';color:'+tc+'">'+c+'</span>'
-      +'<span style="font-size:11px;color:#888">'+(r['送信日時']||'')+'</span></div>'
-      +'<div style="font-size:12px;color:#555">'+(r['ドライバー名']||'')+'</div>'
-      +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')+'</div>';
-  }).join('')||'<div class="no-data">データなし</div>';
+  var deleted=getCarDeleted();
+  var now=new Date();
+  var TWO_WEEKS=14*24*60*60*1000;
+
+  // 全件対象（削除済みを除外）
+  var visible=rows.filter(function(r,i){
+    var id=r['送信日時']||String(i);
+    return deleted.indexOf(id)<0;
+  });
+
+  if(!visible.length){
+    document.getElementById('dd-car').innerHTML='<div class="no-data">報告なし</div>';
+    document.getElementById('dc-car').style.display='block';
+    return;
+  }
+
+  var html='';
+  visible.slice().reverse().forEach(function(r,idx){
+    var content=r['内容']||'';
+    var id=r['送信日時']||String(idx);
+    var detail=r['その他詳細']||'';
+    var driver=r['ドライバー名']||'';
+    var vehicle=r['車両']||'';
+    var sentAt=r['送信日時']||'';
+    var sentDate=parseDate(sentAt);
+
+    if(content==='車両の不具合'){
+      // 2週間経過チェック
+      var isAlert=sentDate&&(now-sentDate>=TWO_WEEKS);
+      var daysPast=sentDate?Math.floor((now-sentDate)/(24*60*60*1000)):null;
+      html+='<div class="car-item defect'+(isAlert?' alert':'')+'" id="ci-'+idx+'">';
+      html+='<div class="car-item-head">';
+      html+='<div class="car-item-head-left"><span class="car-badge defect">🔧 車両の不具合</span>';
+      if(isAlert)html+='<span class="car-alert-tag">⚠️ 未解決'+daysPast+'日</span>';
+      html+='</div>';
+      html+='<button class="car-del-btn" onclick="carDel(\''+id+'\')">✅ 解決済み</button>';
+      html+='</div>';
+      html+='<div class="car-info">'+driver+(vehicle?' ／ '+vehicle:'')+'</div>';
+      html+='<div class="car-date">報告日時：'+sentAt+'</div>';
+      if(detail)html+='<div class="car-detail">'+detail+'</div>';
+      if(isAlert)html+='<div class="car-alert-msg">⚠️ 報告から'+daysPast+'日が経過しています。対応状況を確認してください。</div>';
+      html+='</div>';
+
+    } else if(content==='車両の修理・点検日程'){
+      // 終了日を抽出（「YYYY-MM-DD〜YYYY-MM-DD」または詳細テキストから）
+      var endDate=null;
+      var detailText=detail||'';
+      // 形式: "YYYY/MM/DD〜YYYY/MM/DD" or "YYYY-MM-DD〜YYYY-MM-DD"
+      var rangeMatch=detailText.match(/[〜\-~]\s*(\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2})/);
+      if(!rangeMatch){
+        // 送信日時から期間テキストをパース（「その他詳細」に終了日が入っている場合）
+        var m2=detailText.match(/(\d{4}[\/\-]\d{1,2}[\/\-]\d{1,2})/g);
+        if(m2&&m2.length>=2)endDate=parseDate(m2[1]);
+        else if(m2&&m2.length===1)endDate=parseDate(m2[0]);
+      } else {
+        endDate=parseDate(rangeMatch[1]);
+      }
+      var isExpired=endDate&&(now>endDate);
+      var daysLeft=endDate?Math.ceil((endDate-now)/(24*60*60*1000)):null;
+
+      html+='<div class="car-item repair'+(isExpired?' expired':'')+'" id="ci-'+idx+'">';
+      html+='<div class="car-item-head">';
+      html+='<div class="car-item-head-left"><span class="car-badge repair">🗓 修理・点検</span>';
+      if(isExpired)html+='<span class="car-expired-tag">日程終了</span>';
+      else if(daysLeft!==null&&daysLeft<=3&&daysLeft>=0)html+='<span class="car-expired-tag" style="background:#EAB308;">あと'+daysLeft+'日</span>';
+      html+='</div>';
+      if(isExpired)html+='<button class="car-del-btn" onclick="carDel(\''+id+'\')">🗑 削除</button>';
+      html+='</div>';
+      html+='<div class="car-info">'+driver+(vehicle?' ／ '+vehicle:'')+'</div>';
+      if(detailText)html+='<div class="car-detail">'+detailText+'</div>';
+      html+='<div class="car-date">報告日時：'+sentAt+'</div>';
+      html+='</div>';
+
+    } else {
+      html+='<div class="car-item other" id="ci-'+idx+'">';
+      html+='<div class="car-item-head">';
+      html+='<span class="car-badge other">'+content+'</span>';
+      html+='<button class="car-del-btn" onclick="carDel(\''+id+'\')">🗑 削除</button>';
+      html+='</div>';
+      html+='<div class="car-info">'+driver+(vehicle?' ／ '+vehicle:'')+'</div>';
+      if(detail)html+='<div class="car-detail">'+detail+'</div>';
+      html+='<div class="car-date">'+sentAt+'</div>';
+      html+='</div>';
+    }
+  });
+
+  document.getElementById('dd-car').innerHTML=html||'<div class="no-data">報告なし</div>';
   document.getElementById('dc-car').style.display='block';
+}
+
+function carDel(id){
+  addCarDeleted(id);
+  // 該当要素をフェードアウトして削除
+  var items=document.querySelectorAll('#dd-car .car-item');
+  items.forEach(function(el){
+    var btn=el.querySelector('.car-del-btn');
+    if(btn&&btn.getAttribute('onclick')&&btn.getAttribute('onclick').indexOf(id)>=0){
+      el.style.transition='opacity .3s';
+      el.style.opacity='0';
+      setTimeout(function(){el.remove();
+        if(!document.querySelectorAll('#dd-car .car-item').length){
+          document.getElementById('dd-car').innerHTML='<div class="no-data">報告なし</div>';
+        }
+      },300);
+    }
+  });
 }
 function rWait(rows){
   if(!rows.length)return;
