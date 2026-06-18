@@ -32,7 +32,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .fi input[type=text],.fi input[type=date],.fi input[type=time],.fi input[type=number],.fi select,.fi textarea{width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;}
 .fi textarea{resize:vertical;min-height:65px;}
 .fi input:focus,.fi select:focus,.fi textarea:focus{outline:none;border-color:#1A1A18;}
-.drow{display:flex;gap:8px;}.drow input{flex:1;}
 .rg{display:flex;flex-direction:column;gap:7px;}
 .ri{display:flex;align-items:center;gap:9px;font-size:14px;color:#1A1A18;cursor:pointer;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;}
 .ri input[type=radio]{width:16px;height:16px;accent-color:#1A1A18;flex-shrink:0;}
@@ -72,7 +71,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .ditem{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#1A1A18;}
 .ddel{background:none;border:none;cursor:pointer;color:#ccc;font-size:18px;padding:0;}
 .ftd{padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;font-size:14px;color:#888;background:#F8F8F5;}
-/* ダッシュボード */
 .dstat{display:flex;gap:8px;margin-bottom:12px;}
 .dstat-box{flex:1;background:#F8F8F5;border-radius:10px;padding:10px;text-align:center;}
 .dstat-l{font-size:11px;color:#888;margin-bottom:4px;}
@@ -94,10 +92,50 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .legend{display:flex;gap:12px;margin-bottom:8px;font-size:11px;color:#666;}
 .ldot{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;}
 .no-data{font-size:13px;color:#888;text-align:center;padding:12px 0;}
-
 .col-map-row{display:flex;flex-direction:column;gap:3px;}
 .col-map-label{font-size:11px;color:#666;}
 .col-map-sel{font-size:12px;padding:5px 7px;border:1px solid #E0E0DB;border-radius:6px;background:#fff;color:#1A1A18;width:100%;}
+
+/* === 排出量ダッシュボード 専用スタイル === */
+.emit-view-toggle{display:flex;gap:6px;margin-bottom:14px;}
+.emit-vtab{flex:1;padding:9px 4px;font-size:13px;font-weight:600;border-radius:8px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;text-align:center;}
+.emit-vtab.active{background:#1A1A18;color:#fff;border-color:#1A1A18;}
+
+.emit-filter-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px;}
+.emit-pill{padding:5px 11px;font-size:11px;font-weight:600;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;}
+.emit-pill.active{background:#1A1A18;color:#fff;border-color:#1A1A18;}
+.emit-pill.kanen.active{background:#2D7A4F;border-color:#2D7A4F;}
+.emit-pill.pla.active{background:#1A56A8;border-color:#1A56A8;}
+
+.emit-summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.emit-summary-box{border-radius:10px;padding:11px 12px;}
+.emit-summary-box.kanen{background:#EAF5EC;}
+.emit-summary-box.pla{background:#E8F0FE;}
+.esb-label{font-size:11px;font-weight:700;margin-bottom:3px;}
+.emit-summary-box.kanen .esb-label{color:#2D7A4F;}
+.emit-summary-box.pla .esb-label{color:#1A56A8;}
+.esb-val{font-size:20px;font-weight:700;color:#1A1A18;}
+.esb-unit{font-size:12px;font-weight:400;color:#666;}
+.esb-sub{font-size:11px;color:#888;margin-top:2px;}
+
+.emit-bar-group{display:flex;align-items:flex-end;justify-content:center;gap:2px;flex:1;min-width:0;}
+.emit-bar{border-radius:3px 3px 0 0;width:100%;}
+.emit-bar.kanen{background:#6EC490;}
+.emit-bar.pla{background:#6AA8E2;}
+.emit-xlabel{font-size:10px;color:#888;text-align:center;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.emit-yaxis{display:flex;flex-direction:column;justify-content:space-between;align-items:flex-end;padding-right:4px;flex-shrink:0;width:38px;}
+.emit-ylabel{font-size:9px;color:#aaa;line-height:1;}
+
+.emit-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px;}
+.emit-table th{background:#F8F8F5;padding:6px 8px;border:1px solid #E8E8E4;font-weight:600;color:#555;white-space:nowrap;text-align:right;}
+.emit-table th:first-child{text-align:left;}
+.emit-table td{padding:6px 8px;border:1px solid #E8E8E4;text-align:right;color:#1A1A18;}
+.emit-table td:first-child{text-align:left;font-weight:600;}
+.emit-table tr.total-row td{background:#F8F8F5;font-weight:700;}
+.kanen-val{color:#2D7A4F;}
+.pla-val{color:#1A56A8;}
+
+.emit-section-label{font-size:11px;font-weight:700;color:#888;letter-spacing:.04em;margin-bottom:7px;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -122,7 +160,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div>
 <div class="content">
 
-<!-- ①集積所 -->
+<!-- ①粗大・不適正 -->
 <div class="page active" id="page0">
 <div class="card">
   <div class="card-title">🚨 粗大・不適正排出物・その他集積所報告</div>
@@ -155,13 +193,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn6">送信中...</div><div class="toast" id="t6"></div>
 </div></div>
 
-<!-- 📊集計ダッシュボード -->
+<!-- ②車両 -->
 <div class="page" id="page1">
 <div class="card">
   <div class="card-title">🚛 車両報告</div>
-<div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f2drv"></select></div>
   <div class="fi"><label class="fl">車両</label>
-    <select id="f2-vehicle" style="width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;margin-bottom:4px;" onchange=""></select>
+    <select id="f2-vehicle" style="width:100%;font-size:14px;padding:9px 11px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;color:#1A1A18;-webkit-appearance:none;margin-bottom:4px;"></select>
     <button type="button" onclick="showOverlay('vhOv')" style="width:100%;padding:8px;border:1px dashed #E0E0DB;border-radius:8px;background:none;font-size:12px;color:#888;cursor:pointer;margin-top:4px;">＋ 車両の追加・削除</button>
   </div>
   <div class="fi"><label class="fl">内容</label>
@@ -171,15 +209,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <label class="ri"><input type="radio" name="f2r" value="車両の修理・点検日程" onchange="cv2();sr('f2rg')"/> 車両の修理・点検日程</label>
       <div id="f2w2" style="display:none;margin:3px 0 5px 26px;">
         <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
-          <div style="flex:1;">
-            <div style="font-size:11px;color:#888;margin-bottom:3px;">開始日</div>
-            <input type="date" id="f2df" style="width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;" oninput="updRepairLabel()"/>
-          </div>
+          <div style="flex:1;"><div style="font-size:11px;color:#888;margin-bottom:3px;">開始日</div><input type="date" id="f2df" style="width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;" oninput="updRepairLabel()"/></div>
           <span style="font-size:16px;color:#888;flex-shrink:0;padding-top:18px;">〜</span>
-          <div style="flex:1;">
-            <div style="font-size:11px;color:#888;margin-bottom:3px;">終了日</div>
-            <input type="date" id="f2dt2" style="width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;" oninput="updRepairLabel()"/>
-          </div>
+          <div style="flex:1;"><div style="font-size:11px;color:#888;margin-bottom:3px;">終了日</div><input type="date" id="f2dt2" style="width:100%;font-size:14px;padding:8px 10px;border:1px solid #E0E0DB;border-radius:8px;" oninput="updRepairLabel()"/></div>
         </div>
         <div id="repair-label" style="font-size:13px;color:#1A1A18;font-weight:500;background:#F8F8F5;padding:8px 10px;border-radius:8px;margin-bottom:7px;display:none;"></div>
         <textarea id="f2d2" placeholder="その他詳細（任意）"></textarea>
@@ -192,11 +224,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn2">送信中...</div><div class="toast" id="t2"></div>
 </div></div>
 
-<!-- ③処分場 -->
+<!-- ③集積所 -->
 <div class="page" id="page2">
 <div class="card">
   <div class="card-title">📍 改善が必要な集積所の報告</div>
-<div class="fi"><label class="fl">報告したドライバー名</label><select id="f1drv"></select></div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f1drv"></select></div>
   <div class="fi"><label class="fl">ページ番号（P〇〇）</label>
     <div style="display:flex;align-items:center;gap:7px;"><span style="font-size:14px;color:#888;font-weight:700;">P</span><input type="text" placeholder="例: 12" style="width:85px;" id="f1pg"/></div>
   </div>
@@ -225,11 +257,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn1">送信中...</div><div class="toast" id="t1"></div>
 </div></div>
 
-<!-- ②車両 -->
+<!-- ④処分場 -->
 <div class="page" id="page3">
 <div class="card">
   <div class="card-title">⏱️ 処分場 待機時間の報告</div>
-<div class="fi"><label class="fl">報告したドライバー名</label><select id="f3drv"></select></div>
+  <div class="fi"><label class="fl">報告したドライバー名</label><select id="f3drv"></select></div>
   <div class="fi"><label class="fl">待機開始時刻</label><input type="time" id="f3s" oninput="cw()"/></div>
   <div class="fi"><label class="fl">待機終了時刻</label><input type="time" id="f3e" oninput="cw()"/></div>
   <div class="tcalc"><span class="tcalc-l">待機時間（自動算出）</span><span class="tcalc-v" id="wr">-- 分</span></div>
@@ -237,16 +269,15 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn3">送信中...</div><div class="toast" id="t3"></div>
 </div></div>
 
-<!-- ④排出量 -->
+<!-- ⑤排出量 -->
 <div class="page" id="page4">
 <div class="card">
   <div class="card-title">📊 排出量の報告</div>
-<div class="dtabs">
+  <div class="dtabs">
     <div class="dtab active" onclick="showDay(0)">月</div><div class="dtab" onclick="showDay(1)">火</div>
     <div class="dtab" onclick="showDay(2)">水</div><div class="dtab" onclick="showDay(3)">木</div>
     <div class="dtab" onclick="showDay(4)">金</div><div class="dtab" onclick="showDay(5)">土</div>
   </div>
-  <!-- 月 -->
   <div class="dpage active" id="dy0">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -259,7 +290,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="ssub">プラスチック</div>
     <div class="cgrid"><div class="ci2"><div class="cl">Aコース</div><input class="cinp" id="d0pA" type="number" placeholder="kg"/></div></div>
   </div>
-  <!-- 火 -->
   <div class="dpage" id="dy1">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -276,7 +306,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d1pB" type="number" placeholder="kg"/></div>
     </div>
   </div>
-  <!-- 水 -->
   <div class="dpage" id="dy2">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -293,7 +322,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">Cコース</div><input class="cinp" id="d2pC" type="number" placeholder="kg"/></div>
     </div>
   </div>
-  <!-- 木 -->
   <div class="dpage" id="dy3">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -310,7 +338,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">2コース（午後）</div><input class="cinp" id="d3k2pm" type="number" placeholder="kg"/></div>
     </div>
   </div>
-  <!-- 金 -->
   <div class="dpage" id="dy4">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -326,7 +353,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       <div class="ci2"><div class="cl">Bコース</div><input class="cinp" id="d4pB" type="number" placeholder="kg"/></div>
     </div>
   </div>
-  <!-- 土 -->
   <div class="dpage" id="dy5">
     <div class="ssub">可燃ごみ</div>
     <div class="cgrid">
@@ -362,7 +388,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div>
 </div>
 
-<!-- ⑤回収時間 -->
+<!-- ⑥回収時間 -->
 <div class="page" id="page5">
 <div class="card">
   <div class="card-title">⏰ 回収所要時間の報告</div>
@@ -374,7 +400,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
   <div class="tsend" id="sn5">送信中...</div><div class="toast" id="t5"></div>
 </div></div>
 
-<!-- ⑥粗大・不適正 -->
+<!-- 📊集計ダッシュボード -->
 <div class="page" id="page6">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div style="font-size:14px;font-weight:700;color:#1A1A18;">集計ダッシュボード</div>
@@ -401,85 +427,69 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="chart-wrap" id="dd-wait-chart"></div>
     <div class="chart-lbl" id="dd-wait-lbl"></div>
   </div>
+
+  <!-- ===== 排出量ダッシュボード ===== -->
   <div class="card" id="dc-emit" style="display:none;">
     <div class="card-title">📊 排出量</div>
-    <!-- 表示切替タブ -->
-    <div style="display:flex;gap:6px;margin-bottom:12px;">
-      <button onclick="setEmitView('week')" id="ev-week" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">週別（最新）</button>
-      <button onclick="setEmitView('month')" id="ev-month" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">月次推移</button>
+
+    <!-- ビュー切替 -->
+    <div class="emit-view-toggle">
+      <button class="emit-vtab active" id="ev-day" onclick="setEmitView('day')">📅 曜日別</button>
+      <button class="emit-vtab" id="ev-month" onclick="setEmitView('month')">📈 月次推移</button>
     </div>
-    <!-- 週別ビュー -->
-    <div id="emit-week-view">
-      <div class="legend" id="dd-emit-leg"></div>
-      <div style="overflow-x:auto;">
-        <div class="chart-wrap" id="dd-emit-chart" style="min-width:260px;"></div>
-        <div class="chart-lbl" id="dd-emit-lbl" style="min-width:260px;"></div>
+
+    <!-- 曜日別ビュー -->
+    <div id="emit-day-view">
+      <div class="emit-summary-grid" id="emit-day-summary"></div>
+      <div class="emit-filter-row">
+        <button class="emit-pill active" id="edp-both" onclick="setDayType('both')">可燃＋プラ</button>
+        <button class="emit-pill kanen" id="edp-kanen" onclick="setDayType('kanen')">可燃のみ</button>
+        <button class="emit-pill pla" id="edp-pla" onclick="setDayType('pla')">プラのみ</button>
       </div>
+      <div style="display:flex;align-items:flex-end;gap:0;margin-bottom:4px;">
+        <div class="emit-yaxis" style="height:100px;" id="emit-day-yaxis"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:flex-end;gap:3px;height:100px;" id="emit-day-chart"></div>
+          <div style="display:flex;gap:3px;margin-top:5px;" id="emit-day-xlabels"></div>
+        </div>
+      </div>
+      <div class="legend" id="emit-day-legend"></div>
+      <div style="overflow-x:auto;" id="emit-day-table"></div>
     </div>
+
     <!-- 月次推移ビュー -->
     <div id="emit-month-view" style="display:none;">
-      <!-- 曜日フィルター -->
-      <div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px;" id="emit-day-filter">
-        <button onclick="setEmitDay('全曜日')" id="edf-all" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">全曜日</button>
-        <button onclick="setEmitDay('月曜日')" id="edf-月" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">月</button>
-        <button onclick="setEmitDay('火曜日')" id="edf-火" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">火</button>
-        <button onclick="setEmitDay('水曜日')" id="edf-水" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">水</button>
-        <button onclick="setEmitDay('木曜日')" id="edf-木" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">木</button>
-        <button onclick="setEmitDay('金曜日')" id="edf-金" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">金</button>
-        <button onclick="setEmitDay('土曜日')" id="edf-土" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">土</button>
+      <div class="emit-section-label">曜日を絞り込む</div>
+      <div class="emit-filter-row">
+        <button class="emit-pill active" id="emdf-all" onclick="setMonthDay('all')">全曜日</button>
+        <button class="emit-pill" id="emdf-月" onclick="setMonthDay('月曜日')">月</button>
+        <button class="emit-pill" id="emdf-火" onclick="setMonthDay('火曜日')">火</button>
+        <button class="emit-pill" id="emdf-水" onclick="setMonthDay('水曜日')">水</button>
+        <button class="emit-pill" id="emdf-木" onclick="setMonthDay('木曜日')">木</button>
+        <button class="emit-pill" id="emdf-金" onclick="setMonthDay('金曜日')">金</button>
+        <button class="emit-pill" id="emdf-土" onclick="setMonthDay('土曜日')">土</button>
       </div>
-      <!-- 可燃/プラ切替 -->
-      <div style="display:flex;gap:6px;margin-bottom:10px;">
-        <button onclick="setEmitType('total')" id="et-total" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">合計</button>
-        <button onclick="setEmitType('kanen')" id="et-kanen" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">可燃</button>
-        <button onclick="setEmitType('pla')" id="et-pla" style="padding:4px 10px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">プラ</button>
+      <div class="emit-filter-row" style="margin-top:2px;">
+        <button class="emit-pill active" id="emtp-both" onclick="setMonthType('both')">可燃＋プラ</button>
+        <button class="emit-pill kanen" id="emtp-kanen" onclick="setMonthType('kanen')">可燃のみ</button>
+        <button class="emit-pill pla" id="emtp-pla" onclick="setMonthType('pla')">プラのみ</button>
       </div>
-      <div style="overflow-x:auto;">
-        <div id="emit-month-chart" style="display:flex;align-items:flex-end;gap:3px;height:110px;min-width:300px;padding:4px 0;"></div>
-        <div id="emit-month-labels" style="display:flex;gap:3px;margin-top:4px;min-width:300px;"></div>
+      <div class="emit-summary-grid" style="margin-top:10px;" id="emit-month-summary"></div>
+      <div style="display:flex;align-items:flex-end;gap:0;margin-bottom:4px;">
+        <div class="emit-yaxis" style="height:100px;" id="emit-month-yaxis"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:flex-end;gap:3px;height:100px;" id="emit-month-chart"></div>
+          <div style="display:flex;gap:3px;margin-top:5px;" id="emit-month-xlabels"></div>
+        </div>
       </div>
-      <div id="emit-month-table" style="margin-top:12px;"></div>
+      <div class="legend" id="emit-month-legend"></div>
+      <div style="overflow-x:auto;" id="emit-month-table"></div>
     </div>
   </div>
+
   <div class="card" id="dc-drv" style="display:none;">
     <div class="card-title">⏰ ドライバー別 平均回収時間</div>
     <div id="dd-drv"></div>
-  </div>
-  <div class="card" id="dc-monthly" style="display:none;">
-    <div class="card-title">📅 曜日別 月次推移</div>
-    <div style="display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;" id="monthly-day-filter">
-      <button onclick="setMonthlyDay('all')" id="mdf-all" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">全曜日</button>
-      <button onclick="setMonthlyDay('月曜日')" id="mdf-月曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">月</button>
-      <button onclick="setMonthlyDay('火曜日')" id="mdf-火曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">火</button>
-      <button onclick="setMonthlyDay('水曜日')" id="mdf-水曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">水</button>
-      <button onclick="setMonthlyDay('木曜日')" id="mdf-木曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">木</button>
-      <button onclick="setMonthlyDay('金曜日')" id="mdf-金曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">金</button>
-      <button onclick="setMonthlyDay('土曜日')" id="mdf-土曜日" style="padding:5px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">土</button>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:8px;" id="monthly-type-filter">
-      <button onclick="setMonthlyType('total')" id="mtf-total" style="padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">合計</button>
-      <button onclick="setMonthlyType('kanen')" id="mtf-kanen" style="padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">可燃</button>
-      <button onclick="setMonthlyType('pla')" id="mtf-pla" style="padding:4px 10px;font-size:11px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">プラ</button>
-    </div>
-    <div style="overflow-x:auto;">
-      <div id="monthly-chart" style="display:flex;align-items:flex-end;gap:3px;height:110px;min-width:280px;padding:4px 0;"></div>
-      <div id="monthly-labels" style="display:flex;gap:3px;margin-top:4px;min-width:280px;"></div>
-    </div>
-    <div id="monthly-table" style="margin-top:14px;overflow-x:auto;"></div>
-  </div>
-
-  <div class="card" id="dc-annual" style="display:none;">
-    <div class="card-title">📅 年間物量 月次推移</div>
-    <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
-      <button onclick="setAnnualMode('total')" id="af-total" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;">合計</button>
-      <button onclick="setAnnualMode('kanen')" id="af-kanen" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">可燃ごみ</button>
-      <button onclick="setAnnualMode('pla')" id="af-pla" style="padding:5px 12px;font-size:12px;border-radius:20px;border:1px solid #E0E0DB;background:#fff;color:#888;cursor:pointer;">プラ</button>
-    </div>
-    <div style="overflow-x:auto;">
-      <div id="annual-chart" style="display:flex;align-items:flex-end;gap:3px;height:120px;min-width:300px;padding:4px 0;"></div>
-      <div id="annual-labels" style="display:flex;gap:3px;margin-top:4px;min-width:300px;"></div>
-    </div>
-    <div id="annual-detail" style="margin-top:14px;"></div>
   </div>
 </div>
 
@@ -527,21 +537,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 </div>
 
 </div><!-- app -->
-
 <script>
 var GAS='https://script.google.com/macros/s/AKfycbwzhDQ4Q5Tm0vF_7Ewm55mqhUK6iEtZdOQjFQIhpdAXptwaNdTGqAG6Qx7QvGQKcL5_Ug/exec';
 var drivers=['菊池太','渡辺輝','和田啓助','宮野太志','山田伸一','渡辺文男','山田司','野﨑俊','鈴木将太','佐藤蛮治'];
-var vehicles={
-  '3.5t車':['95号車','96号車','97号車','98号車','99号車','101号車','103号車'],
-  '4t車':['91号車','100号車','102号車']
-};
-var lr1='', lr6='', dayIdx=0;
+var vehicles={'3.5t車':['95号車','96号車','97号車','98号車','99号車','101号車','103号車'],'4t車':['91号車','100号車','102号車']};
+var lr1='',lr6='',dayIdx=0;
 var dayNames=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
 
-// ===== ドライバー =====
 function rdrv(){
   ['f1drv','f2drv','f3drv','f5drv','f6drv'].forEach(function(id){
-    var s=document.getElementById(id); if(!s)return;
+    var s=document.getElementById(id);if(!s)return;
     var cur=s.value;
     s.innerHTML='<option value="">選択してください</option>'+drivers.map(function(d){return '<option value="'+d+'"'+(d===cur?' selected':'')+'>'+d+'</option>';}).join('');
   });
@@ -554,7 +559,6 @@ function rdrvlist(){
 function addDrv(){var inp=document.getElementById('drv-inp'),n=inp.value.trim();if(!n)return;drivers.push(n);inp.value='';rdrv();rdrvlist();}
 function delDrv(i){drivers.splice(i,1);rdrv();rdrvlist();}
 
-// ===== ナビ =====
 function showTab(i){
   document.querySelectorAll('.maintab').forEach(function(t,j){t.classList.toggle('active',i===j);});
   document.querySelectorAll('.page').forEach(function(p,j){p.classList.toggle('active',i===j);});
@@ -568,11 +572,8 @@ function showDay(i){
 function showOverlay(id){document.getElementById(id).classList.add('open');rdrvlist();}
 function hideOverlay(id){document.getElementById(id).classList.remove('open');}
 
-// ===== ユーティリティ =====
 function gv(id){var e=document.getElementById(id);return e?e.value:'';}
 function tm(t){var p=t.split(':');return parseInt(p[0])*60+parseInt(p[1]);}
-function sd(did,tid){var v=document.getElementById(did).value;if(!v)return;var p=v.split('-');document.getElementById(tid).value=p[0]+'/'+p[1]+'/'+p[2];}
-function sdt(tid,did){var v=document.getElementById(tid).value,p=v.split('/');if(p.length===3&&p[0].length===4&&p[1].length===2&&p[2].length===2)document.getElementById(did).value=p[0]+'-'+p[1]+'-'+p[2];}
 function slr1(s){lr1=s;document.getElementById('f1ll').classList.toggle('sel',s==='left');document.getElementById('f1lr').classList.toggle('sel',s==='right');}
 function slr6(s){lr6=s;document.getElementById('f6ll').classList.toggle('sel',s==='left');document.getElementById('f6lr').classList.toggle('sel',s==='right');}
 function sr(gid){document.querySelectorAll('#'+gid+' .ri').forEach(function(item){item.classList.toggle('sel',item.querySelector('input[type=radio]').checked);});}
@@ -601,86 +602,69 @@ function cwork(){
   el.textContent=Math.floor(d/60)+'時間 '+Math.round(d%60)+'分';
 }
 
-// ===== GPS =====
 function getGPS1(){
-  var st=document.getElementById('gps1-status');
-  st.style.display='block';st.textContent='📡 現在地を取得中...';
+  var st=document.getElementById('gps1-status');st.style.display='block';st.textContent='📡 現在地を取得中...';
   if(!navigator.geolocation){st.textContent='⚠️ このブラウザでは位置情報を取得できません。';return;}
   navigator.geolocation.getCurrentPosition(function(pos){
     st.textContent='🔍 住所に変換中...';
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+pos.coords.latitude+'&lon='+pos.coords.longitude+'&accept-language=ja')
-      .then(function(r){return r.json();})
-      .then(function(data){
+      .then(function(r){return r.json();}).then(function(data){
         if(data&&data.address){
           var a=data.address,addr='';
           if(a.province||a.state)addr+=(a.province||a.state);
           if(a.city||a.town||a.village)addr+=(a.city||a.town||a.village||'');
           if(a.suburb||a.neighbourhood)addr+=(a.suburb||a.neighbourhood||'');
-          if(a.road)addr+=a.road;
-          if(a.house_number)addr+=a.house_number;
-          if(!addr)addr=data.display_name;
-          document.getElementById('f1addr').value=addr;
+          if(a.road)addr+=a.road;if(a.house_number)addr+=a.house_number;
+          document.getElementById('f1addr').value=addr||data.display_name;
           st.textContent='✅ 住所を取得しました（修正可能）';
         }else{st.textContent='⚠️ 住所を取得できませんでした。手入力してください。';}
       }).catch(function(){st.textContent='⚠️ 変換に失敗しました。手入力してください。';});
   },function(){st.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';},{timeout:10000});
 }
-
 function getGPS(){
   var st=document.getElementById('gps-status');st.style.display='block';st.textContent='📡 現在地を取得中...';
   if(!navigator.geolocation){st.textContent='⚠️ このブラウザでは位置情報を取得できません。';return;}
   navigator.geolocation.getCurrentPosition(function(pos){
     st.textContent='🔍 住所に変換中...';
     fetch('https://nominatim.openstreetmap.org/reverse?format=json&lat='+pos.coords.latitude+'&lon='+pos.coords.longitude+'&accept-language=ja')
-      .then(function(r){return r.json();})
-      .then(function(data){
+      .then(function(r){return r.json();}).then(function(data){
         if(data&&data.address){
           var a=data.address,addr='';
           if(a.province||a.state)addr+=(a.province||a.state);
           if(a.city||a.town||a.village)addr+=(a.city||a.town||a.village||'');
           if(a.suburb||a.neighbourhood)addr+=(a.suburb||a.neighbourhood||'');
-          if(a.road)addr+=a.road;
-          if(a.house_number)addr+=a.house_number;
-          if(!addr)addr=data.display_name;
-          document.getElementById('f6addr').value=addr;
+          if(a.road)addr+=a.road;if(a.house_number)addr+=a.house_number;
+          document.getElementById('f6addr').value=addr||data.display_name;
           st.textContent='✅ 住所を取得しました（修正可能）';
         }else{st.textContent='⚠️ 住所を取得できませんでした。手入力してください。';}
       }).catch(function(){st.textContent='⚠️ 変換に失敗しました。手入力してください。';});
   },function(){st.textContent='⚠️ 位置情報の取得が拒否されました。設定で許可してください。';},{timeout:10000});
 }
 
-// ===== 送信（フォームPOST方式） =====
 function post(payload,bid,snid,tid,reset){
   var btn=document.getElementById(bid),sn=document.getElementById(snid),toast=document.getElementById(tid);
   btn.disabled=true;sn.style.display='block';toast.style.display='none';
-  var url=GAS+'?action=save&payload='+encodeURIComponent(JSON.stringify(payload));
-  fetch(url)
+  fetch(GAS+'?action=save&payload='+encodeURIComponent(JSON.stringify(payload)))
     .then(function(r){return r.json();})
     .then(function(res){
       sn.style.display='none';
-      if(res.status==='ok'){
-        toast.className='toast tok';toast.textContent='✅ スプレッドシートに保存しました';
-      } else {
-        toast.className='toast terr';toast.textContent='❌ エラー: '+(res.message||'不明');
-      }
+      if(res.status==='ok'){toast.className='toast tok';toast.textContent='✅ スプレッドシートに保存しました';}
+      else{toast.className='toast terr';toast.textContent='❌ エラー: '+(res.message||'不明');}
       toast.style.display='block';btn.disabled=false;
       if(res.status==='ok'&&reset)reset();
       setTimeout(function(){toast.style.display='none';},5000);
     })
-    .catch(function(err){
-      sn.style.display='none';
-      toast.className='toast terr';toast.textContent='❌ 通信エラー。再度お試しください。';
-      toast.style.display='block';btn.disabled=false;
-      setTimeout(function(){toast.style.display='none';},5000);
+    .catch(function(){
+      sn.style.display='none';toast.className='toast terr';toast.textContent='❌ 通信エラー。再度お試しください。';
+      toast.style.display='block';btn.disabled=false;setTimeout(function(){toast.style.display='none';},5000);
     });
-  form.submit();
 }
 
-// ===== 各フォーム送信 =====
 function sf1(){
   var r=document.querySelector('input[name="f1r"]:checked');
-  post({type:'集積所',date:gv('f1dt')||gv('f1d'),driver:gv('f1drv'),page:gv('f1pg'),lr:lr1,spotNo:gv('f1sn'),address:gv('f1addr'),reason:r?r.value:'',otherDetail:gv('f1ot')},'b1','sn1','t1',function(){
-    ['f1pg','f1sn','f1ot','f1addr'].forEach(function(id){document.getElementById(id).value='';}); document.getElementById('gps1-status').style.display='none';
+  post({type:'集積所',driver:gv('f1drv'),page:gv('f1pg'),lr:lr1,spotNo:gv('f1sn'),address:gv('f1addr'),reason:r?r.value:'',otherDetail:gv('f1ot')},'b1','sn1','t1',function(){
+    ['f1pg','f1sn','f1ot','f1addr'].forEach(function(id){document.getElementById(id).value='';});
+    document.getElementById('gps1-status').style.display='none';
     document.querySelectorAll('input[name="f1r"]').forEach(function(x){x.checked=false;});
     document.querySelectorAll('#f1rg .ri').forEach(function(x){x.classList.remove('sel');});
     document.getElementById('f1ow').style.display='none';
@@ -692,18 +676,17 @@ function sf2(){
   if(val==='車両の不具合')detail=gv('f2d1');
   else if(val==='車両の修理・点検日程'){var df=gv('f2df'),dt=gv('f2dt2'),m=gv('f2d2');detail=(df||'?')+'〜'+(dt||'?')+(m?' ('+m+')':'');}
   else if(val==='その他')detail=gv('f2d3');
-  post({type:'車両',date:gv('f2dt')||gv('f2d'),driver:gv('f2drv'),vehicle:gv('f2-vehicle'),content:val,otherDetail:detail},'b2','sn2','t2',function(){
+  post({type:'車両',driver:gv('f2drv'),vehicle:gv('f2-vehicle'),content:val,otherDetail:detail},'b2','sn2','t2',function(){
     document.querySelectorAll('input[name="f2r"]').forEach(function(x){x.checked=false;});
     document.querySelectorAll('#f2rg .ri').forEach(function(x){x.classList.remove('sel');});
-    ['f2d1','f2d2','f2d3'].forEach(function(id){document.getElementById(id).value='';});
-    ['f2df','f2dt2'].forEach(function(id){document.getElementById(id).value='';});
+    ['f2d1','f2d2','f2d3','f2df','f2dt2'].forEach(function(id){document.getElementById(id).value='';});
     ['f2w1','f2w2','f2w3'].forEach(function(id){document.getElementById(id).style.display='none';});
   });
 }
 function sf3(){
   var s=gv('f3s'),e=gv('f3e'),w='';
   if(s&&e){var d=tm(e)-tm(s);w=d>=0?String(Math.round(d)):'';}
-  post({type:'処分場',date:gv('f3dt')||gv('f3d'),driver:gv('f3drv'),startTime:s,endTime:e,waitMinutes:w},'b3','sn3','t3',function(){
+  post({type:'処分場',driver:gv('f3drv'),startTime:s,endTime:e,waitMinutes:w},'b3','sn3','t3',function(){
     document.getElementById('f3s').value='';document.getElementById('f3e').value='';document.getElementById('wr').textContent='-- 分';
   });
 }
@@ -720,7 +703,7 @@ function sf4(){
   map.forEach(function(pair){
     if(pair[0].startsWith('d'+d)){var el=document.getElementById(pair[0]);if(el&&el.value)courses[pair[1]]=el.value;}
   });
-  post({type:'排出量',date:gv('f4dt')||gv('f4d'),day:dayNames[d],courses:courses},'b4','sn4','t4',null);
+  post({type:'排出量',day:dayNames[d],courses:courses},'b4','sn4','t4',null);
 }
 function sf5(){
   var e=gv('f5e'),wt='';
@@ -745,146 +728,89 @@ function sf6(){
 }
 
 // ===== ダッシュボード =====
-var CACHE_KEY='dashCache', CACHE_TTL=5*60*1000; // 5分キャッシュ
-
+var CACHE_KEY='dashCache',CACHE_TTL=5*60*1000;
 function loadDash(){
-  var loading=document.getElementById('dash-loading');
-  var errEl=document.getElementById('dash-err');
+  var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err');
   errEl.style.display='none';
-
-  // ② キャッシュチェック：前回データがあれば即表示
-  try {
+  try{
     var cached=localStorage.getItem(CACHE_KEY);
-    if(cached){
-      var obj=JSON.parse(cached);
-      if(obj && obj.data && (Date.now()-obj.ts < CACHE_TTL)){
-        renderDash(obj.data);
-        fetchDash(true);
-        return;
-      }
-    }
-  } catch(e){ console.log('cache error:',e); }
-
-  // キャッシュなし→ローディング表示してから取得
+    if(cached){var obj=JSON.parse(cached);if(obj&&obj.data&&(Date.now()-obj.ts<CACHE_TTL)){renderDash(obj.data);fetchDash(true);return;}}
+  }catch(e){}
   loading.style.display='block';
-  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-monthly','dc-annual'].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.style.display='none';
-  });
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   fetchDash(false);
 }
-
 function fetchDash(isBackground){
-  var loading=document.getElementById('dash-loading');
-  var errEl=document.getElementById('dash-err');
-  var reloadBtn=document.getElementById('dash-reload-btn');
-
-  if(isBackground && reloadBtn){
-    reloadBtn.textContent='🔄 更新中...';
-    reloadBtn.disabled=true;
-  }
-
+  var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err'),reloadBtn=document.getElementById('dash-reload-btn');
+  if(isBackground&&reloadBtn){reloadBtn.textContent='🔄 更新中...';reloadBtn.disabled=true;}
   var controller=typeof AbortController!=='undefined'?new AbortController():null;
   var timeoutId=setTimeout(function(){if(controller)controller.abort();},15000);
-  var fetchOpts=controller?{signal:controller.signal}:{};
-
-  fetch(GAS+'?action=getAll',fetchOpts)
+  fetch(GAS+'?action=getAll',controller?{signal:controller.signal}:{})
     .then(function(r){return r.json();})
     .then(function(res){
-      clearTimeout(timeoutId);
-      loading.style.display='none';
+      clearTimeout(timeoutId);loading.style.display='none';
       if(reloadBtn){reloadBtn.textContent='🔄 更新';reloadBtn.disabled=false;}
-      if(res.status!=='ok'){
-        if(!isBackground){errEl.textContent='⚠️ '+res.message;errEl.style.display='block';}
-        return;
-      }
-      // キャッシュ保存
+      if(res.status!=='ok'){if(!isBackground){errEl.textContent='⚠️ '+res.message;errEl.style.display='block';}return;}
       try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),data:res.data}));}catch(e){}
       renderDash(res.data);
     })
     .catch(function(err){
-      clearTimeout(timeoutId);
-      loading.style.display='none';
+      clearTimeout(timeoutId);loading.style.display='none';
       if(reloadBtn){reloadBtn.textContent='🔄 更新';reloadBtn.disabled=false;}
-      if(!isBackground){
-        var msg=err&&err.name==='AbortError'
-          ?'⚠️ タイムアウトしました。🔄更新ボタンで再試行してください。'
-          :'⚠️ 通信エラー。🔄更新ボタンで再試行してください。';
-        errEl.textContent=msg;errEl.style.display='block';
-      }
+      if(!isBackground){errEl.textContent=err&&err.name==='AbortError'?'⚠️ タイムアウトしました。':'⚠️ 通信エラー。再試行してください。';errEl.style.display='block';}
     });
 }
-
 function renderDash(d){
-  // 既存カードを一旦非表示
-  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv','dc-monthly','dc-annual'].forEach(function(id){
-    var el=document.getElementById(id);if(el)el.style.display='none';
-  });
-  var loading=document.getElementById('dash-loading');
-  if(loading)loading.style.display='none';
+  ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
+  document.getElementById('dash-loading').style.display='none';
   setTimeout(function(){rSpot(d['集積所']||[]);},0);
   setTimeout(function(){rFoul(d['粗大不適正']||[]);},50);
   setTimeout(function(){rCar(d['車両']||[]);},100);
   setTimeout(function(){rWait(d['処分場']||[]);},150);
   setTimeout(function(){rEmit(d['排出量']||[]);},200);
   setTimeout(function(){rDrv(d['回収時間']||[]);},250);
-  setTimeout(function(){rAnnual(d['排出量']||[]);},300);
-  setTimeout(function(){rMonthly(d['排出量']||[]);},350);
 }
-
-function showDC(id){var el=document.getElementById(id);if(el)el.style.display='block';}
-
 function rSpot(rows){
   if(!rows.length)return;
-  rows=rows.slice(-100);
   var cnt={};
-  rows.forEach(function(r){var k='P'+(r['ページ']||'').replace('P','')+(r['左右']||'')+(r['集積所番号']||'');cnt[k]=(cnt[k]||0)+1;});
+  rows.slice(-100).forEach(function(r){var k='P'+(r['ページ']||'').replace('P','')+(r['左右']||'')+(r['集積所番号']||'');cnt[k]=(cnt[k]||0)+1;});
   var sorted=Object.keys(cnt).sort(function(a,b){return cnt[b]-cnt[a];}).slice(0,5);
   var colors=['#A32D2D','#854F0B','#555','#555','#555'];
-  var html=sorted.map(function(k,i){
-    return '<div class="worst-item"><div class="wnum" style="background:'+colors[i]+';">'+(i+1)+'</div>'
+  document.getElementById('dd-spot').innerHTML=sorted.map(function(k,i){
+    return '<div class="worst-item"><div class="wnum" style="background:'+colors[i]+'">'+(i+1)+'</div>'
       +'<div style="flex:1;font-size:13px;color:#1A1A18;">'+k+'</div>'
-      +'<div style="font-size:13px;font-weight:700;color:'+colors[i]+';">'+cnt[k]+'件</div></div>';
-  }).join('');
-  document.getElementById('dd-spot').innerHTML=html||'<div class="no-data">データなし</div>';
-  showDC('dc-spot');
+      +'<div style="font-size:13px;font-weight:700;color:'+colors[i]+'">'+cnt[k]+'件</div></div>';
+  }).join('')||'<div class="no-data">データなし</div>';
+  document.getElementById('dc-spot').style.display='block';
 }
-
 function rFoul(rows){
   if(!rows.length)return;
-  rows=rows.slice(-20);
-  var recent=rows.slice(-5).reverse();
-  var html=recent.map(function(r){
+  document.getElementById('dd-foul').innerHTML=rows.slice(-5).reverse().map(function(r){
     var reason=r['報告理由']||'';
     var bc=reason==='粗大ごみ'?'#FAEEDA':reason==='排出禁止物'?'#FCEBEB':'#F0F0EC';
     var tc=reason==='粗大ごみ'?'#854F0B':reason==='排出禁止物'?'#A32D2D':'#555';
     return '<div class="ritem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span class="rbadge" style="background:'+bc+';color:'+tc+';">'+reason+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span></div>'
-      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'　'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
+      +'<span class="rbadge" style="background:'+bc+';color:'+tc+'">'+reason+'</span>'
+      +'<span style="font-size:11px;color:#888">'+(r['送信日時']||'')+'</span></div>'
+      +'<div style="font-size:12px;color:#555">'+(r['ドライバー名']||'')+'　'+(r['ページ']||'')+(r['左右']||'')+(r['集積所番号']||'')+'</div>'
       +(r['詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['詳細']+'</div>':'')+'</div>';
-  }).join('');
-  document.getElementById('dd-foul').innerHTML=html||'<div class="no-data">データなし</div>';
-  showDC('dc-foul');
+  }).join('')||'<div class="no-data">データなし</div>';
+  document.getElementById('dc-foul').style.display='block';
 }
-
 function rCar(rows){
   if(!rows.length)return;
-  rows=rows.slice(-20);
-  var recent=rows.slice(-5).reverse();
-  var html=recent.map(function(r){
+  document.getElementById('dd-car').innerHTML=rows.slice(-5).reverse().map(function(r){
     var c=r['内容']||'';
     var bc=c==='車両の不具合'?'#FCEBEB':c==='車両の修理・点検日程'?'#FAEEDA':'#F0F0EC';
     var tc=c==='車両の不具合'?'#A32D2D':c==='車両の修理・点検日程'?'#854F0B':'#555';
     return '<div class="ritem"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">'
-      +'<span class="rbadge" style="background:'+bc+';color:'+tc+';">'+c+'</span>'
-      +'<span style="font-size:11px;color:#888;">'+(r['送信日時']||'')+'</span></div>'
-      +'<div style="font-size:12px;color:#555;">'+(r['ドライバー名']||'')+'</div>'
+      +'<span class="rbadge" style="background:'+bc+';color:'+tc+'">'+c+'</span>'
+      +'<span style="font-size:11px;color:#888">'+(r['送信日時']||'')+'</span></div>'
+      +'<div style="font-size:12px;color:#555">'+(r['ドライバー名']||'')+'</div>'
       +(r['その他詳細']?'<div style="font-size:12px;color:#888;margin-top:2px;">'+r['その他詳細']+'</div>':'')+'</div>';
-  }).join('');
-  document.getElementById('dd-car').innerHTML=html||'<div class="no-data">データなし</div>';
-  showDC('dc-car');
+  }).join('')||'<div class="no-data">データなし</div>';
+  document.getElementById('dc-car').style.display='block';
 }
-
 function rWait(rows){
   if(!rows.length)return;
   var recent=rows.slice(-10);
@@ -893,89 +819,17 @@ function rWait(rows){
   var max=Math.max.apply(null,vals);
   document.getElementById('dd-wait-stat').innerHTML=
     '<div class="dstat-box"><div class="dstat-l">直近平均</div><div class="dstat-v">'+avg+'<span class="dstat-u">分</span></div></div>'
-    +'<div class="dstat-box"><div class="dstat-l">最長</div><div class="dstat-v" style="color:#A32D2D;">'+max+'<span class="dstat-u">分</span></div></div>';
+    +'<div class="dstat-box"><div class="dstat-l">最長</div><div class="dstat-v" style="color:#A32D2D">'+max+'<span class="dstat-u">分</span></div></div>';
   var cEl=document.getElementById('dd-wait-chart'),lEl=document.getElementById('dd-wait-lbl');
   cEl.innerHTML='';lEl.innerHTML='';
   vals.forEach(function(v,i){
     var h=max>0?Math.round((v/max)*82):0;
     var col=v>=60?'#F09595':v>=40?'#FAC775':'#9FE1CB';
-    cEl.innerHTML+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;">'
-      +'<div style="width:100%;border-radius:3px 3px 0 0;background:'+col+';height:'+h+'px;" title="'+v+'分"></div></div>';
+    cEl.innerHTML+='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;"><div style="width:100%;border-radius:3px 3px 0 0;background:'+col+';height:'+h+'px;" title="'+v+'分"></div></div>';
     lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:10px;color:#888;">'+(recent[i]['ドライバー名']||'').slice(0,2)+'</div>';
   });
-  showDC('dc-wait');
+  document.getElementById('dc-wait').style.display='block';
 }
-
-function rEmit(rows){
-  if(!rows.length)return;
-  emitAllRows=rows; // 月次推移用に保存
-  var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前'];
-  var pKeys=['プラA','プラB','プラC','プラ2午後'];
-  var dayOrder=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
-  var dayShort=['月','火','水','木','金','土'];
-  // 曜日別に最新データを集計
-  var dayMap={};
-  rows.forEach(function(r){
-    var day=r['曜日']||'';
-    if(!dayMap[day])dayMap[day]=[];
-    dayMap[day].push(r);
-  });
-  var dispDays=dayOrder.filter(function(d){return dayMap[d];});
-  if(!dispDays.length)return;
-  var kv=dispDays.map(function(d){
-    var latest=dayMap[d][dayMap[d].length-1];
-    return kKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
-  });
-  var pv=dispDays.map(function(d){
-    var latest=dayMap[d][dayMap[d].length-1];
-    return pKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
-  });
-  var mx=Math.max.apply(null,kv.concat(pv))||1;
-  // 凡例
-  document.getElementById('dd-emit-leg').innerHTML=
-    '<div><span class="ldot" style="background:#9FE1CB;"></span>可燃ごみ</div>'
-    +'<div><span class="ldot" style="background:#B5D4F4;"></span>プラスチック</div>'
-    +'<div style="font-size:11px;color:#888;margin-left:4px;">※各曜日の最新データ</div>';
-  // グラフ
-  var cEl=document.getElementById('dd-emit-chart'),lEl=document.getElementById('dd-emit-lbl');
-  cEl.innerHTML='';lEl.innerHTML='';
-  dispDays.forEach(function(day,i){
-    var kh=Math.round((kv[i]/mx)*82),ph=Math.round((pv[i]/mx)*82);
-    var idx=dayOrder.indexOf(day);
-    var short=idx>=0?dayShort[idx]:day.slice(0,1);
-    cEl.innerHTML+='<div style="flex:1;display:flex;gap:2px;align-items:flex-end;justify-content:center;min-width:30px;">'
-      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#9FE1CB;height:'+kh+'px;" title="'+day+' 可燃:'+Math.round(kv[i])+'kg"></div>'
-      +'<div style="flex:1;border-radius:3px 3px 0 0;background:#B5D4F4;height:'+ph+'px;" title="'+day+' プラ:'+Math.round(pv[i])+'kg"></div></div>';
-    lEl.innerHTML+='<div style="flex:1;text-align:center;font-size:11px;color:#888;min-width:30px;font-weight:500;">'+short+'</div>';
-  });
-  // 曜日別テーブル
-  var totalK=0,totalP=0;
-  var tbl='<div style="overflow-x:auto;margin-top:12px;"><table style="width:100%;border-collapse:collapse;font-size:12px;">'
-    +'<tr style="background:#F8F8F5;">'
-    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:left;">曜日</th>'
-    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">可燃(kg)</th>'
-    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">プラ(kg)</th>'
-    +'<th style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">合計(kg)</th></tr>';
-  dispDays.forEach(function(day,i){
-    var k=Math.round(kv[i]),p=Math.round(pv[i]);
-    totalK+=k;totalP+=p;
-    var idx=dayOrder.indexOf(day);
-    tbl+='<tr>'
-      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;font-weight:600;">'+(idx>=0?dayShort[idx]+'曜日':day)+'</td>'
-      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+k.toLocaleString()+'</td>'
-      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+p.toLocaleString()+'</td>'
-      +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+(k+p).toLocaleString()+'</td></tr>';
-  });
-  tbl+='<tr style="background:#F8F8F5;font-weight:700;">'
-    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;">週合計</td>'
-    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+totalK.toLocaleString()+'</td>'
-    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+totalP.toLocaleString()+'</td>'
-    +'<td style="padding:6px 8px;border:1px solid #E0E0DB;text-align:right;">'+(totalK+totalP).toLocaleString()+'</td></tr>'
-    +'</table></div>';
-  lEl.insertAdjacentHTML('afterend', tbl);
-  showDC('dc-emit');
-}
-
 function rDrv(rows){
   if(!rows.length)return;
   var dm={};
@@ -983,46 +837,264 @@ function rDrv(rows){
     var drv=r['ドライバー名']||'不明',t=r['所要時間']||'';
     var m=t.match(/(\d+)時間(\d+)分/);if(!m)return;
     var mins=parseInt(m[1])*60+parseInt(m[2]);
-    if(!dm[drv])dm[drv]={total:0,count:0};
-    dm[drv].total+=mins;dm[drv].count+=1;
+    if(!dm[drv])dm[drv]={total:0,count:0};dm[drv].total+=mins;dm[drv].count+=1;
   });
-  var list=Object.keys(dm).map(function(k){return{name:k,avg:Math.round(dm[k].total/dm[k].count),count:dm[k].count};})
-    .sort(function(a,b){return b.avg-a.avg;});
+  var list=Object.keys(dm).map(function(k){return{name:k,avg:Math.round(dm[k].total/dm[k].count),count:dm[k].count};}).sort(function(a,b){return b.avg-a.avg;});
   var mx=list.length?list[0].avg:1;
-  var html=list.map(function(d){
+  document.getElementById('dd-drv').innerHTML=list.map(function(d){
     var h=Math.floor(d.avg/60),m=d.avg%60,pct=Math.round((d.avg/mx)*100);
-    var col=d.avg>420?'#FAC775':'#9FE1CB';
-    return '<div class="drvbar"><div class="drvbar-top"><span style="font-weight:500;color:#1A1A18;">'+d.name+'</span>'
-      +'<span style="color:#555;">平均 '+h+'時間'+m+'分（'+d.count+'件）</span></div>'
-      +'<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+col+';"></div></div></div>';
-  }).join('');
-  document.getElementById('dd-drv').innerHTML=html||'<div class="no-data">データなし</div>';
-  showDC('dc-drv');
+    return '<div class="drvbar"><div class="drvbar-top"><span style="font-weight:500;color:#1A1A18">'+d.name+'</span><span style="color:#555">平均 '+h+'時間'+m+'分（'+d.count+'件）</span></div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%;background:'+(d.avg>420?'#FAC775':'#9FE1CB')+'"></div></div></div>';
+  }).join('')||'<div class="no-data">データなし</div>';
+  document.getElementById('dc-drv').style.display='block';
 }
 
+// ================================================================
+//  排出量ダッシュボード（全面刷新）
+// ================================================================
+var KANEN_KEYS=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
+var PLA_KEYS  =['プラA','プラB','プラC','プラ2午後'];
+var DAY_ORDER =['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
+var DAY_SHORT =['月','火','水','木','金','土'];
+
+var emitRows=[];
+var emitView='day';
+var dayType='both';
+var monthDay='all';
+var monthType='both';
+
+// 行の可燃・プラ合計
+function rowK(r){return KANEN_KEYS.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);}
+function rowP(r){return PLA_KEYS.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);}
+
+// 配列の平均
+function avg(arr){return arr.length?arr.reduce(function(a,b){return a+b;},0)/arr.length:0;}
+
+// サマリーカード描画
+function drawSummary(id, kanens, plas, sub){
+  document.getElementById(id).innerHTML=
+    '<div class="emit-summary-box kanen">'
+    +'<div class="esb-label">🟢 可燃ごみ</div>'
+    +'<div class="esb-val">'+Math.round(avg(kanens)).toLocaleString()+'<span class="esb-unit"> kg</span></div>'
+    +'<div class="esb-sub">'+sub+'</div></div>'
+    +'<div class="emit-summary-box pla">'
+    +'<div class="esb-label">🔵 プラスチック</div>'
+    +'<div class="esb-val">'+Math.round(avg(plas)).toLocaleString()+'<span class="esb-unit"> kg</span></div>'
+    +'<div class="esb-sub">'+sub+'</div></div>';
+}
+
+// 棒グラフ描画
+function drawChart(bars, chartId, xlabId, yaxId, type){
+  var cEl=document.getElementById(chartId);
+  var lEl=document.getElementById(xlabId);
+  var yEl=document.getElementById(yaxId);
+  cEl.innerHTML='';lEl.innerHTML='';yEl.innerHTML='';
+  if(!bars.length)return;
+
+  var vals=bars.map(function(b){
+    if(type==='kanen')return b.k;
+    if(type==='pla')return b.p;
+    return b.k+b.p;
+  });
+  var maxV=Math.max.apply(null,vals.concat([1]));
+
+  // Y軸（3段階）
+  [maxV, maxV/2, 0].forEach(function(v){
+    var d=document.createElement('div');
+    d.className='emit-ylabel';
+    d.textContent=v>0?Math.round(v/1000*10)/10+'t':'0';
+    yEl.appendChild(d);
+  });
+
+  bars.forEach(function(b){
+    var grp=document.createElement('div');
+    grp.className='emit-bar-group';
+    if(type==='both'||type==='kanen'){
+      var kh=maxV>0?Math.round((b.k/maxV)*96):0;
+      var kb=document.createElement('div');
+      kb.className='emit-bar kanen';
+      kb.style.height=kh+'px';
+      kb.title=b.label+' 可燃: '+Math.round(b.k)+'kg';
+      grp.appendChild(kb);
+    }
+    if(type==='both'||type==='pla'){
+      var ph=maxV>0?Math.round((b.p/maxV)*96):0;
+      var pb=document.createElement('div');
+      pb.className='emit-bar pla';
+      pb.style.height=ph+'px';
+      pb.title=b.label+' プラ: '+Math.round(b.p)+'kg';
+      grp.appendChild(pb);
+    }
+    cEl.appendChild(grp);
+    var xl=document.createElement('div');
+    xl.className='emit-xlabel';
+    xl.textContent=b.label;
+    lEl.appendChild(xl);
+  });
+}
+
+// テーブル描画（平均行付き）
+function drawTable(id, rows, countLabel){
+  if(!rows.length){document.getElementById(id).innerHTML='<div class="no-data">データなし</div>';return;}
+  var totK=0,totP=0,totC=0;
+  rows.forEach(function(r){totK+=r.k;totP+=r.p;totC+=(r.c||0);});
+  var n=rows.length;
+  var html='<table class="emit-table"><thead><tr>'
+    +'<th>区分</th><th>可燃(kg)</th><th>プラ(kg)</th><th>合計(kg)</th>'
+    +(countLabel?'<th>'+countLabel+'</th>':'')
+    +'</tr></thead><tbody>';
+  rows.forEach(function(r){
+    html+='<tr>'
+      +'<td>'+r.label+'</td>'
+      +'<td class="kanen-val">'+Math.round(r.k).toLocaleString()+'</td>'
+      +'<td class="pla-val">'+Math.round(r.p).toLocaleString()+'</td>'
+      +'<td>'+(Math.round(r.k+r.p)).toLocaleString()+'</td>'
+      +(countLabel?'<td style="color:#888;">'+r.c+'</td>':'')
+      +'</tr>';
+  });
+  // 平均行
+  html+='<tr class="total-row">'
+    +'<td>平均</td>'
+    +'<td class="kanen-val">'+Math.round(totK/n).toLocaleString()+'</td>'
+    +'<td class="pla-val">'+Math.round(totP/n).toLocaleString()+'</td>'
+    +'<td>'+Math.round((totK+totP)/n).toLocaleString()+'</td>'
+    +(countLabel?'<td style="color:#888;">'+totC+'</td>':'')
+    +'</tr>';
+  html+='</tbody></table>';
+  document.getElementById(id).innerHTML=html;
+}
+
+// 凡例描画
+function drawLegend(id, type){
+  var el=document.getElementById(id);el.innerHTML='';
+  if(type!=='pla')el.innerHTML+='<div><span class="ldot" style="background:#6EC490;"></span>可燃ごみ（平均）</div>';
+  if(type!=='kanen')el.innerHTML+='<div><span class="ldot" style="background:#6AA8E2;"></span>プラスチック（平均）</div>';
+}
+
+// ===== 曜日別ビュー =====
+function renderDayView(){
+  // 同一曜日の全データを平均
+  var dayMap={};
+  emitRows.forEach(function(r){
+    var day=r['曜日']||'';if(!day)return;
+    if(!dayMap[day])dayMap[day]=[];
+    dayMap[day].push({k:rowK(r),p:rowP(r)});
+  });
+  var dispDays=DAY_ORDER.filter(function(d){return dayMap[d]&&dayMap[d].length;});
+  if(!dispDays.length){document.getElementById('dc-emit').style.display='block';return;}
+
+  var bars=dispDays.map(function(d){
+    var recs=dayMap[d];
+    var ak=avg(recs.map(function(x){return x.k;}));
+    var ap=avg(recs.map(function(x){return x.p;}));
+    var idx=DAY_ORDER.indexOf(d);
+    return{label:idx>=0?DAY_SHORT[idx]+'曜':d.slice(0,1),k:ak,p:ap};
+  });
+
+  // サマリー：全曜日の平均の平均
+  drawSummary('emit-day-summary',bars.map(function(b){return b.k;}),bars.map(function(b){return b.p;}),'曜日別 平均');
+  drawChart(bars,'emit-day-chart','emit-day-xlabels','emit-day-yaxis',dayType);
+  drawLegend('emit-day-legend',dayType);
+
+  var tRows=dispDays.map(function(d){
+    var recs=dayMap[d];
+    var ak=avg(recs.map(function(x){return x.k;}));
+    var ap=avg(recs.map(function(x){return x.p;}));
+    var idx=DAY_ORDER.indexOf(d);
+    return{label:(idx>=0?DAY_SHORT[idx]+'曜日':d),k:ak,p:ap,c:recs.length};
+  });
+  drawTable('emit-day-table',tRows,'件数');
+  document.getElementById('dc-emit').style.display='block';
+}
+
+// ===== 月次推移ビュー =====
+function renderMonthView(){
+  var filtered=monthDay==='all'?emitRows:emitRows.filter(function(r){return r['曜日']===monthDay;});
+  // 月ごとに集計（同月は平均）
+  var mMap={};
+  filtered.forEach(function(r){
+    var date=r['報告日']||'';if(!date)return;
+    var m=date.match(/(\d{4})[\/\-](\d{1,2})/);if(!m)return;
+    var key=m[1]+'/'+(('0'+m[2]).slice(-2));
+    if(!mMap[key])mMap[key]=[];
+    mMap[key].push({k:rowK(r),p:rowP(r)});
+  });
+  var months=Object.keys(mMap).sort();
+  if(!months.length){
+    document.getElementById('emit-month-chart').innerHTML='';
+    document.getElementById('emit-month-xlabels').innerHTML='';
+    document.getElementById('emit-month-table').innerHTML='<div class="no-data">データなし</div>';
+    document.getElementById('dc-emit').style.display='block';
+    return;
+  }
+  var bars=months.map(function(mo){
+    var recs=mMap[mo];
+    return{label:mo.slice(5)+'月',k:avg(recs.map(function(x){return x.k;})),p:avg(recs.map(function(x){return x.p;}))};
+  });
+
+  drawSummary('emit-month-summary',bars.map(function(b){return b.k;}),bars.map(function(b){return b.p;}),'月平均');
+  drawChart(bars,'emit-month-chart','emit-month-xlabels','emit-month-yaxis',monthType);
+  drawLegend('emit-month-legend',monthType);
+
+  var tRows=months.map(function(mo){
+    var recs=mMap[mo];
+    return{label:mo,k:avg(recs.map(function(x){return x.k;})),p:avg(recs.map(function(x){return x.p;})),c:recs.length};
+  });
+  drawTable('emit-month-table',tRows,'件数');
+  document.getElementById('dc-emit').style.display='block';
+}
+
+function rEmit(rows){
+  if(!rows.length)return;
+  emitRows=rows;
+  if(emitView==='day')renderDayView();else renderMonthView();
+}
+
+// ビュー切替
+function setEmitView(v){
+  emitView=v;
+  document.getElementById('emit-day-view').style.display=v==='day'?'block':'none';
+  document.getElementById('emit-month-view').style.display=v==='month'?'block':'none';
+  var db=document.getElementById('ev-day'),mb=document.getElementById('ev-month');
+  db.classList.toggle('active',v==='day');mb.classList.toggle('active',v==='month');
+  if(emitRows.length){if(v==='day')renderDayView();else renderMonthView();}
+}
+
+// 曜日別 種別ピル
+function setDayType(t){
+  dayType=t;
+  ['both','kanen','pla'].forEach(function(x){document.getElementById('edp-'+x).classList.toggle('active',x===t);});
+  if(emitRows.length)renderDayView();
+}
+
+// 月次 曜日フィルター
+function setMonthDay(d){
+  monthDay=d;
+  var map={all:'all','月曜日':'月','火曜日':'火','水曜日':'水','木曜日':'木','金曜日':'金','土曜日':'土'};
+  Object.keys(map).forEach(function(k){var b=document.getElementById('emdf-'+map[k]);if(b)b.classList.toggle('active',k===d);});
+  if(emitRows.length)renderMonthView();
+}
+
+// 月次 種別フィルター
+function setMonthType(t){
+  monthType=t;
+  ['both','kanen','pla'].forEach(function(x){document.getElementById('emtp-'+x).classList.toggle('active',x===t);});
+  if(emitRows.length)renderMonthView();
+}
 
 // ===== CSV取り込み =====
-var csvData=[], csvHeaders=[];
-var annualRawData=[], annualMode='total';
-var KANEN_FIELDS=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後'];
-var PLA_FIELDS=['プラA','プラB','プラC','プラ2'];
+var csvData=[],csvHeaders=[];
 var ALL_COURSE=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前','可燃2午後','プラA','プラB','プラC','プラ2'];
-
 function parseCSVLine(line){
   var result=[],cur='',inQ=false;
   for(var i=0;i<line.length;i++){
     var c=line[i];
-    if(c==='"'){inQ=!inQ;}
-    else if(c===','&&!inQ){result.push(cur.trim());cur='';}
-    else{cur+=c;}
+    if(c==='"'){inQ=!inQ;}else if(c===','&&!inQ){result.push(cur.trim());cur='';}else{cur+=c;}
   }
-  result.push(cur.trim());
-  return result;
+  result.push(cur.trim());return result;
 }
-
 function previewCSV(){
-  var file=document.getElementById('csv-file').files[0];
-  if(!file)return;
+  var file=document.getElementById('csv-file').files[0];if(!file)return;
   var reader=new FileReader();
   reader.onload=function(e){
     var text=e.target.result;
@@ -1031,47 +1103,30 @@ function previewCSV(){
     if(lines.length<2){alert('データが不足しています');return;}
     csvHeaders=parseCSVLine(lines[0]);
     csvData=lines.slice(1).map(function(l){return parseCSVLine(l);});
-    var previewLines=lines.slice(0,4);
-    var table='<table style="border-collapse:collapse;width:100%;">'
-      +previewLines.map(function(l){
-        return '<tr>'+parseCSVLine(l).map(function(c){
-          return '<td style="border:1px solid #E0E0DB;padding:3px 5px;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis;">'+c+'</td>';
-        }).join('')+'</tr>';
-      }).join('')+'</table>';
-    document.getElementById('csv-preview-table').innerHTML=table;
+    document.getElementById('csv-preview-table').innerHTML='<table style="border-collapse:collapse;width:100%;">'
+      +lines.slice(0,4).map(function(l){return '<tr>'+parseCSVLine(l).map(function(c){
+        return '<td style="border:1px solid #E0E0DB;padding:3px 5px;white-space:nowrap;max-width:80px;overflow:hidden;text-overflow:ellipsis;">'+c+'</td>';
+      }).join('')+'</tr>';}).join('')+'</table>';
     document.getElementById('csv-row-count').textContent='データ行数: '+csvData.length+'行';
     document.getElementById('csv-preview').style.display='block';
-    buildColMap();
+    var targets=['報告日','曜日'].concat(ALL_COURSE);
+    document.getElementById('csv-col-selects').innerHTML=targets.map(function(t){
+      var autoIdx=csvHeaders.indexOf(t);
+      var opts=csvHeaders.map(function(h,i){return '<option value="'+i+'"'+(i===autoIdx?' selected':'')+'>'+h+'</option>';}).join('');
+      return '<div class="col-map-row"><div class="col-map-label">'+t+'</div>'
+        +'<select class="col-map-sel" id="map-'+t+'"><option value="">-- なし --</option>'+opts+'</select></div>';
+    }).join('');
+    document.getElementById('csv-col-map').style.display='block';
     document.getElementById('csv-import-btn').style.display='block';
   };
   reader.readAsText(file,'UTF-8');
 }
-
-function buildColMap(){
-  var targets=['報告日','曜日'].concat(ALL_COURSE);
-  var selDiv=document.getElementById('csv-col-selects');
-  selDiv.innerHTML=targets.map(function(t){
-    var autoIdx=csvHeaders.indexOf(t);
-    var opts=csvHeaders.map(function(h,i){
-      return '<option value="'+i+'"'+(i===autoIdx?' selected':'')+'>'+h+'</option>';
-    }).join('');
-    return '<div class="col-map-row"><div class="col-map-label">'+t+'</div>'
-      +'<select class="col-map-sel" id="map-'+t+'"><option value="">-- なし --</option>'+opts+'</select></div>';
-  }).join('');
-  document.getElementById('csv-col-map').style.display='block';
-}
-
 function importCSV(){
   if(!csvData.length){alert('CSVを読み込んでください');return;}
   var targets=['報告日','曜日'].concat(ALL_COURSE);
   var colIdx={};
-  targets.forEach(function(t){
-    var sel=document.getElementById('map-'+t);
-    if(sel&&sel.value!=='')colIdx[t]=parseInt(sel.value);
-  });
-  var btn=document.getElementById('csv-import-btn');
-  var sending=document.getElementById('csv-sending');
-  var toast=document.getElementById('csv-toast');
+  targets.forEach(function(t){var sel=document.getElementById('map-'+t);if(sel&&sel.value!=='')colIdx[t]=parseInt(sel.value);});
+  var btn=document.getElementById('csv-import-btn'),sending=document.getElementById('csv-sending'),toast=document.getElementById('csv-toast');
   btn.disabled=true;sending.style.display='block';toast.style.display='none';
   var rows=csvData.filter(function(r){return r.some(function(c){return c;});});
   var errors=0;
@@ -1080,422 +1135,69 @@ function importCSV(){
       sending.style.display='none';
       toast.className='toast tok';
       toast.textContent='✅ '+(rows.length-errors)+'件保存しました'+(errors?' (エラー'+errors+'件)':'');
-      toast.style.display='block';
-      btn.disabled=false;
-      setTimeout(function(){toast.style.display='none';},6000);
-      return;
+      toast.style.display='block';btn.disabled=false;setTimeout(function(){toast.style.display='none';},6000);return;
     }
-    var row=rows[i];
-    var courses={};
-    ALL_COURSE.forEach(function(f){
-      if(colIdx[f]!==undefined&&row[colIdx[f]])courses[f]=row[colIdx[f]];
-    });
+    var row=rows[i],courses={};
+    ALL_COURSE.forEach(function(f){if(colIdx[f]!==undefined&&row[colIdx[f]])courses[f]=row[colIdx[f]];});
     var payload={type:'排出量',date:colIdx['報告日']!==undefined?row[colIdx['報告日']]:'',day:colIdx['曜日']!==undefined?row[colIdx['曜日']]:'',courses:courses};
-    var url=GAS+'?action=save&payload='+encodeURIComponent(JSON.stringify(payload));
-    fetch(url)
-      .then(function(r){return r.json();})
-      .then(function(res){if(res.status!=='ok')errors++;sendNext(i+1);})
+    fetch(GAS+'?action=save&payload='+encodeURIComponent(JSON.stringify(payload)))
+      .then(function(r){return r.json();}).then(function(res){if(res.status!=='ok')errors++;sendNext(i+1);})
       .catch(function(){errors++;sendNext(i+1);});
   }
   sendNext(0);
 }
 
-// ===== 年間グラフ =====
-function setAnnualMode(mode){
-  annualMode=mode;
-  ['total','kanen','pla'].forEach(function(m){
-    var b=document.getElementById('af-'+m);
-    if(m===mode){b.style.background='#1A1A18';b.style.color='#fff';b.style.borderColor='#1A1A18';}
-    else{b.style.background='#fff';b.style.color='#888';b.style.borderColor='#E0E0DB';}
-  });
-  renderAnnualChart(annualRawData);
-}
-
-var monthlyRawData=[], monthlyDay='all', monthlyType='total';
-
-function setMonthlyDay(day){
-  monthlyDay=day;
-  ['all','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'].forEach(function(d){
-    var btn=document.getElementById('mdf-'+d);
-    if(!btn)return;
-    if(d===day){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
-    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
-  });
-  renderMonthlyChart(monthlyRawData);
-}
-
-function setMonthlyType(type){
-  monthlyType=type;
-  ['total','kanen','pla'].forEach(function(t){
-    var btn=document.getElementById('mtf-'+t);
-    if(!btn)return;
-    if(t===type){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
-    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
-  });
-  renderMonthlyChart(monthlyRawData);
-}
-
-function rMonthly(rows){
-  if(!rows.length)return;
-  monthlyRawData=rows;
-  renderMonthlyChart(rows);
-}
-
-function renderMonthlyChart(rows){
-  var kKeys=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前'];
-  var pKeys=['プラA','プラB','プラC','プラ2午後'];
-  var dayOrder=['月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
-  var dayShort=['月','火','水','木','金','土'];
-  var dayColors=['#9FE1CB','#FAC775','#B5D4F4','#F09595','#C5B4E3','#F4C4A0'];
-
-  // 月×曜日で集計
-  var monthDayMap={};
-  rows.forEach(function(r){
-    var date=r['報告日']||''; if(!date)return; // 報告日が空の場合はスキップ
-    var day=r['曜日']||'';
-    var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
-    if(!m||!day)return;
-    var month=m[1]+'/'+(m[2].length===1?'0':'')+m[2];
-    if(!monthDayMap[month])monthDayMap[month]={};
-    if(!monthDayMap[month][day])monthDayMap[month][day]=[];
-    monthDayMap[month][day].push(r);
-  });
-
-  var months=Object.keys(monthDayMap).sort();
-  if(!months.length)return;
-
-  // 選択曜日に応じてデータを準備
-  var targetDays=monthlyDay==='all'?dayOrder:[monthlyDay];
-  var dispDays=targetDays.filter(function(d){
-    return months.some(function(m){return monthDayMap[m][d];});
-  });
-
-  // 月ごとの値を計算
-  var monthVals=months.map(function(month){
-    var total=0;
-    dispDays.forEach(function(day){
-      var dayRows=monthDayMap[month][day]||[];
-      if(!dayRows.length)return;
-      var latest=dayRows[dayRows.length-1];
-      if(monthlyType==='kanen'||monthlyType==='total'){
-        total+=kKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
-      }
-      if(monthlyType==='pla'||monthlyType==='total'){
-        total+=pKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
-      }
-    });
-    return total;
-  });
-
-  var maxV=Math.max.apply(null,monthVals)||1;
-  var barColor=monthlyType==='pla'?'#B5D4F4':monthlyType==='kanen'?'#9FE1CB':'#9FE1CB';
-
-  // グラフ描画
-  var cEl=document.getElementById('monthly-chart');
-  var lEl=document.getElementById('monthly-labels');
-  cEl.innerHTML='';lEl.innerHTML='';
-
-  months.forEach(function(month,i){
-    var h=Math.round((monthVals[i]/maxV)*100);
-    var col=document.createElement('div');
-    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:28px;';
-    col.innerHTML='<div style="font-size:9px;color:#888;margin-bottom:2px;">'+Math.round(monthVals[i]).toLocaleString()+'</div>'
-      +'<div style="width:100%;border-radius:3px 3px 0 0;background:'+barColor+';height:'+h+'px;" title="'+month+': '+Math.round(monthVals[i])+'kg"></div>';
-    cEl.appendChild(col);
-    var lbl=document.createElement('div');
-    lbl.style.cssText='flex:1;text-align:center;font-size:10px;color:#888;min-width:28px;';
-    lbl.textContent=month.slice(5)+'月';
-    lEl.appendChild(lbl);
-  });
-
-  // 月別×曜日テーブル（全曜日表示時のみ）
-  var tblHtml='';
-  if(monthlyDay==='all'){
-    tblHtml='<table style="width:100%;border-collapse:collapse;font-size:11px;">';
-    tblHtml+='<tr style="background:#F8F8F5;"><th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:left;">月</th>';
-    dispDays.forEach(function(d){
-      var idx=dayOrder.indexOf(d);
-      tblHtml+='<th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+(idx>=0?dayShort[idx]:'?')+'</th>';
-    });
-    tblHtml+='<th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">合計</th></tr>';
-
-    months.forEach(function(month){
-      var rowTotal=0;
-      tblHtml+='<tr><td style="padding:5px 6px;border:1px solid #E0E0DB;font-weight:600;">'+month+'</td>';
-      dispDays.forEach(function(day){
-        var dayRows=monthDayMap[month][day]||[];
-        var val=0;
-        if(dayRows.length){
-          var latest=dayRows[dayRows.length-1];
-          if(monthlyType==='kanen'||monthlyType==='total') val+=kKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
-          if(monthlyType==='pla'||monthlyType==='total') val+=pKeys.reduce(function(s,k){return s+(parseFloat(latest[k])||0);},0);
-        }
-        rowTotal+=val;
-        tblHtml+='<td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+(val?Math.round(val).toLocaleString():'-')+'</td>';
-      });
-      tblHtml+='<td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+Math.round(rowTotal).toLocaleString()+'</td></tr>';
-    });
-    tblHtml+='</table>';
-  }
-  document.getElementById('monthly-table').innerHTML=tblHtml;
-  document.getElementById('dc-monthly').style.display='block';
-}
-
-function rAnnual(rows){
-  if(!rows.length)return;
-  annualRawData=rows;
-  renderAnnualChart(rows);
-}
-
-function renderAnnualChart(rows){
-  var monthly={};
-  rows.forEach(function(r){
-    var date=r['報告日']||''; if(!date)return; // 報告日が空の場合はスキップ
-    var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
-    if(!m)return;
-    var key=m[1]+'/'+(m[2].length===1?'0':'')+m[2];
-    if(!monthly[key])monthly[key]={kanen:0,pla:0};
-    KANEN_FIELDS.forEach(function(f){monthly[key].kanen+=parseFloat(r[f])||0;});
-    PLA_FIELDS.forEach(function(f){monthly[key].pla+=parseFloat(r[f])||0;});
-  });
-  var months=Object.keys(monthly).sort();
-  if(!months.length)return;
-  var vals=months.map(function(mo){
-    if(annualMode==='kanen')return monthly[mo].kanen;
-    if(annualMode==='pla')return monthly[mo].pla;
-    return monthly[mo].kanen+monthly[mo].pla;
-  });
-  var maxV=Math.max.apply(null,vals)||1;
-  var color=annualMode==='pla'?'#B5D4F4':'#9FE1CB';
-  var cEl=document.getElementById('annual-chart');
-  var lEl=document.getElementById('annual-labels');
-  cEl.innerHTML='';lEl.innerHTML='';
-  months.forEach(function(mo,i){
-    var h=Math.round((vals[i]/maxV)*110);
-    var col=document.createElement('div');
-    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:22px;';
-    col.innerHTML='<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;" title="'+mo+': '+Math.round(vals[i])+'kg"></div>';
-    cEl.appendChild(col);
-    var lbl=document.createElement('div');
-    lbl.style.cssText='flex:1;text-align:center;font-size:9px;color:#888;min-width:22px;';
-    lbl.textContent=mo.slice(5);
-    lEl.appendChild(lbl);
-  });
-  // 月次テーブル
-  var detail='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:11px;">';
-  detail+='<tr style="background:#F8F8F5;"><th style="padding:5px 6px;border:1px solid #E0E0DB;text-align:left;">月</th><th style="padding:5px 6px;border:1px solid #E0E0DB;">可燃(kg)</th><th style="padding:5px 6px;border:1px solid #E0E0DB;">プラ(kg)</th><th style="padding:5px 6px;border:1px solid #E0E0DB;">合計(kg)</th></tr>';
-  months.forEach(function(mo){
-    var k=Math.round(monthly[mo].kanen),p=Math.round(monthly[mo].pla);
-    detail+='<tr><td style="padding:5px 6px;border:1px solid #E0E0DB;font-weight:500;">'+mo+'</td><td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+k.toLocaleString()+'</td><td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;">'+p.toLocaleString()+'</td><td style="padding:5px 6px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+(k+p).toLocaleString()+'</td></tr>';
-  });
-  detail+='</table></div>';
-  document.getElementById('annual-detail').innerHTML=detail;
-  document.getElementById('dc-annual').style.display='block';
-}
-
-
 // ===== 車両管理 =====
 function renderVehicleSelect(){
-  var sel=document.getElementById('f2-vehicle');
-  if(!sel)return;
+  var sel=document.getElementById('f2-vehicle');if(!sel)return;
   var opts='<option value="">車両を選択してください</option>';
   Object.keys(vehicles).forEach(function(type){
     opts+='<optgroup label="'+type+'">';
-    vehicles[type].forEach(function(v){
-      opts+='<option value="'+v+'">'+v+'</option>';
-    });
+    vehicles[type].forEach(function(v){opts+='<option value="'+v+'">'+v+'</option>';});
     opts+='</optgroup>';
   });
   sel.innerHTML=opts;
 }
-
 function renderVehicleList(){
-  var typeSel=document.getElementById('vh-type-sel');
-  var newTypeWrap=document.getElementById('vh-newtype-wrap');
-  if(!typeSel)return;
+  var typeSel=document.getElementById('vh-type-sel');if(!typeSel)return;
   var selectedType=typeSel.value;
-  if(selectedType==='new'){
-    newTypeWrap.style.display='block';
-    document.getElementById('vh-list').innerHTML='';
-    return;
-  }
-  newTypeWrap.style.display='none';
+  document.getElementById('vh-newtype-wrap').style.display=selectedType==='new'?'block':'none';
+  if(selectedType==='new'){document.getElementById('vh-list').innerHTML='';return;}
   var list=document.getElementById('vh-list');
-  var vlist=vehicles[selectedType]||[];
-  list.innerHTML=vlist.map(function(v,i){
-    return '<div class="ditem"><span>'+v+'</span>'
-      +'<button class="ddel" onclick="delVehicle(this,'+i+')">🗑</button></div>';
+  list.innerHTML=(vehicles[selectedType]||[]).map(function(v,i){
+    return '<div class="ditem"><span>'+v+'</span><button class="ddel" onclick="delVehicle(this,'+i+')">🗑</button></div>';
   }).join('');
-  // data属性にtype保存
-  list.setAttribute('data-type', selectedType);
+  list.setAttribute('data-type',selectedType);
 }
-
 function addVehicle(){
-  var typeSel=document.getElementById('vh-type-sel');
-  var selectedType=typeSel.value;
+  var typeSel=document.getElementById('vh-type-sel'),selectedType=typeSel.value;
   if(selectedType==='new'){
-    var newTypeName=document.getElementById('vh-newtype-inp').value.trim();
-    if(!newTypeName){alert('車種名を入力してください');return;}
-    if(!vehicles[newTypeName])vehicles[newTypeName]=[];
-    // typeselに追加
-    var opt=document.createElement('option');
-    opt.value=newTypeName;opt.textContent=newTypeName;
-    typeSel.insertBefore(opt,typeSel.lastElementChild);
-    typeSel.value=newTypeName;
+    var newName=document.getElementById('vh-newtype-inp').value.trim();
+    if(!newName){alert('車種名を入力してください');return;}
+    if(!vehicles[newName])vehicles[newName]=[];
+    var opt=document.createElement('option');opt.value=newName;opt.textContent=newName;
+    typeSel.insertBefore(opt,typeSel.lastElementChild);typeSel.value=newName;
     document.getElementById('vh-newtype-inp').value='';
     document.getElementById('vh-newtype-wrap').style.display='none';
-    selectedType=newTypeName;
+    selectedType=newName;
   }
-  var inp=document.getElementById('vh-add-inp');
-  var name=inp.value.trim();
+  var inp=document.getElementById('vh-add-inp'),name=inp.value.trim();
   if(!name){alert('号車番号を入力してください');return;}
   if(!vehicles[selectedType])vehicles[selectedType]=[];
-  vehicles[selectedType].push(name);
-  inp.value='';
-  renderVehicleList();
+  vehicles[selectedType].push(name);inp.value='';renderVehicleList();
 }
-
 function delVehicle(btn,i){
-  var list=document.getElementById('vh-list');
-  var type=list.getAttribute('data-type');
-  if(type)vehicles[type].splice(i,1);
-  renderVehicleList();
+  var list=document.getElementById('vh-list'),type=list.getAttribute('data-type');
+  if(type)vehicles[type].splice(i,1);renderVehicleList();
 }
-
 document.addEventListener('DOMContentLoaded',function(){
-  var typeSel=document.getElementById('vh-type-sel');
-  if(typeSel)typeSel.addEventListener('change',renderVehicleList);
+  var ts=document.getElementById('vh-type-sel');if(ts)ts.addEventListener('change',renderVehicleList);
 });
-
 function updRepairLabel(){
-  var df=document.getElementById('f2df').value;
-  var dt=document.getElementById('f2dt2').value;
-  var lbl=document.getElementById('repair-label');
-  if(!lbl)return;
-  if(df||dt){
-    var fmt=function(d){
-      if(!d)return '未定';
-      var p=d.split('-');
-      return parseInt(p[1])+'月'+parseInt(p[2])+'日';
-    };
-    lbl.textContent=fmt(df)+' 〜 '+fmt(dt);
-    lbl.style.display='block';
-  } else {
-    lbl.style.display='none';
-  }
-}
-
-
-// ===== 排出量ビュー切替 =====
-var emitAllRows=[], emitSelectedDay='全曜日', emitType='total';
-var EMIT_KKEYS=['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃2午前'];
-var EMIT_PKEYS=['プラA','プラB','プラC','プラ2午後'];
-
-function setEmitView(mode){
-  document.getElementById('emit-week-view').style.display=mode==='week'?'block':'none';
-  document.getElementById('emit-month-view').style.display=mode==='month'?'block':'none';
-  var wb=document.getElementById('ev-week'),mb=document.getElementById('ev-month');
-  if(mode==='week'){wb.style.background='#1A1A18';wb.style.color='#fff';wb.style.borderColor='#1A1A18';mb.style.background='#fff';mb.style.color='#888';mb.style.borderColor='#E0E0DB';}
-  else{mb.style.background='#1A1A18';mb.style.color='#fff';mb.style.borderColor='#1A1A18';wb.style.background='#fff';wb.style.color='#888';wb.style.borderColor='#E0E0DB';}
-  if(mode==='month') renderEmitMonthChart();
-}
-
-function setEmitDay(day){
-  emitSelectedDay=day;
-  var days=['全曜日','月曜日','火曜日','水曜日','木曜日','金曜日','土曜日'];
-  var ids=['all','月','火','水','木','金','土'];
-  days.forEach(function(d,i){
-    var btn=document.getElementById('edf-'+ids[i]);
-    if(!btn)return;
-    if(d===day){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
-    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
-  });
-  renderEmitMonthChart();
-}
-
-function setEmitType(type){
-  emitType=type;
-  ['total','kanen','pla'].forEach(function(t){
-    var btn=document.getElementById('et-'+t);if(!btn)return;
-    if(t===type){btn.style.background='#1A1A18';btn.style.color='#fff';btn.style.borderColor='#1A1A18';}
-    else{btn.style.background='#fff';btn.style.color='#888';btn.style.borderColor='#E0E0DB';}
-  });
-  renderEmitMonthChart();
-}
-
-function renderEmitMonthChart(){
-  var rows=emitAllRows;
-  if(!rows.length)return;
-
-  // 対象曜日でフィルタ
-  var filtered=emitSelectedDay==='全曜日'?rows:rows.filter(function(r){return r['曜日']===emitSelectedDay;});
-  if(!filtered.length){
-    document.getElementById('emit-month-chart').innerHTML='';
-    document.getElementById('emit-month-labels').innerHTML='';
-    document.getElementById('emit-month-table').innerHTML='<div style="font-size:13px;color:#888;text-align:center;padding:12px;">データなし</div>';
-    return;
-  }
-
-  // 月ごとに集計
-  var monthly={};
-  filtered.forEach(function(r){
-    var date=r['報告日']||''; if(!date)return; // 報告日が空の場合はスキップ
-    var m=date.match(/(\d{4})[\/\-](\d{1,2})/);
-    if(!m)return;
-    var key=m[1]+'/'+(('0'+m[2]).slice(-2));
-    if(!monthly[key])monthly[key]={kanen:0,pla:0,count:0};
-    monthly[key].kanen+=EMIT_KKEYS.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);
-    monthly[key].pla+=EMIT_PKEYS.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);
-    monthly[key].count++;
-  });
-
-  var months=Object.keys(monthly).sort();
-  if(!months.length)return;
-
-  var vals=months.map(function(mo){
-    if(emitType==='kanen')return monthly[mo].kanen;
-    if(emitType==='pla')return monthly[mo].pla;
-    return monthly[mo].kanen+monthly[mo].pla;
-  });
-  var maxV=Math.max.apply(null,vals)||1;
-  var color=emitType==='pla'?'#B5D4F4':emitType==='kanen'?'#9FE1CB':'#9FE1CB';
-
-  var cEl=document.getElementById('emit-month-chart');
-  var lEl=document.getElementById('emit-month-labels');
-  cEl.innerHTML='';lEl.innerHTML='';
-
-  months.forEach(function(mo,i){
-    var h=Math.round((vals[i]/maxV)*100);
-    var col=document.createElement('div');
-    col.style.cssText='flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:28px;';
-    col.innerHTML='<div style="font-size:9px;color:#888;margin-bottom:2px;">'+Math.round(vals[i]).toLocaleString()+'</div>'
-      +'<div style="width:100%;border-radius:3px 3px 0 0;background:'+color+';height:'+h+'px;"></div>';
-    cEl.appendChild(col);
-    var lbl=document.createElement('div');
-    lbl.style.cssText='flex:1;text-align:center;font-size:10px;color:#888;min-width:28px;';
-    lbl.textContent=mo.slice(5)+'月';
-    lEl.appendChild(lbl);
-  });
-
-  // 月次テーブル
-  var tbl='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;">'
-    +'<tr style="background:#F8F8F5;">'
-    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:left;">月</th>'
-    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">可燃(kg)</th>'
-    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">プラ(kg)</th>'
-    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">合計(kg)</th>'
-    +'<th style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">件数</th></tr>';
-  months.forEach(function(mo){
-    var k=Math.round(monthly[mo].kanen),p=Math.round(monthly[mo].pla);
-    tbl+='<tr>'
-      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;font-weight:600;">'+mo+'</td>'
-      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">'+k.toLocaleString()+'</td>'
-      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;">'+p.toLocaleString()+'</td>'
-      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;font-weight:600;">'+(k+p).toLocaleString()+'</td>'
-      +'<td style="padding:5px 7px;border:1px solid #E0E0DB;text-align:right;color:#888;">'+monthly[mo].count+'</td></tr>';
-  });
-  tbl+='</table></div>';
-  document.getElementById('emit-month-table').innerHTML=tbl;
+  var df=document.getElementById('f2df').value,dt=document.getElementById('f2dt2').value;
+  var lbl=document.getElementById('repair-label');if(!lbl)return;
+  var fmt=function(d){if(!d)return '未定';var p=d.split('-');return parseInt(p[1])+'月'+parseInt(p[2])+'日';};
+  if(df||dt){lbl.textContent=fmt(df)+' 〜 '+fmt(dt);lbl.style.display='block';}else{lbl.style.display='none';}
 }
 
 renderVehicleSelect();
