@@ -442,9 +442,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div id="emit-day-view">
       <div class="emit-summary-grid" id="emit-day-summary"></div>
       <div class="emit-filter-row">
-        <button class="emit-pill active" id="edp-both" onclick="setDayType('both')">可燃＋プラ</button>
-        <button class="emit-pill kanen" id="edp-kanen" onclick="setDayType('kanen')">可燃のみ</button>
-        <button class="emit-pill pla" id="edp-pla" onclick="setDayType('pla')">プラのみ</button>
+        <button class="emit-pill kanen active" id="edp-kanen" onclick="setDayType('kanen')">可燃</button>
+        <button class="emit-pill pla" id="edp-pla" onclick="setDayType('pla')">プラスチック</button>
       </div>
       <div style="display:flex;align-items:flex-end;gap:0;margin-bottom:4px;">
         <div class="emit-yaxis" style="height:100px;" id="emit-day-yaxis"></div>
@@ -470,9 +469,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
         <button class="emit-pill" id="emdf-土" onclick="setMonthDay('土曜日')">土</button>
       </div>
       <div class="emit-filter-row" style="margin-top:2px;">
-        <button class="emit-pill active" id="emtp-both" onclick="setMonthType('both')">可燃＋プラ</button>
-        <button class="emit-pill kanen" id="emtp-kanen" onclick="setMonthType('kanen')">可燃のみ</button>
-        <button class="emit-pill pla" id="emtp-pla" onclick="setMonthType('pla')">プラのみ</button>
+        <button class="emit-pill kanen active" id="emtp-kanen" onclick="setMonthType('kanen')">可燃</button>
+        <button class="emit-pill pla" id="emtp-pla" onclick="setMonthType('pla')">プラスチック</button>
       </div>
       <div class="emit-summary-grid" style="margin-top:10px;" id="emit-month-summary"></div>
       <div style="display:flex;align-items:flex-end;gap:0;margin-bottom:4px;">
@@ -859,9 +857,9 @@ var DAY_SHORT =['月','火','水','木','金','土'];
 
 var emitRows=[];
 var emitView='day';
-var dayType='both';
+var dayType='kanen';
 var monthDay='all';
-var monthType='both';
+var monthType='kanen';
 
 // 行の可燃・プラ合計
 function rowK(r){return KANEN_KEYS.reduce(function(s,k){return s+(parseFloat(r[k])||0);},0);}
@@ -1063,7 +1061,7 @@ function setEmitView(v){
 // 曜日別 種別ピル
 function setDayType(t){
   dayType=t;
-  ['both','kanen','pla'].forEach(function(x){document.getElementById('edp-'+x).classList.toggle('active',x===t);});
+  ['kanen','pla'].forEach(function(x){document.getElementById('edp-'+x).classList.toggle('active',x===t);});
   if(emitRows.length)renderDayView();
 }
 
@@ -1078,7 +1076,7 @@ function setMonthDay(d){
 // 月次 種別フィルター
 function setMonthType(t){
   monthType=t;
-  ['both','kanen','pla'].forEach(function(x){document.getElementById('emtp-'+x).classList.toggle('active',x===t);});
+  ['kanen','pla'].forEach(function(x){document.getElementById('emtp-'+x).classList.toggle('active',x===t);});
   if(emitRows.length)renderMonthView();
 }
 
