@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>回収業務 報告フォーム</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="回収業務">
@@ -426,10 +427,53 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 <div class="page" id="page6">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
     <div style="font-size:14px;font-weight:700;color:#1A1A18;">集計ダッシュボード</div>
-    <button class="dash-reload" id="dash-reload-btn" onclick="loadDash()">🔄 更新</button>
+    <button class="dash-reload" id="dash-reload-btn" onclick="loadDash(true)">🔄 更新</button>
   </div>
   <div id="dash-loading" style="text-align:center;padding:40px 0;color:#888;font-size:13px;display:none;">データを読み込み中...</div>
   <div id="dash-err" style="display:none;background:#FDECEA;color:#B71C1C;padding:12px;border-radius:10px;font-size:13px;margin-bottom:12px;"></div>
+
+  <!-- 🔌 GAS連携デバッグパネル -->
+  <div class="card" id="dc-debug">
+    <div class="card-title" style="cursor:pointer;user-select:none;" onclick="toggleDebug()">
+      🔌 スプレッドシート連携チェック
+      <span id="debug-chevron" style="margin-left:auto;font-size:14px;color:#888;">▼</span>
+    </div>
+    <div id="debug-body">
+      <div style="background:#F8F8F5;border-radius:8px;padding:9px 11px;margin-bottom:10px;">
+        <div style="font-size:10px;color:#888;margin-bottom:3px;font-weight:600;">接続先 GAS URL</div>
+        <div id="dbg-url" style="font-size:11px;color:#1A1A18;word-break:break-all;"></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:12px;">
+        <div style="border:1px solid #E0E0DB;border-radius:9px;padding:10px 12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#1A1A18;">① データ取得（getAll）</div>
+              <div style="font-size:11px;color:#888;">ダッシュボードのデータ読み込み</div>
+            </div>
+            <button onclick="dbgGetAll()" style="font-size:12px;padding:5px 12px;border-radius:8px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;white-space:nowrap;">テスト</button>
+          </div>
+          <div id="dbg-getall-result" style="display:none;"></div>
+        </div>
+        <div style="border:1px solid #E0E0DB;border-radius:9px;padding:10px 12px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div>
+              <div style="font-size:12px;font-weight:700;color:#1A1A18;">② データ送信（save）</div>
+              <div style="font-size:11px;color:#888;">テスト用ダミーデータを送信</div>
+            </div>
+            <button onclick="dbgSave()" style="font-size:12px;padding:5px 12px;border-radius:8px;border:1px solid #1A1A18;background:#1A1A18;color:#fff;cursor:pointer;white-space:nowrap;">テスト</button>
+          </div>
+          <div id="dbg-save-result" style="display:none;"></div>
+        </div>
+      </div>
+      <div style="font-size:11px;font-weight:600;color:#888;margin-bottom:5px;">通信ログ</div>
+      <div id="dbg-log" style="background:#1A1A18;border-radius:8px;padding:10px;font-size:11px;color:#9FE1CB;font-family:monospace;min-height:60px;max-height:180px;overflow-y:auto;white-space:pre-wrap;word-break:break-all;">準備完了。テストボタンを押してください。</div>
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button onclick="document.getElementById('dbg-log').textContent='ログをクリアしました。';" style="flex:1;padding:6px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;font-size:11px;color:#888;cursor:pointer;">🗑 ログをクリア</button>
+        <button onclick="dbgClearCache()" style="flex:1;padding:6px;border:1px solid #E0E0DB;border-radius:8px;background:#fff;font-size:11px;color:#A32D2D;cursor:pointer;font-weight:600;">🗑 キャッシュ削除</button>
+        <button onclick="dbgShowRaw()" style="flex:1;padding:6px;border:1px solid #1A1A18;border-radius:8px;background:#1A1A18;font-size:11px;color:#fff;cursor:pointer;font-weight:600;">📋 生データ確認</button>
+      </div>
+    </div>
+  </div>
 
   <div class="card" id="dc-spot" style="display:none;">
     <div class="card-title">📍 集積所 報告ワーストTOP5</div>
@@ -458,6 +502,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
     <div class="emit-view-toggle">
       <button class="emit-vtab active" id="ev-day" onclick="setEmitView('day')">📅 曜日別</button>
       <button class="emit-vtab" id="ev-month" onclick="setEmitView('month')">📈 月次推移</button>
+      <button class="emit-vtab" id="ev-course" onclick="setEmitView('course')">📉 コース別推移</button>
     </div>
 
     <!-- 曜日別ビュー -->
@@ -504,6 +549,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
       </div>
       <div class="legend" id="emit-month-legend"></div>
       <div style="overflow-x:auto;" id="emit-month-table"></div>
+    </div>
+
+    <!-- コース別推移ビュー（曜日タブ×コース折れ線・GAS集計済データを使用） -->
+    <div id="emit-course-view" style="display:none;">
+      <div class="emit-section-label">曜日を選択</div>
+      <div class="emit-filter-row" id="ec-youbi-tabs"></div>
+      <div class="emit-filter-row" style="margin-top:2px;">
+        <button class="emit-pill active" id="ecf-all" onclick="setCourseFilter('all')">その曜日の全コース</button>
+        <button class="emit-pill kanen" id="ecf-kanen" onclick="setCourseFilter('kanen')">可燃のみ</button>
+        <button class="emit-pill pla" id="ecf-pla" onclick="setCourseFilter('pla')">プラのみ</button>
+      </div>
+      <div class="legend" id="ec-legend" style="margin-top:10px;"></div>
+      <div style="position:relative;width:100%;height:260px;margin-top:6px;">
+        <canvas id="ec-chart" role="img" aria-label="曜日別・コース別の月次重量推移グラフ">曜日とコースを選択して月次重量推移を表示します</canvas>
+      </div>
+      <div class="emit-section-label" style="margin-top:10px;font-weight:400;color:#888;" id="ec-note"></div>
     </div>
   </div>
 
@@ -748,14 +809,20 @@ function sf6(){
 }
 
 // ===== ダッシュボード =====
-var CACHE_KEY='dashCache',CACHE_TTL=5*60*1000;
-function loadDash(){
+var CACHE_KEY='dashCache',CACHE_TTL=60*1000;
+function loadDash(forceRefresh){
   var loading=document.getElementById('dash-loading'),errEl=document.getElementById('dash-err');
   errEl.style.display='none';
-  try{
-    var cached=localStorage.getItem(CACHE_KEY);
-    if(cached){var obj=JSON.parse(cached);if(obj&&obj.data&&(Date.now()-obj.ts<CACHE_TTL)){renderDash(obj.data);fetchDash(true);return;}}
-  }catch(e){}
+  if(!forceRefresh){
+    try{
+      var cached=localStorage.getItem(CACHE_KEY);
+      if(cached){var obj=JSON.parse(cached);if(obj&&obj.data&&(Date.now()-obj.ts<CACHE_TTL)){renderDash(obj.data);fetchDash(true);return;}}
+    }catch(e){}
+  }else{
+    try{localStorage.removeItem(CACHE_KEY);}catch(e){}
+    try{localStorage.removeItem(CT_CACHE_KEY);}catch(e){}
+    if(emitView==='course') loadCourseTrend(true);
+  }
   loading.style.display='block';
   ['dc-spot','dc-foul','dc-car','dc-wait','dc-emit','dc-drv'].forEach(function(id){var el=document.getElementById(id);if(el)el.style.display='none';});
   fetchDash(false);
@@ -1024,13 +1091,24 @@ function drawChart(bars, chartId, xlabId, yaxId, type){
     if(type==='pla')return b.p;
     return b.k+b.p;
   });
-  var maxV=Math.max.apply(null,vals.concat([1]));
+  var rawMax=Math.max.apply(null,vals.concat([1]));
 
-  // Y軸（3段階）
-  [maxV, maxV/2, 0].forEach(function(v){
+  // Y軸を500kg刻みの固定ステップに統一する
+  var STEP=500;
+  var maxV=Math.ceil(rawMax/STEP)*STEP;
+  if(maxV<=0) maxV=STEP;
+  var stepCount=4; // 0を含めて5段階表示
+  var labels=[];
+  for(var s=stepCount;s>=0;s--){
+    labels.push(Math.round(maxV*s/stepCount));
+  }
+  // 各ラベルを500の倍数に丸めて統一感を出す
+  labels=labels.map(function(v){return Math.round(v/STEP)*STEP;});
+
+  labels.forEach(function(v){
     var d=document.createElement('div');
     d.className='emit-ylabel';
-    d.textContent=v>0?Math.round(v/1000*10)/10+'t':'0';
+    d.textContent=v>0?v.toLocaleString()+'kg':'0';
     yEl.appendChild(d);
   });
 
@@ -1175,7 +1253,168 @@ function renderMonthView(){
 function rEmit(rows){
   if(!rows.length)return;
   emitRows=rows;
-  if(emitView==='day')renderDayView();else renderMonthView();
+  document.getElementById('dc-emit').style.display='block';
+  if(emitView==='day')renderDayView();
+  else if(emitView==='month')renderMonthView();
+  else if(emitView==='course'){
+    // コース別推移はGAS集計済みデータを使うため、まだ読み込んでいなければ取得する
+    if(!courseTrendData) loadCourseTrend(false);
+    else renderCourseTrendChart();
+  }
+}
+
+// ================================================================
+//  コース別推移ビュー（GAS側で事前集計したデータを使用）
+//  データ量が増えてもJS側の負荷は一定（受け取った集計済み数値を
+//  そのままChart.jsに渡すだけ）
+// ================================================================
+var courseTrendData = null; // GASから取得した集計結果をキャッシュ
+var courseTrendYoubi = null;
+var courseTrendFilter = 'all';
+var courseTrendChart = null;
+var CT_CACHE_KEY = 'courseTrendCache';
+var CT_CACHE_TTL = 5*60*1000;
+
+var CT_KANEN = ['可燃1','可燃2','可燃3','可燃4','可燃5','可燃C','可燃B'];
+var CT_PLA   = ['プラA','プラB','プラC','プラ2'];
+var CT_PALETTE_KANEN = ['#378ADD','#1D9E75','#639922','#BA7517','#A32D2D','#533AB7','#D4537E'];
+var CT_PALETTE_PLA   = ['#185FA5','#0F6E56','#3B6D11','#854F0B'];
+var CT_DASH = [[],[8,4],[4,4],[12,4],[4,8],[8,4,4,4],[2,2]];
+
+function ctColorFor(c){
+  var ki=CT_KANEN.indexOf(c);
+  if(ki>=0) return CT_PALETTE_KANEN[ki];
+  var pi=CT_PLA.indexOf(c);
+  return CT_PALETTE_PLA[pi>=0?pi:0];
+}
+
+function loadCourseTrend(forceRefresh){
+  if(!forceRefresh){
+    try{
+      var cached = localStorage.getItem(CT_CACHE_KEY);
+      if(cached){
+        var obj = JSON.parse(cached);
+        if(obj && obj.data && (Date.now()-obj.ts < CT_CACHE_TTL)){
+          courseTrendData = obj.data;
+          initCourseTrendUI();
+          fetchCourseTrend(true); // バックグラウンド更新
+          return;
+        }
+      }
+    }catch(e){}
+  }
+  fetchCourseTrend(false);
+}
+
+function fetchCourseTrend(isBackground){
+  fetch(GAS+'?action=getEmitSummary')
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.status!=='ok') return;
+      courseTrendData = res.data;
+      try{localStorage.setItem(CT_CACHE_KEY, JSON.stringify({ts:Date.now(), data:res.data}));}catch(e){}
+      initCourseTrendUI();
+    })
+    .catch(function(){
+      if(!isBackground){
+        document.getElementById('ec-note').textContent = '⚠️ データの取得に失敗しました。🔄更新ボタンで再試行してください。';
+      }
+    });
+}
+
+function initCourseTrendUI(){
+  if(!courseTrendData) return;
+  var youbiList = courseTrendData.youbi || [];
+  if(!youbiList.length){
+    document.getElementById('ec-youbi-tabs').innerHTML = '';
+    document.getElementById('ec-note').textContent = 'データがありません。';
+    return;
+  }
+  if(!courseTrendYoubi || youbiList.indexOf(courseTrendYoubi)<0){
+    courseTrendYoubi = youbiList[0];
+  }
+  var tabsEl = document.getElementById('ec-youbi-tabs');
+  tabsEl.innerHTML = youbiList.map(function(y){
+    return '<button class="emit-pill'+(y===courseTrendYoubi?' active':'')+'" data-y="'+y+'" onclick="setCourseYoubi(this)">'+y.slice(0,1)+'</button>';
+  }).join('');
+  renderCourseTrendChart();
+}
+
+function setCourseYoubi(btn){
+  courseTrendYoubi = btn.getAttribute('data-y');
+  document.querySelectorAll('#ec-youbi-tabs .emit-pill').forEach(function(b){
+    b.classList.toggle('active', b===btn);
+  });
+  renderCourseTrendChart();
+}
+
+function setCourseFilter(t){
+  courseTrendFilter = t;
+  ['all','kanen','pla'].forEach(function(x){document.getElementById('ecf-'+x).classList.toggle('active', x===t);});
+  renderCourseTrendChart();
+}
+
+function renderCourseTrendChart(){
+  if(!courseTrendData || !courseTrendYoubi) return;
+  var months = courseTrendData.months || [];
+  var monthLabels = months.map(function(m){return m.slice(5)+'月';});
+  var courseYoubiMap = courseTrendData.courseYoubiMap || {};
+  var byYoubiMonth = courseTrendData.byYoubiMonth || {};
+
+  var courses = Object.keys(courseYoubiMap).filter(function(c){
+    return courseYoubiMap[c].indexOf(courseTrendYoubi) >= 0;
+  });
+  if(courseTrendFilter==='kanen') courses = courses.filter(function(c){return CT_KANEN.indexOf(c)>=0;});
+  if(courseTrendFilter==='pla')   courses = courses.filter(function(c){return CT_PLA.indexOf(c)>=0;});
+
+  document.getElementById('ec-legend').innerHTML = courses.map(function(c){
+    return '<div><span class="ldot" style="background:'+ctColorFor(c)+';"></span>'+c+'</div>';
+  }).join('');
+
+  if(courseTrendChart){ courseTrendChart.destroy(); courseTrendChart=null; }
+
+  var dayData = byYoubiMonth[courseTrendYoubi] || {};
+  var datasets = courses.map(function(c,i){
+    return {
+      label: c,
+      data: months.map(function(m){
+        var md = dayData[m];
+        if(!md) return null;
+        var v = md[c];
+        return (v===undefined)?null:v;
+      }),
+      borderColor: ctColorFor(c),
+      backgroundColor: ctColorFor(c)+'22',
+      borderWidth: 2,
+      borderDash: CT_DASH[i%CT_DASH.length],
+      pointRadius: 3,
+      spanGaps: true,
+      tension: 0.3
+    };
+  });
+
+  var ctx = document.getElementById('ec-chart');
+  courseTrendChart = new Chart(ctx, {
+    type: 'line',
+    data: { labels: monthLabels, datasets: datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display:false },
+        tooltip: { callbacks: { label: function(c){ return c.dataset.label+': '+Math.round(c.parsed.y).toLocaleString()+'kg'; } } }
+      },
+      scales: {
+        x: { ticks:{autoSkip:false, maxRotation:45, font:{size:10}}, grid:{color:'rgba(128,128,128,0.1)'} },
+        y: { beginAtZero:true, ticks:{stepSize:500, callback:function(v){return v.toLocaleString()+'kg';}, font:{size:10}}, grid:{color:'rgba(128,128,128,0.1)'} }
+      }
+    }
+  });
+
+  var noteEl = document.getElementById('ec-note');
+  noteEl.textContent = courses.length===0
+    ? (courseTrendYoubi+'にはこの種別のコースはありません。')
+    : (courseTrendYoubi+'の対象コース: '+courses.join('、'));
 }
 
 // ビュー切替
@@ -1183,8 +1422,10 @@ function setEmitView(v){
   emitView=v;
   document.getElementById('emit-day-view').style.display=v==='day'?'block':'none';
   document.getElementById('emit-month-view').style.display=v==='month'?'block':'none';
-  var db=document.getElementById('ev-day'),mb=document.getElementById('ev-month');
-  db.classList.toggle('active',v==='day');mb.classList.toggle('active',v==='month');
+  document.getElementById('emit-course-view').style.display=v==='course'?'block':'none';
+  var db=document.getElementById('ev-day'),mb=document.getElementById('ev-month'),cb=document.getElementById('ev-course');
+  db.classList.toggle('active',v==='day');mb.classList.toggle('active',v==='month');cb.classList.toggle('active',v==='course');
+  if(v==='course'){ loadCourseTrend(); return; }
   if(emitRows.length){if(v==='day')renderDayView();else renderMonthView();}
 }
 
@@ -1330,6 +1571,116 @@ function updRepairLabel(){
 
 renderVehicleSelect();
 rdrv();
+
+// ================================================================
+//  🔌 GAS連携デバッグ
+// ================================================================
+document.addEventListener('DOMContentLoaded', function(){
+  var el = document.getElementById('dbg-url');
+  if(el) el.textContent = GAS;
+});
+
+function dbgLog(msg){
+  var el = document.getElementById('dbg-log');
+  if(!el) return;
+  var ts = new Date().toLocaleTimeString('ja-JP');
+  el.textContent += '\n[' + ts + '] ' + msg;
+  el.scrollTop = el.scrollHeight;
+}
+
+function dbgSetResult(id, ok, msg){
+  var el = document.getElementById(id);
+  if(!el) return;
+  el.style.display = 'block';
+  el.innerHTML = '<div style="font-size:11px;padding:6px 10px;border-radius:7px;background:'+(ok?'#EAF5DC':'#FDECEA')+';color:'+(ok?'#2D6B0F':'#B71C1C')+';font-weight:600;">'+(ok?'✅':'❌')+' '+msg+'</div>';
+}
+
+function dbgGetAll(){
+  dbgLog('getAll リクエスト送信中...');
+  dbgSetResult('dbg-getall-result', true, '通信中...');
+  var start = Date.now();
+  fetch(GAS + '?action=getAll')
+    .then(function(r){
+      dbgLog('HTTPステータス: ' + r.status + ' ' + r.statusText);
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(res){
+      var ms = Date.now() - start;
+      dbgLog('レスポンス受信（' + ms + 'ms）: status=' + res.status);
+      if(res.status === 'ok'){
+        var sheets = Object.keys(res.data || {});
+        var counts = sheets.map(function(s){ return s + ':' + (res.data[s]||[]).length + '件'; }).join('、');
+        dbgLog('取得シート: ' + counts);
+        dbgSetResult('dbg-getall-result', true, 'OK（' + ms + 'ms）　' + counts);
+      } else {
+        dbgLog('エラー: ' + (res.message || '不明'));
+        dbgSetResult('dbg-getall-result', false, 'GASエラー: ' + (res.message || '不明'));
+      }
+    })
+    .catch(function(err){
+      var ms = Date.now() - start;
+      dbgLog('通信エラー（' + ms + 'ms）: ' + err.message);
+      dbgSetResult('dbg-getall-result', false, '通信エラー: ' + err.message + '（CORSまたはネットワーク問題の可能性）');
+    });
+}
+
+function dbgSave(){
+  var dummy = {type:'デバッグテスト', driver:'テスト', note:'連携確認用ダミーデータ', ts: new Date().toISOString()};
+  dbgLog('save リクエスト送信中... payload=' + JSON.stringify(dummy));
+  dbgSetResult('dbg-save-result', true, '通信中...');
+  var start = Date.now();
+  fetch(GAS + '?action=save&payload=' + encodeURIComponent(JSON.stringify(dummy)))
+    .then(function(r){
+      dbgLog('HTTPステータス: ' + r.status + ' ' + r.statusText);
+      if(!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function(res){
+      var ms = Date.now() - start;
+      dbgLog('レスポンス受信（' + ms + 'ms）: ' + JSON.stringify(res));
+      if(res.status === 'ok'){
+        dbgSetResult('dbg-save-result', true, 'OK（' + ms + 'ms）送信成功。スプレッドシートを確認してください。');
+      } else {
+        dbgSetResult('dbg-save-result', false, 'GASエラー: ' + (res.message || '不明'));
+      }
+    })
+    .catch(function(err){
+      var ms = Date.now() - start;
+      dbgLog('通信エラー（' + ms + 'ms）: ' + err.message);
+      dbgSetResult('dbg-save-result', false, '通信エラー: ' + err.message);
+    });
+}
+
+function dbgClearCache(){
+  try{localStorage.removeItem('dashCache');dbgLog('キャッシュを削除しました。次回更新時に最新データを取得します。');}
+  catch(e){dbgLog('キャッシュ削除エラー: '+e.message);}
+}
+
+function dbgShowRaw(){
+  dbgLog('GASから生データを取得中...');
+  fetch(GAS+'?action=getAll')
+    .then(function(r){return r.json();})
+    .then(function(res){
+      if(res.status!=='ok'){dbgLog('エラー: '+(res.message||'不明'));return;}
+      var d=res.data||{};
+      Object.keys(d).forEach(function(k){
+        dbgLog('【'+k+'】'+d[k].length+'件'+(d[k].length>0?' / 先頭キー: '+Object.keys(d[k][0]).join(', '):'（データなし）'));
+      });
+    })
+    .catch(function(e){dbgLog('通信エラー: '+e.message);});
+}
+
+function toggleDebug(){
+  var body = document.getElementById('debug-body');
+  var chev = document.getElementById('debug-chevron');
+  if(!body) return;
+  var open = body.style.display !== 'none';
+  body.style.display = open ? 'none' : 'block';
+  chev.textContent = open ? '▶' : '▼';
+  // URL表示を初期化
+  if(!open){ var u = document.getElementById('dbg-url'); if(u) u.textContent = GAS; }
+}
 </script>
 </body>
 </html>
